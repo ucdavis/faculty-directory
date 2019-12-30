@@ -1,4 +1,5 @@
 using FacultyDirectory.Core.Data;
+using FacultyDirectory.Core.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -42,6 +43,10 @@ namespace FacultyDirectory
             {
                 configuration.RootPath = "ClientApp/build";
             });
+
+            // TODO: expand into named or typed factories
+            // https://docs.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/use-httpclientfactory-to-implement-resilient-http-requests
+            services.AddHttpClient<IDirectoryPopulationService, DirectoryPopulationService>();            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
