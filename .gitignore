@@ -348,4 +348,8 @@ healthchecksdb
 # Backup folder for Package Reference Convert tool in Visual Studio 2017
 MigrationBackup/
 
+# sql lite files
 *.db
+
+# mac OSX
+.DS_Store
