@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using FacultyDirectory.Core.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace FacultyDirectory.Core.Data
@@ -11,5 +12,7 @@ namespace FacultyDirectory.Core.Data
             : base(options)
         {
         }
+
+        public DbSet<Person> People { get; set; }
     }
 }
