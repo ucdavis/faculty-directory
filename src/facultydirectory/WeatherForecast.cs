@@ -1,6 +1,6 @@
 using System;
 
-namespace faculty_directory
+namespace facultydirectory
 {
     public class WeatherForecast
     {
