@@ -1,7 +1,9 @@
+using FacultyDirectory.Core.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -20,6 +22,18 @@ namespace FacultyDirectory
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // setup entity framework
+            if (Configuration.GetSection("Dev:UseSql").Value == "Yes")
+            {
+                services.AddDbContextPool<ApplicationDbContext>(o =>
+                {
+                    o.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                });
+            }
+            else
+            {
+                services.AddDbContextPool<ApplicationDbContext>(o => o.UseSqlite("Data Source=facultydirectory.db"));
+            }
 
             services.AddControllersWithViews();
 
@@ -36,6 +50,7 @@ namespace FacultyDirectory
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
             }
             else
             {
