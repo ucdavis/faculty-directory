@@ -20,7 +20,7 @@ namespace FacultyDirectory.Controllers
         [HttpGet]
         public async Task<ActionResult> Index()
         {
-            var result = await this.directoryPopulationService.GetFacultyAssociations();
+            var result = await this.directoryPopulationService.ExtractCandidates();
 
             return Json(result);
         }
