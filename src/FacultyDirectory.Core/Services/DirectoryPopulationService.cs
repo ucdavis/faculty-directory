@@ -50,7 +50,7 @@ namespace FacultyDirectory.Core.Services
             var associations = await GetFacultyAssociations();
 
             // TODO: select out new db record version
-            var validPeople = people.Where(person =>
+            var validPeople = people.Where(p => p.IsFaculty).Where(person =>
             {
                 // keep if person has at least one valid association
                 var personAssociations = associations.Where(a => a.IamId == person.IamId);
@@ -61,7 +61,7 @@ namespace FacultyDirectory.Core.Services
                 }
 
                 // yes they are faculty
-                if (personAssociations.Any(a => a.titleCode == "003258"))
+                if (personAssociations.Any(a => a.titleCode == "001675"))
                 {
                     return true;
                 }
@@ -71,7 +71,7 @@ namespace FacultyDirectory.Core.Services
 
             return validPeople.Select(person =>
             {
-                return new Person { IamId = person.IamId };
+                return new Person { IamId = person.IamId, Kerberos = person.ExternalId };
             }).ToArray();
         }
     }
