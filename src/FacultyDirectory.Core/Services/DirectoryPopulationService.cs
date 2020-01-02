@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using FacultyDirectory.Core.Data;
 using FacultyDirectory.Core.Domain;
+using FacultyDirectory.Core.Resources;
 using Ietws;
 using Microsoft.EntityFrameworkCore;
 
@@ -83,7 +84,7 @@ namespace FacultyDirectory.Core.Services
             var people = await GetFacultyPeople();
             var associations = await GetFacultyAssociations();
 
-            // TODO: select out new db record version
+            // TODO: select out new db record version instead
             var validPeople = people.Where(p => p.IsFaculty).Where(person =>
             {
                 // keep if person has at least one valid association
@@ -95,10 +96,16 @@ namespace FacultyDirectory.Core.Services
                 }
 
                 // yes they are faculty
-                if (personAssociations.Any(a => a.titleCode == "001675"))
+                if (personAssociations.Any(a => TitleCodes.Faculty.Contains(a.titleCode)))
                 {
                     return true;
                 }
+
+                // yes they are emeriti
+                if (personAssociations.Any(a => TitleCodes.Emeriti.Contains(a.titleCode)))
+                {
+                    return true;
+                }                
 
                 return false;
             });
