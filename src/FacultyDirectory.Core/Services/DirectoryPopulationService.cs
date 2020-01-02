@@ -12,6 +12,7 @@ namespace FacultyDirectory.Core.Services
     public interface IDirectoryPopulationService
     {
         Task<Person[]> ExtractCandidates();
+        Task MergeFaculty(Person[] people);
     }
 
     // TODO: Maybe use IAM for web services
@@ -45,7 +46,8 @@ namespace FacultyDirectory.Core.Services
             return result.ResponseData.Results;
         }
 
-        public async Task MergeFaculty(Person[] people) {
+        public async Task MergeFaculty(Person[] people)
+        {
             // TODO: could improve using merge statement directly in DB
             // https://stackoverflow.com/questions/23916453/how-can-i-use-use-entity-framework-to-do-a-merge-when-i-dont-know-if-the-record
 
@@ -57,16 +59,21 @@ namespace FacultyDirectory.Core.Services
             {
                 var dbPersonRecord = dbFaculty.SingleOrDefault(dbf => dbf.IamId == person.IamId);
 
-                if (dbPersonRecord != null) {
+                if (dbPersonRecord != null)
+                {
                     // update existing person
                     person.Id = dbPersonRecord.Id;
 
-                    await dbContext.People.AddAsync(person); // will this work for existing ids?
-                } else {
+                    await dbContext.People.AddAsync(person); // will this work for existing ids? if not, attach and set to dirty state
+                }
+                else
+                {
                     // new person
                     await dbContext.People.AddAsync(person);
                 }
             }
+
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task<Person[]> ExtractCandidates()
@@ -96,7 +103,14 @@ namespace FacultyDirectory.Core.Services
 
             return validPeople.Select(person =>
             {
-                return new Person { IamId = person.IamId, Kerberos = person.ExternalId };
+                return new Person
+                {
+                    IamId = person.IamId,
+                    Kerberos = person.ExternalId,
+                    FirstName = person.DFirstName ?? person.OFirstName,
+                    LastName = person.DLastName ?? person.OLastName,
+                    FullName = person.DFullName ?? person.OFullName
+                };
             }).ToArray();
         }
     }

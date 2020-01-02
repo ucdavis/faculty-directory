@@ -350,6 +350,7 @@ MigrationBackup/
 
 # sql lite files
 *.db
+*.db-*
 
 # mac OSX
 .DS_Store
