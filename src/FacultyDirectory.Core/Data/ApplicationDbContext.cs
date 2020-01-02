@@ -14,5 +14,9 @@ namespace FacultyDirectory.Core.Data
         }
 
         public DbSet<Person> People { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+            modelBuilder.Entity<Person>().HasIndex(p => p.IamId).IsUnique();
+        }
     }
 }

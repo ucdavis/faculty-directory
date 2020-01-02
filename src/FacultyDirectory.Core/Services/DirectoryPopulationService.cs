@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using FacultyDirectory.Core.Data;
 using FacultyDirectory.Core.Domain;
 using Ietws;
+using Microsoft.EntityFrameworkCore;
 
 namespace FacultyDirectory.Core.Services
 {
@@ -42,6 +43,30 @@ namespace FacultyDirectory.Core.Services
             var result = await ietClient.PPSAssociations.Search<PeopleResults>(PPSAssociationsSearchField.bouOrgOId, "F80B657C9EF523A0E0340003BA8A560D", retType: "people");
 
             return result.ResponseData.Results;
+        }
+
+        public async Task MergeFaculty(Person[] people) {
+            // TODO: could improve using merge statement directly in DB
+            // https://stackoverflow.com/questions/23916453/how-can-i-use-use-entity-framework-to-do-a-merge-when-i-dont-know-if-the-record
+
+            // for now, we get a list of all faculty which match our IAMIDs
+            var peopleIamIds = people.Select(p => p.IamId).ToArray();
+            var dbFaculty = await dbContext.People.Where(dbf => peopleIamIds.Contains(dbf.IamId)).AsNoTracking().ToListAsync();
+
+            foreach (var person in people)
+            {
+                var dbPersonRecord = dbFaculty.SingleOrDefault(dbf => dbf.IamId == person.IamId);
+
+                if (dbPersonRecord != null) {
+                    // update existing person
+                    person.Id = dbPersonRecord.Id;
+
+                    await dbContext.People.AddAsync(person); // will this work for existing ids?
+                } else {
+                    // new person
+                    await dbContext.People.AddAsync(person);
+                }
+            }
         }
 
         public async Task<Person[]> ExtractCandidates()
