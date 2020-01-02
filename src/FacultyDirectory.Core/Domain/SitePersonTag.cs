@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FacultyDirectory.Core.Domain {
     public class SitePersonTag {
+        public int Id { get; set; }
         public int SitePersonId { get; set; }
 
         public SitePerson SitePerson { get; set; }
