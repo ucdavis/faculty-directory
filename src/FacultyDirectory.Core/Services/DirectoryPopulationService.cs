@@ -1,9 +1,9 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FacultyDirectory.Core.Data;
 using FacultyDirectory.Core.Domain;
+using FacultyDirectory.Core.Resources;
 using Ietws;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +18,7 @@ namespace FacultyDirectory.Core.Services
     // TODO: Maybe use IAM for web services
     public class DirectoryPopulationService : IDirectoryPopulationService
     {
+        private const string CaesOrgOId = "F80B657C9EF523A0E0340003BA8A560D";
         private readonly ApplicationDbContext dbContext;
         private readonly HttpClient httpClient;
         private readonly IetClient ietClient;
@@ -31,17 +32,18 @@ namespace FacultyDirectory.Core.Services
             var key = "";
             this.ietClient = new IetClient(this.httpClient, key);
         }
+
         // Go to the campus directory and return the current list of faculty
         private async Task<PPSAssociationsResult[]> GetFacultyAssociations()
         {
-            var result = await ietClient.PPSAssociations.Search(PPSAssociationsSearchField.bouOrgOId, "F80B657C9EF523A0E0340003BA8A560D");
+            var result = await ietClient.PPSAssociations.Search(PPSAssociationsSearchField.bouOrgOId, CaesOrgOId);
 
             return result.ResponseData.Results;
         }
 
         private async Task<PeopleResult[]> GetFacultyPeople()
         {
-            var result = await ietClient.PPSAssociations.Search<PeopleResults>(PPSAssociationsSearchField.bouOrgOId, "F80B657C9EF523A0E0340003BA8A560D", retType: "people");
+            var result = await ietClient.PPSAssociations.Search<PeopleResults>(PPSAssociationsSearchField.bouOrgOId, CaesOrgOId, retType: "people");
 
             return result.ResponseData.Results;
         }
@@ -83,7 +85,7 @@ namespace FacultyDirectory.Core.Services
             var people = await GetFacultyPeople();
             var associations = await GetFacultyAssociations();
 
-            // TODO: select out new db record version
+            // TODO: select out new db record version instead
             var validPeople = people.Where(p => p.IsFaculty).Where(person =>
             {
                 // keep if person has at least one valid association
@@ -95,10 +97,16 @@ namespace FacultyDirectory.Core.Services
                 }
 
                 // yes they are faculty
-                if (personAssociations.Any(a => a.titleCode == "001675"))
+                if (personAssociations.Any(a => TitleCodes.Faculty.Contains(a.titleCode)))
                 {
                     return true;
                 }
+
+                // yes they are emeriti
+                if (personAssociations.Any(a => TitleCodes.Emeriti.Contains(a.titleCode)))
+                {
+                    return true;
+                }                
 
                 return false;
             });
