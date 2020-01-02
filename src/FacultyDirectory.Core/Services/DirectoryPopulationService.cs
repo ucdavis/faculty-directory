@@ -62,9 +62,11 @@ namespace FacultyDirectory.Core.Services
                 if (dbPersonRecord != null)
                 {
                     // update existing person
-                    person.Id = dbPersonRecord.Id;
+                    dbContext.People.Attach(dbPersonRecord);
 
-                    await dbContext.People.AddAsync(person); // will this work for existing ids? if not, attach and set to dirty state
+                    dbPersonRecord.FirstName = person.FirstName;
+                    dbPersonRecord.LastName = person.LastName;
+                    dbPersonRecord.FullName = person.FullName;
                 }
                 else
                 {

@@ -21,6 +21,7 @@ namespace FacultyDirectory.Controllers
         public async Task<ActionResult> Index()
         {
             var result = await this.directoryPopulationService.ExtractCandidates();
+            await this.directoryPopulationService.MergeFaculty(result);
 
             return Json(result);
         }
