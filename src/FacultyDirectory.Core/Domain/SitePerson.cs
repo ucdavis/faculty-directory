@@ -22,8 +22,8 @@ namespace FacultyDirectory.Core.Domain {
 
         public bool ShouldSync { get; set; }
 
-        public DateTime LastSync { get; set; }
+        public DateTime? LastSync { get; set; }
 
-        public DateTime LastUpdate { get; set; }
+        public DateTime? LastUpdate { get; set; }
     }
 }

@@ -10,7 +10,5 @@ namespace FacultyDirectory.Core.Domain {
 
         [StringLength (64)]
         public string Url { get; set; }
-
-        public string Creds { get; set; }
     }
 }

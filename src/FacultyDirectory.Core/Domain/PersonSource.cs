@@ -18,7 +18,7 @@ namespace FacultyDirectory.Core.Domain {
         // JSON
         public string Data { get; set; }
 
-        public DateTime LastUpdate { get; set; }
+        public DateTime? LastUpdate { get; set; }
 
         public bool HasKeywords { get; set; }
 
