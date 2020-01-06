@@ -11,10 +11,12 @@ namespace FacultyDirectory.Controllers
     public class SystemController : Controller
     {
         private readonly IDirectoryPopulationService directoryPopulationService;
+        private readonly IScholarService scholarService;
 
-        public SystemController(IDirectoryPopulationService directoryPopulationService)
+        public SystemController(IDirectoryPopulationService directoryPopulationService, IScholarService scholarService)
         {
             this.directoryPopulationService = directoryPopulationService;
+            this.scholarService = scholarService;
         }
 
         [HttpGet]
@@ -22,6 +24,14 @@ namespace FacultyDirectory.Controllers
         {
             var result = await this.directoryPopulationService.ExtractCandidates();
             await this.directoryPopulationService.MergeFaculty(result);
+
+            return Json(result);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> Scholar()
+        {
+            var result = await this.scholarService.GetTagsAndPublicationsById("tfLsszUAAAAJ");
 
             return Json(result);
         }
