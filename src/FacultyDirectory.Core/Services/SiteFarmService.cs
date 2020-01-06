@@ -59,8 +59,16 @@ namespace FacultyDirectory.Core.Services
                         title = sitePerson.Name,  // what goes here?
                         field_sf_first_name = sitePerson.Person.FirstName,
                         field_sf_last_name = sitePerson.Person.LastName
+                    },
+                    relationships = new {
+                        field_sf_person_type = new {
+                            data = new {
+                                type = "taxonomy_term--sf_person_type",
+                                id = "8238d79c-1105-4845-ae56-1919c8738249" // Staff type.  TODO: get from site settings or query dynamically?
+                            }
+                        }
                     }
-                }
+                },
             };
 
             var serialized = JsonSerializer.Serialize(personData);
