@@ -40,12 +40,12 @@ namespace FacultyDirectory.Core.Services
             // Get external source info for this person
             var sources = await this.dbContext.PeopleSources.Where(s => s.PersonId == sitePerson.PersonId).ToArrayAsync();
 
-            var baseUrl = "https://playground.sf.ucdavis.edu/jsonapi/node/sf_person";
+            var resourceUrl = "https://playground.sf.ucdavis.edu/jsonapi/node/sf_person";
             var method = HttpMethod.Post;
 
             if (sitePerson.PageUid.HasValue) {
-                baseUrl = baseUrl + "/" + sitePerson.PageUid.Value;
-                method = System.Net.Http.HttpMethod.Put;
+                resourceUrl = resourceUrl + "/" + sitePerson.PageUid.Value;
+                method = System.Net.Http.HttpMethod.Patch;
             }
 
             var personData = new
@@ -53,6 +53,7 @@ namespace FacultyDirectory.Core.Services
                 data = new
                 {
                     type = "node--sf_person",
+                    id = sitePerson.PageUid,
                     attributes = new
                     {
                         title = sitePerson.Name,  // what goes here?
@@ -64,7 +65,7 @@ namespace FacultyDirectory.Core.Services
 
             var serialized = JsonSerializer.Serialize(personData);
 
-            var request = new HttpRequestMessage(HttpMethod.Post, baseUrl);
+            var request = new HttpRequestMessage(method, resourceUrl);
 
             request.Content = new StringContent(serialized, Encoding.UTF8, "application/vnd.api+json");
 
