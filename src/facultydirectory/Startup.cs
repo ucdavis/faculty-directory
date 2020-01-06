@@ -48,6 +48,7 @@ namespace FacultyDirectory
             // https://docs.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/use-httpclientfactory-to-implement-resilient-http-requests
             services.AddHttpClient<IDirectoryPopulationService, DirectoryPopulationService>();
             services.AddHttpClient<IScholarService, ScholarService>();
+            services.AddHttpClient<ISiteFarmService, SiteFarmService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
