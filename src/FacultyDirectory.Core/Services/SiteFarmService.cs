@@ -1,5 +1,5 @@
 using System;
-using System.Net;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using FacultyDirectory.Core.Data;
 using FacultyDirectory.Core.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace FacultyDirectory.Core.Services
 {
@@ -31,9 +32,21 @@ namespace FacultyDirectory.Core.Services
         }
 
         // TODO: handle multiple sites?
-        public async Task<string> PublishPerson(SitePerson person)
+        public async Task<string> PublishPerson(SitePerson sitePerson)
         {
+            // Get the related information for this person
+            var tags = await this.dbContext.SitePeopleTags.Include(s => s.SiteTag).Where(s => s.SitePersonId == sitePerson.Id).ToArrayAsync();
+
+            // Get external source info for this person
+            var sources = await this.dbContext.PeopleSources.Where(s => s.PersonId == sitePerson.PersonId).ToArrayAsync();
+
             var baseUrl = "https://playground.sf.ucdavis.edu/jsonapi/node/sf_person";
+            var method = HttpMethod.Post;
+
+            if (sitePerson.PageUid.HasValue) {
+                baseUrl = baseUrl + "/" + sitePerson.PageUid.Value;
+                method = System.Net.Http.HttpMethod.Put;
+            }
 
             var personData = new
             {
@@ -42,22 +55,33 @@ namespace FacultyDirectory.Core.Services
                     type = "node--sf_person",
                     attributes = new
                     {
-                        title = "Api Person",
-                        field_sf_first_name = "Api",
-                        field_sf_last_name = "Person"
+                        title = sitePerson.Name,  // what goes here?
+                        field_sf_first_name = sitePerson.Person.FirstName,
+                        field_sf_last_name = sitePerson.Person.LastName
                     }
                 }
             };
 
             var serialized = JsonSerializer.Serialize(personData);
-            var serialized2 = Newtonsoft.Json.JsonConvert.SerializeObject(personData);
 
             var request = new HttpRequestMessage(HttpMethod.Post, baseUrl);
 
-            request.Content = new StringContent(serialized2, Encoding.UTF8, "application/vnd.api+json");
+            request.Content = new StringContent(serialized, Encoding.UTF8, "application/vnd.api+json");
 
             var response = await this.httpClient.SendAsync(request);
             var content = await response.Content.ReadAsStringAsync();
+
+            // TODO: make models and deserialze properly
+            dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
+
+            var id = json.data.id;
+
+            if (sitePerson.PageUid.HasValue == false) {
+                // if this is a new site entity, save the page uid for future updates
+                sitePerson.PageUid = id;
+
+                await this.dbContext.SaveChangesAsync();
+            }
 
             return content;
         }
