@@ -127,7 +127,7 @@ namespace FacultyDirectory.Core.Services
                     Email = "example@ucdavis.edu",
                     Phone = "555-5555",
                     Title = firstAssociation?.titleDisplayName,
-                    Departments = personAssociations.Select(pa => pa.deptDisplayName).Join("|")
+                    Departments = string.Join("|", personAssociations.Select(pa => pa.deptDisplayName))
                 };
             }).ToArray();
         }
