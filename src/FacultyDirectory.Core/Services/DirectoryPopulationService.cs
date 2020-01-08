@@ -50,9 +50,6 @@ namespace FacultyDirectory.Core.Services
 
         public async Task MergeFaculty(Person[] people)
         {
-            // TODO: could improve using merge statement directly in DB
-            // https://stackoverflow.com/questions/23916453/how-can-i-use-use-entity-framework-to-do-a-merge-when-i-dont-know-if-the-record
-
             // for now, we get a list of all faculty which match our IAMIDs
             var peopleIamIds = people.Select(p => p.IamId).ToArray();
             var dbFaculty = await dbContext.People.Where(dbf => peopleIamIds.Contains(dbf.IamId)).AsNoTracking().ToListAsync();
@@ -66,9 +63,15 @@ namespace FacultyDirectory.Core.Services
                     // update existing person
                     dbContext.People.Attach(dbPersonRecord);
 
+                    // TODO: could improve using merge statement directly in DB
+                    // https://stackoverflow.com/questions/23916453/how-can-i-use-use-entity-framework-to-do-a-merge-when-i-dont-know-if-the-record
                     dbPersonRecord.FirstName = person.FirstName;
                     dbPersonRecord.LastName = person.LastName;
                     dbPersonRecord.FullName = person.FullName;
+                    dbPersonRecord.Email = person.Email;
+                    dbPersonRecord.Phone = person.Phone;
+                    dbPersonRecord.Title = person.Title;
+                    dbPersonRecord.Departments = person.Departments;
                 }
                 else
                 {
@@ -117,6 +120,7 @@ namespace FacultyDirectory.Core.Services
 
                 var firstAssociation = personAssociations.FirstOrDefault();
 
+                // TODO: get title and deptment names from lookup values
                 return new Person
                 {
                     IamId = person.IamId,
