@@ -17,6 +17,6 @@ namespace FacultyDirectory.Core.Domain {
         public string Email { get; set; }
         public string Phone { get; set; }
         public string Title { get; set; }
-        public object Departments { get; set; }
+        public string Departments { get; set; }
     }
 }
