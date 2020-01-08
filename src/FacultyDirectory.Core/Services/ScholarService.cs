@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ namespace FacultyDirectory.Core.Services
 {
     public interface IScholarService
     {
+        Task<string[]> FindScholarIds(string name);
         Task<SourceData> GetTagsAndPublicationsById(string id);
     }
 
@@ -55,6 +57,46 @@ namespace FacultyDirectory.Core.Services
             };
 
             return data;
+        }
+
+        public async Task<string[]> FindScholarIds(string name) {
+            var siteUrl = "https://scholar.google.com/citations?hl=en&view_op=search_authors&mauthors=" + name;
+
+            var request = await this.httpClient.GetAsync(siteUrl);
+
+            IHtmlDocument document;
+
+            using (var responseStream = await request.Content.ReadAsStreamAsync())
+            {
+                var parser = new HtmlParser();
+                document = parser.ParseDocument(responseStream);
+            }
+
+            //  Query Profiles
+            var profiles = document.All.Where(m => m.ClassName == "gs_ai gs_scl gs_ai_chpr" &&
+                m.ParentElement.ClassName == "gsc_1usr");
+
+            var foundScholarIds = new List<string>();
+
+            foreach (var item in profiles)
+            {
+                var university = item.GetElementsByClassName("gs_ai_aff");
+                foreach (var k in university)
+                {
+                    if (k.TextContent == "University of California, Davis")
+                    {
+                        // TODO: maybe use regex as more reliable method of getting out id string?
+                        var user = item.GetElementsByClassName("gs_ai_pho");
+                        var userId = user.Single().GetAttribute("href");
+                        var startInd = userId.LastIndexOf("user") + 5;
+                        var lastInd = userId.Length - startInd;
+                        var id = userId.Substring(startInd, lastInd);
+                        foundScholarIds.ToList();
+                    }
+                }
+            }
+
+            return foundScholarIds.ToArray();
         }
     }
 
