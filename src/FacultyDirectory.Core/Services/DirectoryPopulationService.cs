@@ -85,7 +85,7 @@ namespace FacultyDirectory.Core.Services
             var people = await GetFacultyPeople();
             var associations = await GetFacultyAssociations();
 
-            // TODO: select out new db record version instead
+            // TODO: select out new db record version directly instead
             var validPeople = people.Where(p => p.IsFaculty).Where(person =>
             {
                 // keep if person has at least one valid association
@@ -113,13 +113,21 @@ namespace FacultyDirectory.Core.Services
 
             return validPeople.Select(person =>
             {
+                var personAssociations = associations.Where(a => a.IamId == person.IamId);
+
+                var firstAssociation = personAssociations.FirstOrDefault();
+
                 return new Person
                 {
                     IamId = person.IamId,
                     Kerberos = person.ExternalId,
                     FirstName = person.DFirstName ?? person.OFirstName,
                     LastName = person.DLastName ?? person.OLastName,
-                    FullName = person.DFullName ?? person.OFullName
+                    FullName = person.DFullName ?? person.OFullName,
+                    Email = "example@ucdavis.edu",
+                    Phone = "555-5555",
+                    Title = firstAssociation?.titleDisplayName,
+                    Departments = personAssociations.Select(pa => pa.deptDisplayName).Join("|")
                 };
             }).ToArray();
         }
