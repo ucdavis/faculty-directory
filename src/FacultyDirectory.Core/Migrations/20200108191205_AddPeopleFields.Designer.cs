@@ -3,14 +3,16 @@ using System;
 using FacultyDirectory.Core.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FacultyDirectory.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200108191205_AddPeopleFields")]
+    partial class AddPeopleFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -123,18 +125,6 @@ namespace FacultyDirectory.Core.Migrations
                     b.Property<string>("Bio")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Departments")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("TEXT");
-
                     b.Property<DateTime?>("LastSync")
                         .HasColumnType("TEXT");
 
@@ -151,17 +141,11 @@ namespace FacultyDirectory.Core.Migrations
                     b.Property<int>("PersonId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Phone")
-                        .HasColumnType("TEXT");
-
                     b.Property<bool>("ShouldSync")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("SiteId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 

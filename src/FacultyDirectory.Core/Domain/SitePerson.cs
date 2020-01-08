@@ -17,8 +17,17 @@ namespace FacultyDirectory.Core.Domain {
 
         public string Bio { get; set; }
 
+        public string FirstName { get; set; }
+
+        public string LastName { get; set; }
+
         [StringLength (256)]
         public string Name { get; set; }
+
+        public string Email { get; set; }
+        public string Phone { get; set; }
+        public string Title { get; set; }
+        public string Departments { get; set; }
 
         public bool ShouldSync { get; set; }
 
