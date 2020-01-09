@@ -53,6 +53,20 @@ namespace FacultyDirectory.Controllers
         }
 
         [HttpGet]
+        public async Task<ActionResult> SyncTags() {
+            var person = await this.dbContext.SitePeople.FirstAsync();
+
+            var tagIds = new List<string>();
+
+            await foreach (var tagId in this.siteFarmService.SyncTags(person, new[] { "code", "javascript", "html" }))
+            {
+                tagIds.Add(tagId);                
+            }
+
+            return Json(tagIds);
+        }
+
+        [HttpGet]
         public async Task<ActionResult> CreatePerson()
         {
             var site = new Site { Name = "Playground", Url = "https://playground.sf.ucdavis.edu" };
