@@ -58,7 +58,7 @@ namespace FacultyDirectory.Controllers
 
             var tagIds = new List<string>();
 
-            await foreach (var tagId in this.siteFarmService.SyncTags(person, new[] { "code", "javascript", "html" }))
+            await foreach (var tagId in this.siteFarmService.SyncTags(new[] { "code", "javascript", "html" }))
             {
                 tagIds.Add(tagId);                
             }
