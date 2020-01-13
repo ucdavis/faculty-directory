@@ -15,7 +15,7 @@ namespace FacultyDirectory.Core.Services
     public interface ISiteFarmService
     {
         Task<string> PublishPerson(SitePerson person);
-        IAsyncEnumerable<string> SyncTags(SitePerson sitePerson, string[] tags);
+        IAsyncEnumerable<string> SyncTags(string[] tags);
     }
 
     public class SiteFarmService : ISiteFarmService
@@ -33,7 +33,7 @@ namespace FacultyDirectory.Core.Services
                 new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes(String.Format("{0}:{1}", "apiuser2", "pass"))));
         }
 
-        public async IAsyncEnumerable<string> SyncTags(SitePerson sitePerson, string[] tags)
+        public async IAsyncEnumerable<string> SyncTags(string[] tags)
         {
             var baseUrl = "https://playground.sf.ucdavis.edu/jsonapi/taxonomy_term/sf_tags";
 
@@ -82,12 +82,32 @@ namespace FacultyDirectory.Core.Services
         // TODO: handle multiple sites?
         public async Task<string> PublishPerson(SitePerson sitePerson)
         {
-            // Get the related information for this person
-            var tags = await this.dbContext.SitePeopleTags.Include(s => s.SiteTag).Where(s => s.SitePersonId == sitePerson.Id).ToArrayAsync();
-
             // Get external source info for this person
             var sources = await this.dbContext.PeopleSources.Where(s => s.PersonId == sitePerson.PersonId).ToArrayAsync();
 
+            // TODO: determine which site values to use for each property
+
+            // Step 1: Sync tag taxonomy
+
+            // TODO: get from sources and site person
+            var tags = new[] { "code", "javascript", "html" };
+
+            var tagNodes = new List<object>();
+
+            await foreach (var tagId in this.SyncTags(tags))
+            {
+                tagNodes.Add(new {
+                    type = "taxonomy_term--sf_tags",
+                    id = tagId
+                });
+            }
+
+            // now we have our tag relationship
+            var field_sf_tags = new {
+                    data = tagNodes
+            };
+
+            // Step 2: form POST/PATCH depending on prior existance of user page
             var resourceUrl = "https://playground.sf.ucdavis.edu/jsonapi/node/sf_person";
             var method = HttpMethod.Post;
 
@@ -97,6 +117,7 @@ namespace FacultyDirectory.Core.Services
                 method = System.Net.Http.HttpMethod.Patch;
             }
 
+            // Step 3: Compile and generate user page info
             var personData = new
             {
                 data = new
@@ -107,7 +128,27 @@ namespace FacultyDirectory.Core.Services
                     {
                         title = sitePerson.Name,  // what goes here?
                         field_sf_first_name = sitePerson.Person.FirstName,
-                        field_sf_last_name = sitePerson.Person.LastName
+                        field_sf_last_name = sitePerson.Person.LastName,
+                        field_sf_position_title = sitePerson.Title ?? sitePerson.Name,
+                        field_sf_emails = new [] {
+                            sitePerson.Email // TODO: extend for multiple
+                        },
+                        field_sf_phone_numbers = new [] {
+                            sitePerson.Phone // TODO: extend for multiple
+                        },
+                        field_sf_unit = new [] {
+                            sitePerson.Departments // TODO: parse and make multiple
+                        },
+                        field_sf_websites = new [] { // TODO: collect websites
+                            new {
+                                uri = "https://ucdavis.edu",
+                                title = "UC Davis"
+                            },
+                            new {
+                                uri = "https://research.ucdavis.edu",
+                                title = "Research at UCD"
+                            }
+                        }
                     },
                     relationships = new
                     {
@@ -118,7 +159,8 @@ namespace FacultyDirectory.Core.Services
                                 type = "taxonomy_term--sf_person_type",
                                 id = "8238d79c-1105-4845-ae56-1919c8738249" // Staff type.  TODO: get from site settings or query dynamically?
                             }
-                        }
+                        },
+                        field_sf_tags
                     }
                 },
             };
@@ -131,6 +173,8 @@ namespace FacultyDirectory.Core.Services
 
             var response = await this.httpClient.SendAsync(request);
             var content = await response.Content.ReadAsStringAsync();
+
+            Console.WriteLine(content);
 
             // TODO: make models and deserialze properly
             dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
