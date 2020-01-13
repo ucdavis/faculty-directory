@@ -128,7 +128,27 @@ namespace FacultyDirectory.Core.Services
                     {
                         title = sitePerson.Name,  // what goes here?
                         field_sf_first_name = sitePerson.Person.FirstName,
-                        field_sf_last_name = sitePerson.Person.LastName
+                        field_sf_last_name = sitePerson.Person.LastName,
+                        field_sf_position_title = sitePerson.Title ?? sitePerson.Name,
+                        field_sf_emails = new [] {
+                            sitePerson.Email // TODO: extend for multiple
+                        },
+                        field_sf_phone_numbers = new [] {
+                            sitePerson.Phone // TODO: extend for multiple
+                        },
+                        field_sf_unit = new [] {
+                            sitePerson.Departments // TODO: parse and make multiple
+                        },
+                        field_sf_websites = new [] { // TODO: collect websites
+                            new {
+                                uri = "https://ucdavis.edu",
+                                title = "UC Davis"
+                            },
+                            new {
+                                uri = "https://research.ucdavis.edu",
+                                title = "Research at UCD"
+                            }
+                        }
                     },
                     relationships = new
                     {
@@ -153,6 +173,8 @@ namespace FacultyDirectory.Core.Services
 
             var response = await this.httpClient.SendAsync(request);
             var content = await response.Content.ReadAsStringAsync();
+
+            Console.WriteLine(content);
 
             // TODO: make models and deserialze properly
             dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
