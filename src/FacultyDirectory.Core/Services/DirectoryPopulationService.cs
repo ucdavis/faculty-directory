@@ -1,3 +1,4 @@
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using FacultyDirectory.Core.Domain;
 using FacultyDirectory.Core.Resources;
 using Ietws;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace FacultyDirectory.Core.Services
 {
@@ -18,10 +20,12 @@ namespace FacultyDirectory.Core.Services
     // TODO: Maybe use IAM for web services
     public class DirectoryPopulationService : IDirectoryPopulationService
     {
+        // TODO: get from settings
         private const string CaesOrgOId = "F80B657C9EF523A0E0340003BA8A560D";
         private readonly ApplicationDbContext dbContext;
         private readonly HttpClient httpClient;
-        private readonly IetClient ietClient;
+        private readonly string peopleLookupKey;
+        private readonly string PeopleLookupBaseUrl = "https://who.ucdavis.edu";
 
         public DirectoryPopulationService(ApplicationDbContext dbContext, HttpClient httpClient)
         {
@@ -29,23 +33,39 @@ namespace FacultyDirectory.Core.Services
             this.httpClient = httpClient;
 
             // TODO: get key from settings
-            var key = "";
-            this.ietClient = new IetClient(this.httpClient, key);
+            this.peopleLookupKey = "";
         }
 
         // Go to the campus directory and return the current list of faculty
         private async Task<PPSAssociationsResult[]> GetFacultyAssociations()
         {
-            var result = await ietClient.PPSAssociations.Search(PPSAssociationsSearchField.bouOrgOId, CaesOrgOId);
+            var queryUrl = $"{PeopleLookupBaseUrl}/api/Iamws/PPSAssociation?key={this.peopleLookupKey}&field=bouOrgOId&fieldValue={CaesOrgOId}&retType=default";
 
-            return result.ResponseData.Results;
+            // TODO: this whole section can be extracted
+            using (var stream = await this.httpClient.GetStreamAsync(queryUrl))
+            {
+                using (var sr = new StreamReader(stream))
+                using (var jsonTextReader = new JsonTextReader(sr))
+                {
+                    var result = new JsonSerializer().Deserialize<PPSAssociationResults>(jsonTextReader);
+                    return result.ResponseData.Results;
+                }
+            }
         }
 
         private async Task<PeopleResult[]> GetFacultyPeople()
         {
-            var result = await ietClient.PPSAssociations.Search<PeopleResults>(PPSAssociationsSearchField.bouOrgOId, CaesOrgOId, retType: "people");
+            var queryUrl = $"{PeopleLookupBaseUrl}/api/Iamws/PPSAssociation?key={this.peopleLookupKey}&field=bouOrgOId&fieldValue={CaesOrgOId}&retType=people";
 
-            return result.ResponseData.Results;
+            using (var stream = await this.httpClient.GetStreamAsync(queryUrl))
+            {
+                using (var sr = new StreamReader(stream))
+                using (var jsonTextReader = new JsonTextReader(sr))
+                {
+                    var result = new JsonSerializer().Deserialize<PeopleResults>(jsonTextReader);
+                    return result.ResponseData.Results;
+                }
+            }
         }
 
         public async Task MergeFaculty(Person[] people)
