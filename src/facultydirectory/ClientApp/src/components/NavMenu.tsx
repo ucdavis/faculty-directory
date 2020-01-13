@@ -10,7 +10,7 @@ interface State {
 export class NavMenu extends Component<any, State> {
   static displayName = NavMenu.name;
 
-  constructor (props) {
+  constructor (props: any) {
     super(props);
 
     this.toggleNavbar = this.toggleNavbar.bind(this);
