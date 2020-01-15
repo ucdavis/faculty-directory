@@ -13,7 +13,7 @@ namespace FacultyDirectory.Core.Services
         Task<DrupalPerson> Generate(SitePerson sitePerson);
     }
 
-    public class BiographyGenerationService
+    public class BiographyGenerationService : IBiographyGenerationService
     {
         private readonly ApplicationDbContext dbContext;
 
@@ -32,6 +32,8 @@ namespace FacultyDirectory.Core.Services
             // TODO: add tags to sitePerson and check there too
             var tags = GetSourceTags(sources);
 
+            var bio = string.IsNullOrWhiteSpace(sitePerson.Bio) ? GetBiography(sources) : sitePerson.Bio;
+
             var websites = new DrupalWebsite[] { new DrupalWebsite { Uri = "https://ucdavis.edu", Title = "UC Davis" } };
 
             var person = new DrupalPerson
@@ -41,9 +43,10 @@ namespace FacultyDirectory.Core.Services
                 Title = sitePerson.Title ?? sitePerson.Person.Title,
                 Emails = new[] { "example@ucdavis.edu" },
                 Phones = new[] { "555-5555" },
-                Departments = departmentValues?.Split(","), // TODO: should it be null or empty array if we don't have any?
+                Departments = departmentValues?.Split("|"), // TODO: should it be null or empty array if we don't have any?
                 Tags = tags,
-                Websites = websites
+                Websites = websites,
+                Bio = bio
             };
 
             return person;
@@ -67,7 +70,8 @@ namespace FacultyDirectory.Core.Services
         }
 
         // TODO: maybe instead of deserializing multiple times we just do once up-front and call these methods with that data?
-        private string GetBiography(PersonSource[] sources) {
+        private string GetBiography(PersonSource[] sources)
+        {
             foreach (var source in sources)
             {
                 var data = JsonConvert.DeserializeObject<SourceData>(source.Data);

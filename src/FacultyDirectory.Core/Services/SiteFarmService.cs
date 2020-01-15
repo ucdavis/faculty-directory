@@ -131,7 +131,12 @@ namespace FacultyDirectory.Core.Services
                         field_sf_emails = drupalPerson.Emails,
                         field_sf_phone_numbers = drupalPerson.Phones,
                         field_sf_unit = drupalPerson.Departments,
-                        field_sf_websites = drupalPerson.Websites // TODO: collect websites
+                        field_sf_websites = drupalPerson.Websites, // TODO: collect websites
+                        body = new {
+                            value = drupalPerson.Bio,
+                            format = "basic_html",
+                            summary = "" // TODO: do we need summary?
+                        }
                     },
                     relationships = new
                     {
@@ -156,6 +161,8 @@ namespace FacultyDirectory.Core.Services
 
             var response = await this.httpClient.SendAsync(request);
             var content = await response.Content.ReadAsStringAsync();
+
+            Console.WriteLine(content);
 
             // TODO: make models and deserialze properly
             dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
