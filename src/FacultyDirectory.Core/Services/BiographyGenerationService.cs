@@ -82,10 +82,12 @@ namespace FacultyDirectory.Core.Services
                 if (data.Publications != null && data.Publications.Any())
                 {
                     var sb = new StringBuilder();
+                    sb.Append("<h3>Publications:</h3>");
 
                     foreach (var pub in data.Publications.Take(5))
                     {
-                        sb.AppendLine(pub.Title);
+                        sb.Append(pub.Title);
+                        sb.Append("<br/><br/>");
                     }
 
                     return sb.ToString();
