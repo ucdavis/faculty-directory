@@ -65,5 +65,24 @@ namespace FacultyDirectory.Core.Services
 
             return new string[0];
         }
+
+        // TODO: maybe instead of deserializing multiple times we just do once up-front and call these methods with that data?
+        private string GetBiography(PersonSource[] sources) {
+            foreach (var source in sources)
+            {
+                var data = JsonConvert.DeserializeObject<SourceData>(source.Data);
+
+                // TODO: this will return first source tags.
+                // Once we get more sources, we need to determine a ranking in case there are multiple tags
+                if (data.Publications != null && data.Publications.Any())
+                {
+                    // TODO: generate actual bio out of first N titles
+                    // env newline or maybe <br/>?
+                    return data.Publications.First().Title;
+                }
+            }
+
+            return string.Empty;
+        }
     }
 }
