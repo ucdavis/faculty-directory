@@ -131,7 +131,10 @@ namespace FacultyDirectory.Core.Services
                         field_sf_emails = drupalPerson.Emails,
                         field_sf_phone_numbers = drupalPerson.Phones,
                         field_sf_unit = drupalPerson.Departments,
-                        field_sf_websites = drupalPerson.Websites, // TODO: collect websites
+                        field_sf_websites = drupalPerson.Websites.Select(w => new {
+                            uri = w.Uri,
+                            title = w.Title
+                        }), // TODO: collect websites
                         body = new {
                             value = drupalPerson.Bio,
                             format = "basic_html",
@@ -154,6 +157,8 @@ namespace FacultyDirectory.Core.Services
             };
 
             var serialized = JsonSerializer.Serialize(personData);
+
+            Console.WriteLine(serialized);
 
             var request = new HttpRequestMessage(method, resourceUrl);
 
