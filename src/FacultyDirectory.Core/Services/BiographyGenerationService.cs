@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using FacultyDirectory.Core.Data;
 using FacultyDirectory.Core.Domain;
@@ -80,9 +81,14 @@ namespace FacultyDirectory.Core.Services
                 // Once we get more sources, we need to determine a ranking in case there are multiple tags
                 if (data.Publications != null && data.Publications.Any())
                 {
-                    // TODO: generate actual bio out of first N titles
-                    // env newline or maybe <br/>?
-                    return data.Publications.First().Title;
+                    var sb = new StringBuilder();
+
+                    foreach (var pub in data.Publications.Take(5))
+                    {
+                        sb.AppendLine(pub.Title);
+                    }
+
+                    return sb.ToString();
                 }
             }
 
