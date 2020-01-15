@@ -21,11 +21,13 @@ namespace FacultyDirectory.Core.Services
     public class SiteFarmService : ISiteFarmService
     {
         private readonly ApplicationDbContext dbContext;
+        private readonly IBiographyGenerationService biographyGenerationService;
         private readonly HttpClient httpClient;
 
-        public SiteFarmService(ApplicationDbContext dbContext, HttpClient httpClient)
+        public SiteFarmService(ApplicationDbContext dbContext, IBiographyGenerationService biographyGenerationService, HttpClient httpClient)
         {
             this.dbContext = dbContext;
+            this.biographyGenerationService = biographyGenerationService;
             this.httpClient = httpClient;
 
             // TODO: determine if we want to set auth at the service level
@@ -82,15 +84,11 @@ namespace FacultyDirectory.Core.Services
         // TODO: handle multiple sites?
         public async Task<string> PublishPerson(SitePerson sitePerson)
         {
-            // Get external source info for this person
-            var sources = await this.dbContext.PeopleSources.Where(s => s.PersonId == sitePerson.PersonId).ToArrayAsync();
-
             // TODO: determine which site values to use for each property
+            var drupalPerson = await this.biographyGenerationService.Generate(sitePerson);
 
             // Step 1: Sync tag taxonomy
-
-            // TODO: get from sources and site person
-            var tags = new[] { "code", "javascript", "html" };
+            var tags = drupalPerson.Tags;
 
             var tagNodes = new List<object>();
 
@@ -126,28 +124,21 @@ namespace FacultyDirectory.Core.Services
                     id = sitePerson.PageUid,
                     attributes = new
                     {
-                        title = sitePerson.Name,  // what goes here?
-                        field_sf_first_name = sitePerson.Person.FirstName,
-                        field_sf_last_name = sitePerson.Person.LastName,
-                        field_sf_position_title = sitePerson.Title ?? sitePerson.Name,
-                        field_sf_emails = new [] {
-                            sitePerson.Email // TODO: extend for multiple
-                        },
-                        field_sf_phone_numbers = new [] {
-                            sitePerson.Phone // TODO: extend for multiple
-                        },
-                        field_sf_unit = new [] {
-                            sitePerson.Departments // TODO: parse and make multiple
-                        },
-                        field_sf_websites = new [] { // TODO: collect websites
-                            new {
-                                uri = "https://ucdavis.edu",
-                                title = "UC Davis"
-                            },
-                            new {
-                                uri = "https://research.ucdavis.edu",
-                                title = "Research at UCD"
-                            }
+                        title = drupalPerson.Title,  // what goes here?
+                        field_sf_first_name = drupalPerson.FirstName,
+                        field_sf_last_name = drupalPerson.LastName,
+                        field_sf_position_title = drupalPerson.Title,
+                        field_sf_emails = drupalPerson.Emails,
+                        field_sf_phone_numbers = drupalPerson.Phones,
+                        field_sf_unit = drupalPerson.Departments,
+                        field_sf_websites = drupalPerson.Websites.Select(w => new {
+                            uri = w.Uri,
+                            title = w.Title
+                        }), // TODO: collect websites
+                        body = new {
+                            value = drupalPerson.Bio,
+                            format = "basic_html",
+                            summary = "" // TODO: do we need summary?
                         }
                     },
                     relationships = new
@@ -166,6 +157,8 @@ namespace FacultyDirectory.Core.Services
             };
 
             var serialized = JsonSerializer.Serialize(personData);
+
+            Console.WriteLine(serialized);
 
             var request = new HttpRequestMessage(method, resourceUrl);
 
