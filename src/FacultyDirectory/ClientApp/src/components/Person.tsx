@@ -3,22 +3,25 @@ import { useParams } from 'react-router-dom';
 
 export const Person = () => {
   let { id } = useParams();
-
-  const [person, setPerson] = useState<any>(null);
+  
+  const [personBundle, setPersonBundle] = useState<any>(null);
   useEffect(() => {
     const fetchPerson = async () => {
-      setPerson(await fetch('SitePeople/' + id).then(r => r.json()));
+      setPersonBundle(await fetch('SitePeople/' + id).then(r => r.json()));
     };
 
     fetchPerson();
   }, [id]);
 
-  if (!person) {
+  if (!personBundle) {
     return <div>loading</div>;
   }
+
+  const { person, sitePerson } = personBundle;
   return (
     <div>
-      Person {person.person.firstName} {person.person.lastName}
+      Person {person.firstName} {person.lastName}
+      <p>Site info: {sitePerson ? 'yup' : 'nope'}</p>
     </div>
   );
 };
