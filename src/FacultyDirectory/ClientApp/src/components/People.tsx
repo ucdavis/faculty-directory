@@ -4,12 +4,12 @@ import { Link } from 'react-router-dom';
 export const People = (props: any) => {
   const [people, setPeople] = useState<any[]>([]);
   useEffect(() => {
+    const getPeople = async () => {
+      setPeople(await fetch('SitePeople').then(r => r.json()));
+    };
+
     getPeople();
   }, []);
-
-  const getPeople = async () => {
-    setPeople(await fetch('SitePeople').then(r => r.json()));
-  };
 
   return (
     <div>
@@ -17,7 +17,7 @@ export const People = (props: any) => {
         {people.map(p => (
           <li key={p.person.id}>
             <Link to={'/People/' + p.person.id}>
-            {p.person.firstName} {p.person.lastName}
+              {p.person.firstName} {p.person.lastName}
             </Link>
           </li>
         ))}
