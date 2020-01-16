@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -63,6 +64,20 @@ namespace FacultyDirectory.Core.Services
                 using (var jsonTextReader = new JsonTextReader(sr))
                 {
                     var result = new JsonSerializer().Deserialize<PeopleResults>(jsonTextReader);
+                    return result.ResponseData.Results;
+                }
+            }
+        }
+
+        private async Task<ContactResult[]> GetContactInfo(string iamId) {
+            var queryUrl = $"{PeopleLookupBaseUrl}/api/Iamws/Contact/{iamId}?key={this.peopleLookupKey}";
+
+            using (var stream = await this.httpClient.GetStreamAsync(queryUrl))
+            {
+                using (var sr = new StreamReader(stream))
+                using (var jsonTextReader = new JsonTextReader(sr))
+                {
+                    var result = new JsonSerializer().Deserialize<ContactResults>(jsonTextReader);
                     return result.ResponseData.Results;
                 }
             }
@@ -134,26 +149,32 @@ namespace FacultyDirectory.Core.Services
                 return false;
             });
 
-            return validPeople.Select(person =>
+            var validCandidates = new List<Person>();
+
+            foreach (var person in validPeople)
             {
+                var contactInfo = await GetContactInfo(person.IamId);
+
                 var personAssociations = associations.Where(a => a.IamId == person.IamId);
 
                 var firstAssociation = personAssociations.FirstOrDefault();
 
                 // TODO: get title and deptment names from lookup values
-                return new Person
+                validCandidates.Add(new Person
                 {
                     IamId = person.IamId,
                     Kerberos = person.ExternalId,
                     FirstName = person.DFirstName ?? person.OFirstName,
                     LastName = person.DLastName ?? person.OLastName,
                     FullName = person.DFullName ?? person.OFullName,
-                    Email = "example@ucdavis.edu",
-                    Phone = "555-5555",
+                    Email = contactInfo.FirstOrDefault()?.Email,
+                    Phone = contactInfo.FirstOrDefault()?.WorkPhone,
                     Title = firstAssociation?.titleDisplayName,
                     Departments = string.Join("|", personAssociations.Select(pa => pa.deptDisplayName))
-                };
-            }).ToArray();
+                });
+            }
+
+            return validCandidates.ToArray();
         }
     }
 }
