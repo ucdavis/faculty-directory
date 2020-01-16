@@ -5,6 +5,7 @@ import { Home } from './components/Home';
 import { People } from './components/People';
 
 import './custom.css'
+import { Person } from './components/Person';
 
 export default class App extends Component {
   static displayName = App.name;
@@ -13,7 +14,8 @@ export default class App extends Component {
     return (
       <Layout>
         <Route exact path='/' component={Home} />
-        <Route path='/people' component={People} />
+        <Route path='/people/:id' component={Person} />
+        <Route exact path='/people' component={People} />
       </Layout>
     );
   }
