@@ -11,12 +11,12 @@ namespace FacultyDirectory.Controllers
     // TODO: authorize
     [ApiController]
     [Route("[controller]")]
-    public class PersonController : ControllerBase
+    public class SitePeopleController : ControllerBase
     {
         const int SiteId = 1; // TODO: support more sites
         private readonly ApplicationDbContext dbContext;
 
-        public PersonController(ApplicationDbContext dbContext)
+        public SitePeopleController(ApplicationDbContext dbContext)
         {
             this.dbContext = dbContext;
         }
@@ -35,8 +35,24 @@ namespace FacultyDirectory.Controllers
             return Ok(await person.FirstOrDefaultAsync());
         }
 
+        [HttpPost("{personId}")]
+        public async Task<ActionResult> Post(int personId, SitePerson sitePerson) {
+            var dbSitePerson = await this.dbContext.SitePeople.Where(sp => sp.PersonId == personId && sp.SiteId == SiteId).SingleOrDefaultAsync();
+
+            if (dbSitePerson == null) {
+                dbSitePerson = sitePerson; // TODO: copy properties
+
+                this.dbContext.SitePeople.Add(dbSitePerson);
+            }
+
+            await this.dbContext.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(Get), new { sitePersonId = dbSitePerson.Id }, dbSitePerson);
+        }
+
         private IQueryable<PersonWithSitePerson> SitePersonJoinQuery()
         {
+            // TODO: need to support multiple sites.  Possibly with composite join.
             return from person in this.dbContext.People
                    join sitePerson in this.dbContext.SitePeople.DefaultIfEmpty() on person.Id equals sitePerson.PersonId into gj
                    from item in gj.DefaultIfEmpty()
