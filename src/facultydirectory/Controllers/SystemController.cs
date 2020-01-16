@@ -44,6 +44,18 @@ namespace FacultyDirectory.Controllers
         }
 
         [HttpGet]
+        public async Task<ActionResult> FullPublish()
+        {
+            int personId = 1;
+
+            var sitePerson = await this.dbContext.SitePeople.Include(sp => sp.Person).SingleAsync(s => s.Id == personId);
+            await this.scholarService.SyncForPerson(sitePerson.PersonId);
+            var result = await this.siteFarmService.PublishPerson(sitePerson);
+
+            return Json(result);
+        }
+
+        [HttpGet]
         public async Task<ActionResult> Publish()
         {
             var sitePerson = await this.dbContext.SitePeople.Include(sp => sp.Person).SingleAsync(s => s.Id == 1);

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using AngleSharp.Html.Dom;
 using AngleSharp.Html.Parser;
 using FacultyDirectory.Core.Data;
+using FacultyDirectory.Core.Domain;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace FacultyDirectory.Core.Services
 {
@@ -13,6 +16,7 @@ namespace FacultyDirectory.Core.Services
     {
         Task<string[]> FindScholarIds(string name);
         Task<SourceData> GetTagsAndPublicationsById(string id);
+        Task SyncForPerson(int personId);
     }
 
     public class ScholarService : IScholarService
@@ -24,6 +28,34 @@ namespace FacultyDirectory.Core.Services
         {
             this.dbContext = dbContext;
             this.httpClient = httpClient;
+        }
+
+        public async Task SyncForPerson(int personId) {
+            // see if we already have a scholar record for this person
+            // TODO: query source values out of enum or resources
+            var source = await this.dbContext.PeopleSources.SingleOrDefaultAsync(s => s.Source == "scholar" && s.PersonId == personId);
+
+            var sourceId = string.Empty;
+
+            if (source != null) {
+                sourceId = source.SourceKey;
+            } else {
+                // TODO: here we should attempt to find source ID, either through search or maybe based on manual sitePerson attributes
+                sourceId = "jY_StGoAAAAJ"; // TODO: remove hardcoded value
+                source = new PersonSource { Source = "scholar", SourceKey = sourceId };
+                source.PersonId = personId;
+            }
+
+            var sourceData = await GetTagsAndPublicationsById(sourceId);
+
+            source.Data = JsonConvert.SerializeObject(sourceData);
+            source.HasKeywords = sourceData.Tags.Any();
+            source.HasPubs = sourceData.Publications.Any();
+            source.LastUpdate = DateTime.UtcNow;
+
+            // save changes to source object
+            this.dbContext.PeopleSources.Add(source);
+            await this.dbContext.SaveChangesAsync();
         }
 
         public async Task<SourceData> GetTagsAndPublicationsById(string id)
