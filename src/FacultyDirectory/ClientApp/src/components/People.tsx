@@ -16,7 +16,7 @@ export const People = (props: any) => {
       <ul>
         {people.map(p => (
           <li key={p.person.id}>
-            <Link to={'/SitePeople/' + p.person.id}>
+            <Link to={'/People/' + p.person.id}>Hi
             {p.person.firstName} {p.person.lastName}
             </Link>
           </li>
