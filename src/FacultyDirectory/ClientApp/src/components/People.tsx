@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 export const People = (props: any) => {
   const [people, setPeople] = useState<any[]>([]);
   useEffect(() => {
-    console.log('use effect');
     getPeople();
   }, []);
 
