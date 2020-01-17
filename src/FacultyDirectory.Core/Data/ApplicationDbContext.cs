@@ -17,8 +17,6 @@ namespace FacultyDirectory.Core.Data
         public DbSet<SitePerson> SitePeople { get; set; }
         public DbSet<Site> Sites { get; set; }
         public DbSet<PersonSource> PeopleSources { get; set; }
-        public DbSet<SiteTag> SiteTags { get; set; }
-        public DbSet<SitePersonTag> SitePeopleTags { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {

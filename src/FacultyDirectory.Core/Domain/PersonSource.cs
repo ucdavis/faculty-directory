@@ -7,12 +7,16 @@ namespace FacultyDirectory.Core.Domain {
 
         public int PersonId { get; set; }
 
+        [Required]
         public Person Person { get; set; }
 
         // google, orcid, etc
+        [Required]
         [StringLength (64)]
         public string Source { get; set; }
 
+        [Required]
+        [StringLength(128)]
         public string SourceKey { get; set; }
 
         // JSON
