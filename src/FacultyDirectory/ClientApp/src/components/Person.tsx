@@ -27,10 +27,7 @@ export const Person = () => {
       'Content-Type': 'application/json'
     };
     const body = JSON.stringify(sitePerson);
-    const result = await fetch('SitePeople/' + id, { method: 'POST', headers, body }).then(r => r.json());
-
-    console.log('api result', result);
-
+    await fetch('SitePeople/' + id, { method: 'POST', headers, body }).then(r => r.json());
   };
 
   const changeHandler = (event: any) => {

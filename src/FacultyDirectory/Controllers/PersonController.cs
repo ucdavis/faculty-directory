@@ -1,4 +1,5 @@
 
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using FacultyDirectory.Core.Data;
@@ -37,19 +38,21 @@ namespace FacultyDirectory.Controllers
 
         [HttpPost("{personId}")]
         public async Task<ActionResult> Post(int personId, SitePerson sitePerson) {
-            // var dbSitePerson = await this.dbContext.SitePeople.Where(sp => sp.PersonId == personId && sp.SiteId == SiteId).SingleOrDefaultAsync();
+            var dbSitePerson = await this.dbContext.SitePeople.Where(sp => sp.PersonId == personId && sp.SiteId == SiteId).SingleOrDefaultAsync();
 
-            // if (dbSitePerson == null) {
-            //     dbSitePerson = sitePerson; // TODO: copy properties
+            if (dbSitePerson == null) {
+                dbSitePerson = sitePerson; // TODO: copy properties
 
-            //     this.dbContext.SitePeople.Add(dbSitePerson);
-            // }
+                this.dbContext.SitePeople.Add(dbSitePerson);
+            }
 
-            // await this.dbContext.SaveChangesAsync();
+            dbSitePerson.PersonId = personId;
+            dbSitePerson.SiteId = SiteId;
+            dbSitePerson.LastUpdate = DateTime.UtcNow;
 
-            // return CreatedAtAction(nameof(Get), new { sitePersonId = dbSitePerson.Id }, dbSitePerson);
+            await this.dbContext.SaveChangesAsync();
 
-            return Ok(sitePerson);
+            return CreatedAtAction(nameof(Get), new { sitePersonId = dbSitePerson.Id }, dbSitePerson);
         }
 
         private IQueryable<PersonWithSitePerson> SitePersonJoinQuery()
