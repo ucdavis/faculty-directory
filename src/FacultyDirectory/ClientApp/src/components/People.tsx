@@ -16,8 +16,6 @@ export const People = (props: any) => {
     (a: any, b: any) => a.person.lastName.localeCompare(b.person.lastName)
   );
 
-  console.log(orderedPeople);
-
   return (
     <div>
       <ul>
