@@ -25,17 +25,10 @@ namespace FacultyDirectory
         public void ConfigureServices(IServiceCollection services)
         {
             // setup entity framework
-            if (Configuration.GetSection("Dev:UseSql").Value == "Yes")
+            services.AddDbContextPool<ApplicationDbContext>(o =>
             {
-                services.AddDbContextPool<ApplicationDbContext>(o =>
-                {
-                    o.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-                });
-            }
-            else
-            {
-                services.AddDbContextPool<ApplicationDbContext>(o => o.UseSqlite("Data Source=facultydirectory.db"));
-            }
+                o.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
 
             services.AddControllersWithViews();
 
