@@ -37,17 +37,19 @@ namespace FacultyDirectory.Controllers
 
         [HttpPost("{personId}")]
         public async Task<ActionResult> Post(int personId, SitePerson sitePerson) {
-            var dbSitePerson = await this.dbContext.SitePeople.Where(sp => sp.PersonId == personId && sp.SiteId == SiteId).SingleOrDefaultAsync();
+            // var dbSitePerson = await this.dbContext.SitePeople.Where(sp => sp.PersonId == personId && sp.SiteId == SiteId).SingleOrDefaultAsync();
 
-            if (dbSitePerson == null) {
-                dbSitePerson = sitePerson; // TODO: copy properties
+            // if (dbSitePerson == null) {
+            //     dbSitePerson = sitePerson; // TODO: copy properties
 
-                this.dbContext.SitePeople.Add(dbSitePerson);
-            }
+            //     this.dbContext.SitePeople.Add(dbSitePerson);
+            // }
 
-            await this.dbContext.SaveChangesAsync();
+            // await this.dbContext.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(Get), new { sitePersonId = dbSitePerson.Id }, dbSitePerson);
+            // return CreatedAtAction(nameof(Get), new { sitePersonId = dbSitePerson.Id }, dbSitePerson);
+
+            return Ok(sitePerson);
         }
 
         private IQueryable<PersonWithSitePerson> SitePersonJoinQuery()

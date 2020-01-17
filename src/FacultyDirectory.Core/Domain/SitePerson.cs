@@ -7,14 +7,14 @@ namespace FacultyDirectory.Core.Domain
     {
         public int Id { get; set; }
 
+        [Required]
         public int PersonId { get; set; }
 
-        [Required]
         public Person Person { get; set; }
 
+        [Required]
         public int SiteId { get; set; }
 
-        [Required]
         public Site Site { get; set; }
 
         public Guid? PageUid { get; set; }

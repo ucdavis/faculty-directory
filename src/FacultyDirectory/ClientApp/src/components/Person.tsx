@@ -9,7 +9,7 @@ export const Person = () => {
 
   useEffect(() => {
     const fetchPerson = async () => {
-      var result = await fetch('SitePeople/' + id).then(r => r.json());
+      const result = await fetch('SitePeople/' + id).then(r => r.json());
 
       setPerson(result.person);
       setSitePerson(result.sitePerson || {});
@@ -18,9 +18,19 @@ export const Person = () => {
     fetchPerson();
   }, [id]);
 
-  const onSubmit = (e: any) => {
+  const onSubmit = async (e: any) => {
     e.preventDefault();
     console.log('submitting', sitePerson);
+
+    const headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    };
+    const body = JSON.stringify(sitePerson);
+    const result = await fetch('SitePeople/' + id, { method: 'POST', headers, body }).then(r => r.json());
+
+    console.log('api result', result);
+
   };
 
   const changeHandler = (event: any) => {
