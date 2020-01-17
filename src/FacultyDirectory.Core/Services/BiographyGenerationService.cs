@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using FacultyDirectory.Core.Data;
 using FacultyDirectory.Core.Domain;
+using FacultyDirectory.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 

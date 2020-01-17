@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace FacultyDirectory.Core.Domain
+namespace FacultyDirectory.Core.Models
 {
     public class DrupalPerson
     {
