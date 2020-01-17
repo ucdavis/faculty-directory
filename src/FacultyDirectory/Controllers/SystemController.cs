@@ -36,6 +36,14 @@ namespace FacultyDirectory.Controllers
         }
 
         [HttpGet]
+        public async Task<ActionResult> Test()
+        {
+            var result = await this.dbContext.People.FirstOrDefaultAsync();
+
+            return Json(result);
+        }
+
+        [HttpGet]
         public async Task<ActionResult> Scholar()
         {
             var result = await this.scholarService.GetTagsAndPublicationsById("tfLsszUAAAAJ");
