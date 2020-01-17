@@ -8,7 +8,9 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using FacultyDirectory.Core.Data;
 using FacultyDirectory.Core.Domain;
+using FacultyDirectory.Core.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace FacultyDirectory.Core.Services
 {
@@ -23,16 +25,18 @@ namespace FacultyDirectory.Core.Services
         private readonly ApplicationDbContext dbContext;
         private readonly IBiographyGenerationService biographyGenerationService;
         private readonly HttpClient httpClient;
+        private readonly SiteFarmConfiguration config;
 
-        public SiteFarmService(ApplicationDbContext dbContext, IBiographyGenerationService biographyGenerationService, HttpClient httpClient)
+        public SiteFarmService(ApplicationDbContext dbContext, IBiographyGenerationService biographyGenerationService, HttpClient httpClient, IOptions<SiteFarmConfiguration> config)
         {
             this.dbContext = dbContext;
             this.biographyGenerationService = biographyGenerationService;
             this.httpClient = httpClient;
+            this.config = config.Value;
 
             // TODO: determine if we want to set auth at the service level
             this.httpClient.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes(String.Format("{0}:{1}", "apiuser2", "pass"))));
+                new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes(String.Format("{0}:{1}", this.config.ApiUsername, this.config.ApiPassword))));
         }
 
         public async IAsyncEnumerable<string> SyncTags(string[] tags)

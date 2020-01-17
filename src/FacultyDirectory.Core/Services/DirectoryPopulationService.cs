@@ -5,9 +5,11 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using FacultyDirectory.Core.Data;
 using FacultyDirectory.Core.Domain;
+using FacultyDirectory.Core.Models;
 using FacultyDirectory.Core.Resources;
 using Ietws;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace FacultyDirectory.Core.Services
@@ -25,16 +27,18 @@ namespace FacultyDirectory.Core.Services
         private const string CaesOrgOId = "F80B657C9EF523A0E0340003BA8A560D";
         private readonly ApplicationDbContext dbContext;
         private readonly HttpClient httpClient;
+        private readonly DirectoryConfiguration config;
         private readonly string peopleLookupKey;
         private readonly string PeopleLookupBaseUrl = "https://who.ucdavis.edu";
 
-        public DirectoryPopulationService(ApplicationDbContext dbContext, HttpClient httpClient)
+        public DirectoryPopulationService(ApplicationDbContext dbContext, HttpClient httpClient, IOptions<DirectoryConfiguration> config)
         {
             this.dbContext = dbContext;
             this.httpClient = httpClient;
+            this.config = config.Value;
 
             // TODO: get key from settings
-            this.peopleLookupKey = "";
+            this.peopleLookupKey = this.config.ApiKey;
         }
 
         // Go to the campus directory and return the current list of faculty
