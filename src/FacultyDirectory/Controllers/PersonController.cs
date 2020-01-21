@@ -1,4 +1,5 @@
 
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using FacultyDirectory.Core.Data;
@@ -44,6 +45,10 @@ namespace FacultyDirectory.Controllers
 
                 this.dbContext.SitePeople.Add(dbSitePerson);
             }
+
+            dbSitePerson.PersonId = personId;
+            dbSitePerson.SiteId = SiteId;
+            dbSitePerson.LastUpdate = DateTime.UtcNow;
 
             await this.dbContext.SaveChangesAsync();
 

@@ -11,10 +11,15 @@ export const People = (props: any) => {
     getPeople();
   }, []);
 
+  // TOOD: use react table or something better for large lists
+  const orderedPeople = people.sort(
+    (a: any, b: any) => a.person.lastName.localeCompare(b.person.lastName)
+  );
+
   return (
     <div>
       <ul>
-        {people.map(p => (
+        {orderedPeople.map(p => (
           <li key={p.person.id}>
             <Link to={'/People/' + p.person.id}>
               {p.person.firstName} {p.person.lastName}
