@@ -1,0 +1,152 @@
+// fonts
+@font-face {
+    font-family: 'proxima-nova-r';
+    src: url('/media/fonts/proximanova-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'proxima-nova-i';
+    src: url('/media/fonts/proximanova-regularit-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'proxima-nova-b';
+    src: url('/media/fonts/proximanova-bold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+$sans-italic:   "proxima-nova-i",sans-serif;
+$sans-bold:     "proxima-nova-b",sans-serif;
+$sans-reg:      "proxima-nova-r",sans-serif;
+
+$primary-color:     #1D3B5C;
+$secondary-color:   #004987;
+
+$a-link:            transparentize($primary-color, .2);
+
+$primary-font: rgba(31,31,31,.99); //
+$secondary-font: rgba(31,31,31,.66); //
+$tertiary-font: rgba(31,31,31,.40); //
+
+$box-shadow: 0 0 0 1px rgba(49,49,93,.03), 0 2px 5px 0 rgba(49,49,93,.1), 0 1px 2px 0 rgba(0,0,0,.08);
+
+$bg-color: #F8F9FB; // background
+$borders: #ced4da; // border color
+
+// UC Davis Colors
+// Supplemental bright color palette for UC Davis
+
+$ucd-blue:#1D4A83;
+$ucd-gold:#D2AC39;
+$unitrans-red: #ba0c2f;
+$western-redbud: #c6007e;
+$california-poppy: #ed8800;
+$golden-lupine: #ffcd00;
+$sunny-grass: #78be20;
+$sky-blue: #00b5e2;
+$recpool-blue: #008eaa;
+$wine-grape: #642667;
+// Supplemental neutral color palette for UC Davis
+$mu-brick: #c26e60;
+$harthall-stucco: #e6a65d;
+$sage-green: #9caf88;
+$evergreen: #00573f;
+$wintersky-gray: #5b7f95;
+$cenwalk-gray: #b1b3b3;
+$cork-oak: #aca39a;
+$shingle-brown: #4f2c1d;
+
+// Layouts
+@mixin breakpoint($point) {
+    @if $point==sm {
+        @media (max-width: 576px) {
+            @content ;
+        }
+    }
+    @if $point==xsm {
+        @media (max-width: 575px) {
+            @content ;
+        }
+    }
+    @if $point==md {
+        @media (max-width: 768px) {
+            @content ;
+        }
+    }
+    @if $point==lg {
+        @media (max-width: 992px) {
+            @content ;
+        }
+    }
+    @if $point==xl {
+        @media (max-width: 1200px) {
+            @content ;
+        }
+    }
+}
+.container {
+  padding: 0;
+  width: 80%;
+  max-width:660px;
+  @include breakpoint (sm) {
+    width: 95%;
+  }
+  @include breakpoint (md) {
+    width: 90%;
+  }
+  @include breakpoint(lg) {
+    width: 85%;
+  }
+}
+
+@mixin fader {
+  -o-transition:.25s;
+  -ms-transition:.25s;
+  -moz-transition:.25s;
+  -webkit-transition:.25s;
+  /* ...and now for the proper property */
+  transition:.25s;
+}
+@mixin main-btn {
+  white-space: nowrap;
+  display: inline-block;
+  box-shadow: 0 -3px 0 rgba(0, 0, 0, 0.15) inset, 0 1px 3px rgba(0,0,0,.08);
+  background: $primary-color;
+  border-radius: 2px;
+  letter-spacing: 0.025em;
+  color: #fff !important;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  border: none;
+  font-family: $sans-bold;
+  &:active,
+  &:focus {
+    background-color: darken($primary-color, 5);
+  }
+  &:hover {
+    color: #fff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 -3px 0 rgba(0, 0, 0, 0.15) inset, 0 3px 6px rgba(0,0,0,.08);
+    background-color: lighten($primary-color, 5);
+  }
+}
+
+@mixin inverse-btn {
+  white-space: nowrap;
+  display: inline-block;
+  background: #fff;
+  letter-spacing: 0.025em;
+  color: $primary-color;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  border: none;
+  font-family: $sans-bold;
+  box-shadow: $box-shadow;
+  &:hover {
+    transform: translateY(-1px);
+    text-decoration: none;
+  }
+}

@@ -1,0 +1,320 @@
+// Gradient Banner //
+.head_bleed {
+  background: #1e3a5b;
+    background: -moz-linear-gradient(left,#1e3a5b 0%,#1e3a5b 44%,#dbbc5b 57%,#dbbc5b 100%);
+    background: -webkit-linear-gradient(left,#1e3a5b 0%,#1e3a5b 44%,#dbbc5b 57%,#dbbc5b 100%);
+    background: linear-gradient(to right,#1e3a5b 0%,#1e3a5b 44%,#dbbc5b 57%,#dbbc5b 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='$gradient-one',endColorstr='$gradient-two',GradientType=1);
+}
+.head_divider {
+    background: url(/media/gunrock_banner_final.svg) center top/cover no-repeat;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height:10px;
+}
+.color-workaround-available {
+  select#urgency-input {
+    background-color: transparentize($golden-lupine,0.75);
+    border:solid 2px $golden-lupine;
+  }
+  .form-control:focus {
+    border-color: transparentize($golden-lupine,0.50);
+    box-shadow: 0 0 0 0.1rem transparentize($golden-lupine,0.50);
+  }
+  .btn-primary {
+    background-color:transparentize($golden-lupine,0.05);
+    border-color:$golden-lupine;
+    &:hover {
+      background-color:transparentize($golden-lupine,0.02);
+      }
+    }
+    .btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active, .show > .btn-primary.dropdown-toggle {
+      background-color: $golden-lupine;
+      border-color: $golden-lupine;
+    }
+    .input-group-append {
+      .fa {
+        color:$golden-lupine;
+      }
+      .btn {
+        background-color: transparentize($golden-lupine,0.90);
+      }
+    }
+    .upload-file div:focus {
+      outline-color: transparentize($golden-lupine,0.50);
+    }
+}
+.color-non-critical-issue {
+  select#urgency-input {
+    background-color: transparentize($sky-blue,0.75);
+    border:solid 2px $sky-blue;
+  }
+  .form-control:focus {
+    border-color: transparentize($sky-blue,0.50);
+    box-shadow: 0 0 0 0.1rem transparentize($sky-blue,0.50);
+  }
+  .btn-primary {
+    background-color:transparentize($sky-blue,0.15);
+    border-color:$sky-blue;
+    &:hover {
+      background-color:transparentize($sky-blue,0.05);
+      }
+    }
+    .btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active, .show > .btn-primary.dropdown-toggle {
+      background-color: $sky-blue;
+      border-color: $sky-blue;
+    }
+    .input-group-append {
+      .fa {
+        color:$sky-blue;
+      }
+      .btn {
+        background-color: transparentize($sky-blue,0.90);
+      }
+    }
+    .upload-file div:focus {
+      outline-color: transparentize($sky-blue,0.50);
+    }
+}
+.color-scheduled-requests {
+  select#urgency-input {
+    background-color: transparentize($sunny-grass,0.75);
+    border:solid 2px $sunny-grass;
+  }
+  .form-control:focus {
+    border-color: transparentize($sunny-grass,0.50);
+    box-shadow: 0 0 0 0.1rem transparentize($sunny-grass,0.50);
+  }
+  .btn-primary {
+    background-color:transparentize($sunny-grass,0.15);
+    border-color:$sunny-grass;
+    &:hover {
+      background-color:transparentize($sunny-grass,0.05);
+      }
+    }
+    .btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active, .show > .btn-primary.dropdown-toggle {
+      background-color: $sunny-grass;
+      border-color: $sunny-grass;
+    }
+    .input-group-append {
+      .fa {
+        color:$sunny-grass;
+      }
+      .btn {
+        background-color: transparentize($sunny-grass,0.60);
+      }
+    }
+    .upload-file div:focus {
+      outline-color: transparentize($sunny-grass,0.50);
+    }
+}
+.color-work-stoppage {
+  select#urgency-input {
+    background-color: transparentize($california-poppy,0.75);
+    border:solid 2px $california-poppy;
+  }
+  .form-control:focus {
+    border-color: transparentize($california-poppy,0.50);
+    box-shadow: 0 0 0 0.1rem transparentize($california-poppy,0.50);
+  }
+  .btn-primary {
+    background-color:transparentize($california-poppy,0.15);
+    border-color:$california-poppy;
+    &:hover {
+      background-color:transparentize($california-poppy,0.05);
+      }
+    }
+    .btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active, .show > .btn-primary.dropdown-toggle {
+      background-color: $california-poppy;
+      border-color: $california-poppy;
+    }
+    .input-group-append {
+      .fa {
+        color:$california-poppy;
+      }
+      .btn {
+        background-color: transparentize($california-poppy,0.90);
+      }
+    }
+    .upload-file div:focus {
+      outline-color: transparentize($california-poppy,0.50);
+    }
+}
+.color-critical {
+  select#urgency-input {
+    background-color: transparentize($unitrans-red,0.75);
+    border:solid 2px $unitrans-red;
+  }
+  .form-control:focus {
+    border-color: transparentize($unitrans-red,0.50);
+    box-shadow: 0 0 0 0.1rem transparentize($unitrans-red,0.50);
+  }
+  .btn-primary {
+    background-color:transparentize($unitrans-red,0.15);
+    border-color:$unitrans-red;
+    &:hover {
+      background-color:transparentize($unitrans-red,0.05);
+      }
+    }
+    .btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active, .show > .btn-primary.dropdown-toggle {
+      background-color: $unitrans-red;
+      border-color: $unitrans-red;
+    }
+    .input-group-append {
+      .fa {
+        color:$unitrans-red;
+      }
+      .btn {
+        background-color: transparentize($unitrans-red,0.90);
+      }
+    }
+    .upload-file div:focus {
+      outline-color: transparentize($unitrans-red,0.50);
+    }
+}
+// Backgrounds //
+.bg-ucd-blue {
+  background-color:$ucd-blue;
+}
+.bg-ucd-gold {
+  background-color:$ucd-gold;
+}
+.bg-unitrans-red {
+  background-color: $unitrans-red;
+}
+.bg-western-redbud {
+  background-color:$western-redbud;
+}
+.bg-california-poppy{
+  background-color: $california-poppy;
+}
+.bg-sunny-grass {
+  background-color: $sunny-grass;
+}
+.bg-golden-lupine {
+  background-color: $golden-lupine;
+}
+.bg-sky-blue {
+  background-color: $sky-blue;
+}
+.bg-recpool-blue {
+  background-color: $recpool-blue;
+}
+.bg-wine-grape {
+  background-color: $wine-grape;
+}
+
+// Colors //
+.color-ucd-blue {
+  color:$ucd-blue;
+}
+.color-ucd-gold {
+  color:$ucd-gold;
+}
+.color-unitrans-red {
+  color: $unitrans-red;
+}
+.color-western-redbud {
+  color:$western-redbud;
+}
+.color-california-poppy{
+  color: $california-poppy;
+}
+.color-sunny-grass {
+  color: $sunny-grass;
+}
+.color-golden-lupine {
+  color: $golden-lupine;
+}
+.color-sky-blue {
+  color: $sky-blue;
+}
+.color-recpool-blue {
+  color: $recpool-blue;
+}
+.color-wine-grape {
+  color: $wine-grape;
+}
+.primary-color {
+  color: $primary-color;
+}
+.secondary-color {
+  color: $secondary-color;
+}
+.a-color {
+  color: $a-link;
+}
+.primary-font {
+  color: $primary-font;
+}
+.secondary-font {
+  color: $secondary-font;
+}
+.tertiary-font {
+  color: $tertiary-font;
+}
+
+// Border Colors //
+.border-ucd-blue {
+  border-color:$ucd-blue;
+}
+.border-ucd-gold {
+  border-color:$ucd-gold;
+}
+.border-unitrans-red {
+  border-color: $unitrans-red;
+}
+.border-western-redbud {
+  border-color:$western-redbud;
+}
+.border-california-poppy{
+  border-color: $california-poppy;
+}
+.border-sunny-grass {
+  border-color: $sunny-grass;
+}
+.border-golden-lupine {
+  border-color: $golden-lupine;
+}
+.border-sky-blue {
+  border-color: $sky-blue;
+}
+.border-recpool-blue {
+  border-color: $recpool-blue;
+}
+.border-wine-grape {
+  border-color: $wine-grape;
+}
+.color-unitrans-red {
+  color:$unitrans-red;
+}
+.btn-primary {
+  background-color:$ucd-blue;
+  border-color:$ucd-blue;
+  font-family: $sans-bold;
+  font-size:1.6rem;
+}
+// Font Families
+.sans-bold {
+  font-family: $sans-bold;
+}
+.sans-reg {
+  font-family: $sans-reg;
+}
+.was-validated .form-control:invalid, .form-control.is-invalid, .invalid-feedback {
+  color:$unitrans-red;
+}
+.was-validated .form-control:invalid, .form-control.is-invalid {
+  border-color:$unitrans-red;
+}
+.form-control:disabled {
+  background-color:$bg-color;
+  color:$tertiary-font;
+  border:1px solid $borders;
+  &:hover {
+    background-color:$bg-color;
+    color:$tertiary-font;
+    border:1px solid $borders;
+  }
+}
