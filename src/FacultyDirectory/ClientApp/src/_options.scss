@@ -1,4 +1,12 @@
 .form-control {
   background-color: $bg-color-tertiary;
   border:none;
+
+}
+.form-control:focus {
+    background-color: lighten($bg-color-tertiary,9);
+    color:#fff;
+}
+input::placeholder {
+  color: red;
 }
