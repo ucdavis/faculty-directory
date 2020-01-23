@@ -51,7 +51,7 @@ export const Person = () => {
       <h1>
         {person.firstName} {person.lastName}
       </h1>
-      <p className="discreet">
+      <p>
         Last Synced on Jan 1st, 2020
       </p>
       <p className="sourceIDs">
