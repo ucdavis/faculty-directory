@@ -47,7 +47,7 @@ export const Person = () => {
   const hasSitePerson = !!sitePerson.id;
 
   return (
-    <div>
+    <div className="content-wrapper">
       <h2>
         Person {person.firstName} {person.lastName}
       </h2>

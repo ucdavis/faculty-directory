@@ -17,16 +17,33 @@ export const People = (props: any) => {
   );
 
   return (
-    <div>
-      <ul>
+    <div className="content-wrapper">
+      <table className="table table-striped table-dark">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">First</th>
+            <th scope="col">Last</th>
+            <th scope="col">Handle</th>
+          </tr>
+        </thead>
+        <tbody>
         {orderedPeople.map(p => (
-          <li key={p.person.id}>
+          <tr>
+          <th scope="row"></th>
+          <td key={p.person.id}>
             <Link to={'/People/' + p.person.id}>
               {p.person.firstName} {p.person.lastName}
             </Link>
-          </li>
+          </td>
+          <td></td>
+          <td></td>
+          <td></td>
+
+        </tr>
         ))}
-      </ul>
+      </tbody>
+      </table>
     </div>
   );
 };

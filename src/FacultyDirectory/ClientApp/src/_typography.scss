@@ -10,11 +10,13 @@ html {
 body {
     font-family: $sans-reg;
     font-size:1.6rem;
+    color:$primary-font;
 }
 a {
   color:$a-link;
   &:hover {
     text-decoration: none;
+    color:lighten($a-link, 10);
   }
   p & {
     font-family:$sans-bold;

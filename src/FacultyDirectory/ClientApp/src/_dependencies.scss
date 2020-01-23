@@ -25,16 +25,20 @@ $sans-reg:      "proxima-nova-r",sans-serif;
 $primary-color:     #1D3B5C;
 $secondary-color:   #004987;
 
-$a-link:            transparentize($primary-color, .2);
+$a-link:            #DAAA00;
 
-$primary-font: rgba(31,31,31,.99); //
-$secondary-font: rgba(31,31,31,.66); //
-$tertiary-font: rgba(31,31,31,.40); //
+
+$primary-font: rgba(245,245,245,.99); //
+$secondary-font: rgba(245,245,245,.80); //
+$tertiary-font: rgba(245,245,245,.40); //
+
+$bg-color: #1F2225; // background
+$bg-color-secondary: #2E3137;
+$bg-color-tertiary: #40444B;
+$borders: #ced4da; // border color
 
 $box-shadow: 0 0 0 1px rgba(49,49,93,.03), 0 2px 5px 0 rgba(49,49,93,.1), 0 1px 2px 0 rgba(0,0,0,.08);
 
-$bg-color: #F8F9FB; // background
-$borders: #ced4da; // border color
 
 // UC Davis Colors
 // Supplemental bright color palette for UC Davis
@@ -90,7 +94,7 @@ $shingle-brown: #4f2c1d;
 .container {
   padding: 0;
   width: 80%;
-  max-width:660px;
+  max-width:1280px;
   @include breakpoint (sm) {
     width: 95%;
   }
