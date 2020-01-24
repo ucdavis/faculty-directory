@@ -1,6 +1,7 @@
 ﻿using System;
 using FacultyDirectory.Core.Data;
 using FacultyDirectory.Core.Models;
+using FacultyDirectory.Core.Services;
 using FacultyDirectory.Jobs.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -40,8 +41,9 @@ namespace FacultyDirectory.Jobs.ImportFaculty
             services.AddOptions();
             services.AddDbContextPool<ApplicationDbContext>(o => o.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddHttpClient<IDirectoryPopulationService, DirectoryPopulationService>();
             // services.AddTransient<IEmailService, EmailService>();
-            services.Configure<DirectoryConfiguration>(Configuration.GetSection("Directory"));
+            //services.Configure<DirectoryConfiguration>(Configuration.GetSection("Directory"));
 
             return services.BuildServiceProvider();
         }
