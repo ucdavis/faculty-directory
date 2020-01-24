@@ -24,8 +24,7 @@ namespace FacultyDirectory.Jobs.Core
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
 
-            // TODO: setup logs
-            // LogConfiguration.Setup(Configuration);
+            LogConfiguration.Setup(Configuration);
         }
     }
 }
