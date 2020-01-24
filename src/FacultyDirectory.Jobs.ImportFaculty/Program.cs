@@ -27,10 +27,15 @@ namespace FacultyDirectory.Jobs.ImportFaculty
 
             _log.Information("Running {job} build {build}", assembyName.Name, assembyName.Version);
 
-            //// setup di
+            // setup di
             var provider = ConfigureServices();
-            var dbContext = provider.GetService<ApplicationDbContext>();
-            // var emailService = provider.GetService<IEmailService>();
+            var directoryPopulationService = provider.GetService<IDirectoryPopulationService>();
+
+            var result = directoryPopulationService.ExtractCandidates().GetAwaiter().GetResult();
+
+            _log.Information("Found {count} people to merge", result.Length);
+
+            directoryPopulationService.MergeFaculty(result).GetAwaiter().GetResult();
 
             _log.Information("Import Faculty Job Finished");
         }
@@ -42,8 +47,7 @@ namespace FacultyDirectory.Jobs.ImportFaculty
             services.AddDbContextPool<ApplicationDbContext>(o => o.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddHttpClient<IDirectoryPopulationService, DirectoryPopulationService>();
-            // services.AddTransient<IEmailService, EmailService>();
-            //services.Configure<DirectoryConfiguration>(Configuration.GetSection("Directory"));
+            services.Configure<DirectoryConfiguration>(Configuration.GetSection("Directory"));
 
             return services.BuildServiceProvider();
         }
