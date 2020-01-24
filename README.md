@@ -28,3 +28,9 @@ EF Migrations:
 https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli
 
 `dotnet ef migrations add AddPeopleNames --project ../FacultyDirectory.Core/FacultyDirectory.Core.csproj`
+
+RUNNING WEB JOBS LOCALLY
+
+Running locally via VS or VSCode debug should run in "Development" env because of launch.json
+
+If you want to run from a command line on Mac, do `ASPNETCORE_ENVIRONMENT=Development dotnet run`
