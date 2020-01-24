@@ -1,0 +1,12 @@
+.form-control {
+  background-color: $bg-color;
+  border:none;
+
+}
+.form-control:focus {
+  color:$tertiary-font;
+    background-color: $bg-color;
+}
+input::placeholder {
+  color: red;
+}

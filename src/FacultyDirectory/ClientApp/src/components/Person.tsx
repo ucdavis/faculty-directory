@@ -47,10 +47,17 @@ export const Person = () => {
   const hasSitePerson = !!sitePerson.id;
 
   return (
-    <div>
-      <h2>
-        Person {person.firstName} {person.lastName}
-      </h2>
+    <div className="content-wrapper">
+      <h1>
+        {person.firstName} {person.lastName}
+      </h1>
+      <p>
+        Last Synced on Jan 1st, 2020
+      </p>
+      <p className="sourceIDs">
+        Google Scholar ID 145335 <br/>
+        Orchid ID n/a <a>add one</a>
+      </p>
       <form onSubmit={onSubmit}>
         <div className='form-group'>
           <label>First Name</label>

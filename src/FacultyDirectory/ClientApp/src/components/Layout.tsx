@@ -8,10 +8,9 @@ export class Layout extends Component {
   render () {
     return (
       <div>
+        <img src='/media/caes-circles.svg' />
         <NavMenu />
-        <Container>
-          {this.props.children}
-        </Container>
+        <Container>{this.props.children}</Container>
       </div>
     );
   }
