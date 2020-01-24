@@ -35,10 +35,10 @@ stages:
         restoreSolution: '$(solution)'
 
     - task: DotNetCoreCLI@2
-      displayName: 'Build FacultyDirectory.Mvc'
+      displayName: 'Build FacultyDirectory MVC project'
       inputs:
         command: 'build'
-        projects: './src/FacultyDirectory.FacultyDirectory/Keas.Mvc.csproj'
+        projects: './src/FacultyDirectory/FacultyDirectory.csproj'
         arguments: '--configuration $(BuildConfiguration) /property:Version=$(build.buildNumber)'
 
     - task: DotNetCoreCLI@2
@@ -52,13 +52,13 @@ stages:
     - job:
       steps:
         - task: DotNetCoreCLI@2
-          displayName: 'Publish FacultyDirectory.Mvc'
+          displayName: 'Publish FacultyDirectory MVC project'
           inputs:
             command: 'publish'
             publishWebProjects: true
             zipAfterPublish: false
             modifyOutputPath: false
-            projects: './src/FacultyDirectory.Mvc/FacultyDirectory.Mvc.csproj'
+            projects: './src/FacultyDirectory/FacultyDirectory.csproj'
             arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)/'
 
         - task: PublishBuildArtifacts@1
