@@ -1,5 +1,11 @@
 ﻿using System;
+using FacultyDirectory.Core.Data;
+using FacultyDirectory.Core.Models;
+using FacultyDirectory.Core.Services;
 using FacultyDirectory.Jobs.Core;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
 namespace FacultyDirectory.Jobs.ImportFaculty
@@ -21,10 +27,29 @@ namespace FacultyDirectory.Jobs.ImportFaculty
 
             _log.Information("Running {job} build {build}", assembyName.Name, assembyName.Version);
 
-            //// setup di
-            //// TODO
+            // setup di
+            var provider = ConfigureServices();
+            var directoryPopulationService = provider.GetService<IDirectoryPopulationService>();
+
+            var result = directoryPopulationService.ExtractCandidates().GetAwaiter().GetResult();
+
+            _log.Information("Found {count} people to merge", result.Length);
+
+            directoryPopulationService.MergeFaculty(result).GetAwaiter().GetResult();
 
             _log.Information("Import Faculty Job Finished");
+        }
+
+        private static ServiceProvider ConfigureServices()
+        {
+            IServiceCollection services = new ServiceCollection();
+            services.AddOptions();
+            services.AddDbContextPool<ApplicationDbContext>(o => o.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddHttpClient<IDirectoryPopulationService, DirectoryPopulationService>();
+            services.Configure<DirectoryConfiguration>(Configuration.GetSection("Directory"));
+
+            return services.BuildServiceProvider();
         }
     }
 }
