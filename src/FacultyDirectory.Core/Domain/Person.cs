@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace FacultyDirectory.Core.Domain {
@@ -32,5 +33,7 @@ namespace FacultyDirectory.Core.Domain {
 
         [StringLength(256)]
         public string Departments { get; set; }
+
+        public List<PersonSource> Sources { get; set; }
     }
 }
