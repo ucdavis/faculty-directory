@@ -86,6 +86,15 @@ namespace FacultyDirectory.Controllers
             return Json(tagIds);
         }
 
+
+        [HttpGet]
+        public async Task<ActionResult> PeopleWithSources()
+        {
+            var result = await this.dbContext.People.Where(p => p.Sources.Any()).ToListAsync();
+
+            return Json(result);
+        }
+
         [HttpGet]
         public async Task<ActionResult> CreatePerson()
         {
