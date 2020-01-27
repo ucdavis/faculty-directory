@@ -125,19 +125,38 @@ namespace FacultyDirectory.Core.Services
 
             foreach (var item in profiles)
             {
+                // for each found profile, determine if they are a ucd affiliate by looking at school and email
+                var isUcdAffiliate = false;
+
                 var university = item.GetElementsByClassName("gs_ai_aff");
+
+                var email = item.GetElementsByClassName("gs_ai_eml");
+
                 foreach (var k in university)
                 {
-                    if (k.TextContent == "University of California, Davis")
+                    if (string.Equals(k.TextContent, "University of California, Davis", StringComparison.OrdinalIgnoreCase))
                     {
-                        // TODO: maybe use regex as more reliable method of getting out id string?
-                        var user = item.GetElementsByClassName("gs_ai_pho");
-                        var userId = user.Single().GetAttribute("href");
-                        var startInd = userId.LastIndexOf("user") + 5;
-                        var lastInd = userId.Length - startInd;
-                        var id = userId.Substring(startInd, lastInd);
-                        foundScholarIds.ToList();
+                        isUcdAffiliate = true;
                     }
+                }
+
+                foreach (var e in email)
+                {
+                    if (string.Equals(e.TextContent, "Verified email at ucdavis.edu", StringComparison.OrdinalIgnoreCase))
+                    {
+                        isUcdAffiliate = true;
+                    }                
+                }
+
+                // if we found a ucd school or email, then extract their scholar id and add to the list
+                if (isUcdAffiliate) {
+                    // TODO: maybe use regex as more reliable method of getting out id string?
+                    var user = item.GetElementsByClassName("gs_ai_pho");
+                    var userId = user.Single().GetAttribute("href");
+                    var startInd = userId.LastIndexOf("user") + 5;
+                    var lastInd = userId.Length - startInd;
+                    var id = userId.Substring(startInd, lastInd);
+                    foundScholarIds.Add(id);
                 }
             }
 
