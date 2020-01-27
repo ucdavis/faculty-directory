@@ -4,6 +4,20 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+    {
+        "name": ".NET Core Launch (console)",
+        "type": "coreclr",
+        "env": {
+            "ASPNETCORE_ENVIRONMENT": "development"
+        },
+        "request": "launch",
+        "preLaunchTask": "build",
+        "program": "${workspaceFolder}/src/FacultyDirectory.Jobs.ProcessSources/bin/Debug/netcoreapp3.1/FacultyDirectory.Jobs.ProcessSources.dll",
+        "args": [],
+        "cwd": "${workspaceFolder}/src/FacultyDirectory.Jobs.ProcessSources",
+        "stopAtEntry": false,
+        "console": "internalConsole"
+    },
         {
             "name": ".NET Core Launch (web)",
             "type": "coreclr",

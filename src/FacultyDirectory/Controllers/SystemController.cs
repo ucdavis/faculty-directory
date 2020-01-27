@@ -52,6 +52,14 @@ namespace FacultyDirectory.Controllers
         }
 
         [HttpGet]
+        public async Task<ActionResult> FindScholar()
+        {
+            var result = await this.scholarService.FindScholarIds("Linda Harris");
+
+            return Json(result);
+        }
+
+        [HttpGet]
         public async Task<ActionResult> FullPublish()
         {
             int personId = 1;
