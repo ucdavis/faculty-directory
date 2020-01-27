@@ -15,7 +15,6 @@ namespace FacultyDirectory.Core.Domain {
         [StringLength (64)]
         public string Source { get; set; }
 
-        [Required]
         [StringLength(128)]
         public string SourceKey { get; set; }
 

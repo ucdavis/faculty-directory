@@ -35,18 +35,40 @@ namespace FacultyDirectory.Core.Services
             // TODO: query source values out of enum or resources
             var source = await this.dbContext.PeopleSources.SingleOrDefaultAsync(s => s.Source == "scholar" && s.PersonId == personId);
 
-            var sourceId = string.Empty;
+            if (source == null || string.IsNullOrWhiteSpace(source.SourceKey))
+            {
+                // no source with key found
+                if (source == null)
+                {
+                    // use the existing source if available, otherwise create a new one
+                    source = new PersonSource { Source = "scholar", PersonId = personId };
+                    this.dbContext.PeopleSources.Add(source);
+                }
 
-            if (source != null) {
-                sourceId = source.SourceKey;
-            } else {
-                // TODO: here we should attempt to find source ID, either through search or maybe based on manual sitePerson attributes
-                sourceId = "jY_StGoAAAAJ"; // TODO: remove hardcoded value
-                source = new PersonSource { Source = "scholar", SourceKey = sourceId };
-                source.PersonId = personId;
+                // here we attempt to find source ID through search
+                var personName = await this.dbContext.People.Where(p => p.Id == personId).Select(p => p.FullName).SingleOrDefaultAsync();
+                var matchingIds = await FindScholarIds(personName);
+
+                if (matchingIds.Length == 1)
+                {
+                    // if we have exactly one match, use that
+                    source.SourceKey = matchingIds[0];
+                }
+                else
+                {
+                    // else we have no match, just use the empty record until it can be manually updated
+                    if (source.Id == default(int)) {
+                        this.dbContext.Add(source);
+                    }
+
+                    await this.dbContext.SaveChangesAsync();
+
+                    return;
+                }
             }
 
-            var sourceData = await GetTagsAndPublicationsById(sourceId);
+            // go grab updated info
+            var sourceData = await GetTagsAndPublicationsById(source.SourceKey);
 
             source.Data = JsonConvert.SerializeObject(sourceData);
             source.HasKeywords = sourceData.Tags.Any();
@@ -54,7 +76,6 @@ namespace FacultyDirectory.Core.Services
             source.LastUpdate = DateTime.UtcNow;
 
             // save changes to source object
-            this.dbContext.PeopleSources.Add(source);
             await this.dbContext.SaveChangesAsync();
         }
 
@@ -112,19 +133,38 @@ namespace FacultyDirectory.Core.Services
 
             foreach (var item in profiles)
             {
+                // for each found profile, determine if they are a ucd affiliate by looking at school and email
+                var isUcdAffiliate = false;
+
                 var university = item.GetElementsByClassName("gs_ai_aff");
+
+                var email = item.GetElementsByClassName("gs_ai_eml");
+
                 foreach (var k in university)
                 {
-                    if (k.TextContent == "University of California, Davis")
+                    if (string.Equals(k.TextContent, "University of California, Davis", StringComparison.OrdinalIgnoreCase))
                     {
-                        // TODO: maybe use regex as more reliable method of getting out id string?
-                        var user = item.GetElementsByClassName("gs_ai_pho");
-                        var userId = user.Single().GetAttribute("href");
-                        var startInd = userId.LastIndexOf("user") + 5;
-                        var lastInd = userId.Length - startInd;
-                        var id = userId.Substring(startInd, lastInd);
-                        foundScholarIds.ToList();
+                        isUcdAffiliate = true;
                     }
+                }
+
+                foreach (var e in email)
+                {
+                    if (string.Equals(e.TextContent, "Verified email at ucdavis.edu", StringComparison.OrdinalIgnoreCase))
+                    {
+                        isUcdAffiliate = true;
+                    }                
+                }
+
+                // if we found a ucd school or email, then extract their scholar id and add to the list
+                if (isUcdAffiliate) {
+                    // TODO: maybe use regex as more reliable method of getting out id string?
+                    var user = item.GetElementsByClassName("gs_ai_pho");
+                    var userId = user.Single().GetAttribute("href");
+                    var startInd = userId.LastIndexOf("user") + 5;
+                    var lastInd = userId.Length - startInd;
+                    var id = userId.Substring(startInd, lastInd);
+                    foundScholarIds.Add(id);
                 }
             }
 
