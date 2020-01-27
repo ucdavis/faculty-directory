@@ -35,25 +35,32 @@ namespace FacultyDirectory.Core.Services
             // TODO: query source values out of enum or resources
             var source = await this.dbContext.PeopleSources.SingleOrDefaultAsync(s => s.Source == "scholar" && s.PersonId == personId);
 
-            var sourceKey = string.Empty;
+            if (source == null || string.IsNullOrWhiteSpace(source.SourceKey))
+            {
+                // no source with key found
+                if (source == null)
+                {
+                    // use the existing source if available, otherwise create a new one
+                    source = new PersonSource { Source = "scholar", PersonId = personId };
+                    this.dbContext.PeopleSources.Add(source);
+                }
 
-            if (source != null && !string.IsNullOrWhiteSpace(source.SourceKey)) {
-                // if we already have a source with a valid key, then move on to the update
-                sourceKey = source.SourceKey;
-            } else {
                 // here we attempt to find source ID through search
                 var personName = await this.dbContext.People.Where(p => p.Id == personId).Select(p => p.FullName).SingleOrDefaultAsync();
                 var matchingIds = await FindScholarIds(personName);
 
-                if (matchingIds.Length == 1) {
+                if (matchingIds.Length == 1)
+                {
                     // if we have exactly one match, use that
-                    sourceKey = matchingIds[0];
-                    source = new PersonSource { Source = "scholar", SourceKey = sourceKey, PersonId = personId };
-                } else {
-                    // else we have no match, just add an empty record until it can be manually updated
-                    source = new PersonSource { Source = "scholar" , PersonId = personId};
+                    source.SourceKey = matchingIds[0];
+                }
+                else
+                {
+                    // else we have no match, just use the empty record until it can be manually updated
+                    if (source.Id == default(int)) {
+                        this.dbContext.Add(source);
+                    }
 
-                    this.dbContext.PeopleSources.Add(source);
                     await this.dbContext.SaveChangesAsync();
 
                     return;
@@ -61,7 +68,7 @@ namespace FacultyDirectory.Core.Services
             }
 
             // go grab updated info
-            var sourceData = await GetTagsAndPublicationsById(sourceKey);
+            var sourceData = await GetTagsAndPublicationsById(source.SourceKey);
 
             source.Data = JsonConvert.SerializeObject(sourceData);
             source.HasKeywords = sourceData.Tags.Any();
@@ -69,7 +76,6 @@ namespace FacultyDirectory.Core.Services
             source.LastUpdate = DateTime.UtcNow;
 
             // save changes to source object
-            this.dbContext.PeopleSources.Add(source);
             await this.dbContext.SaveChangesAsync();
         }
 
