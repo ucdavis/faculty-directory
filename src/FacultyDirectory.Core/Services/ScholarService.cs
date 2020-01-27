@@ -47,11 +47,10 @@ namespace FacultyDirectory.Core.Services
                 if (matchingIds.Length == 1) {
                     // if we have exactly one match, use that
                     sourceId = matchingIds[0];
-                    source = new PersonSource { Source = "scholar", SourceKey = sourceId };
-                    source.PersonId = personId;
+                    source = new PersonSource { Source = "scholar", SourceKey = sourceId, PersonId = personId };
                 } else {
                     // else we have no match, just add an empty record until it can be manually updated
-                    source = new PersonSource { Source = "scholar" };
+                    source = new PersonSource { Source = "scholar" , PersonId = personId};
 
                     this.dbContext.PeopleSources.Add(source);
                     await this.dbContext.SaveChangesAsync();
