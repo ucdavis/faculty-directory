@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FacultyDirectory.Jobs.Core"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FacultyDirectory.Jobs.ProcessSources", "src\FacultyDirectory.Jobs.ProcessSources\FacultyDirectory.Jobs.ProcessSources.csproj", "{00FBE8A7-27DF-4D64-B5B2-20BDAAB2ABFF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FacultyDirectory.Jobs.SyncSites", "src\FacultyDirectory.Jobs.SyncSites\FacultyDirectory.Jobs.SyncSites.csproj", "{5D8A6D16-CDEE-461E-AC3C-C319F09859BA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -88,6 +90,18 @@ Global
 		{00FBE8A7-27DF-4D64-B5B2-20BDAAB2ABFF}.Release|x64.Build.0 = Release|Any CPU
 		{00FBE8A7-27DF-4D64-B5B2-20BDAAB2ABFF}.Release|x86.ActiveCfg = Release|Any CPU
 		{00FBE8A7-27DF-4D64-B5B2-20BDAAB2ABFF}.Release|x86.Build.0 = Release|Any CPU
+		{5D8A6D16-CDEE-461E-AC3C-C319F09859BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D8A6D16-CDEE-461E-AC3C-C319F09859BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D8A6D16-CDEE-461E-AC3C-C319F09859BA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5D8A6D16-CDEE-461E-AC3C-C319F09859BA}.Debug|x64.Build.0 = Debug|Any CPU
+		{5D8A6D16-CDEE-461E-AC3C-C319F09859BA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5D8A6D16-CDEE-461E-AC3C-C319F09859BA}.Debug|x86.Build.0 = Debug|Any CPU
+		{5D8A6D16-CDEE-461E-AC3C-C319F09859BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D8A6D16-CDEE-461E-AC3C-C319F09859BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D8A6D16-CDEE-461E-AC3C-C319F09859BA}.Release|x64.ActiveCfg = Release|Any CPU
+		{5D8A6D16-CDEE-461E-AC3C-C319F09859BA}.Release|x64.Build.0 = Release|Any CPU
+		{5D8A6D16-CDEE-461E-AC3C-C319F09859BA}.Release|x86.ActiveCfg = Release|Any CPU
+		{5D8A6D16-CDEE-461E-AC3C-C319F09859BA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F625072C-A44D-4BC2-9DA7-288110E845E3} = {99F4C76F-C232-4458-91DB-884DA1C5188B}
@@ -95,5 +109,6 @@ Global
 		{2A83C0D5-F7FD-4130-9C75-AF0F7EFD41A8} = {99F4C76F-C232-4458-91DB-884DA1C5188B}
 		{3351702A-15E7-42FF-9B42-04A53DBFC12D} = {99F4C76F-C232-4458-91DB-884DA1C5188B}
 		{00FBE8A7-27DF-4D64-B5B2-20BDAAB2ABFF} = {99F4C76F-C232-4458-91DB-884DA1C5188B}
+		{5D8A6D16-CDEE-461E-AC3C-C319F09859BA} = {99F4C76F-C232-4458-91DB-884DA1C5188B}
 	EndGlobalSection
 EndGlobal

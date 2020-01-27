@@ -1,4 +1,14 @@
 ﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using FacultyDirectory.Core.Data;
+using FacultyDirectory.Core.Models;
+using FacultyDirectory.Core.Services;
+using FacultyDirectory.Jobs.Core;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 
 namespace FacultyDirectory.Jobs.SyncSites
 {
@@ -21,9 +31,27 @@ namespace FacultyDirectory.Jobs.SyncSites
 
             // setup di
             var provider = ConfigureServices();
-            // var directoryPopulationService = provider.GetService<IDirectoryPopulationService>();
+            var dbContext = provider.GetService<ApplicationDbContext>();
+            var siteFarmService = provider.GetService<ISiteFarmService>();
 
-            _log.Information("Process Sources Job Finished");
+            // Process the sync
+            ProcessSitePeople(dbContext, siteFarmService).GetAwaiter().GetResult();
+
+            _log.Information("Sync Sites Job Finished");
+        }
+
+        private static async Task ProcessSitePeople(ApplicationDbContext dbContext, ISiteFarmService siteFarmService)
+        {
+            // grab N people who haven't been sync'd in a while
+            var sitePeople = await dbContext.SitePeople.Where(sp => sp.ShouldSync)
+                .OrderBy(sp => sp.LastSync).Include(sp => sp.Person).Take(25).ToArrayAsync();
+
+            _log.Information("Syncing {num} people to SiteFarm", sitePeople.Length);
+
+            foreach (var sitePerson in sitePeople)
+            {
+                await siteFarmService.PublishPerson(sitePerson);
+            }
         }
 
         private static ServiceProvider ConfigureServices()
@@ -32,8 +60,11 @@ namespace FacultyDirectory.Jobs.SyncSites
             services.AddOptions();
             services.AddDbContextPool<ApplicationDbContext>(o => o.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddHttpClient<IDirectoryPopulationService, DirectoryPopulationService>();
-            services.Configure<DirectoryConfiguration>(Configuration.GetSection("Directory"));
+            services.Configure<SiteFarmConfiguration>(Configuration.GetSection("SiteFarm"));
+
+            services.AddTransient<IBiographyGenerationService, BiographyGenerationService>();
+
+            services.AddHttpClient<ISiteFarmService, SiteFarmService>();
 
             return services.BuildServiceProvider();
         }
