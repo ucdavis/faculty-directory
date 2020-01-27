@@ -41,9 +41,23 @@ namespace FacultyDirectory.Core.Services
                 sourceId = source.SourceKey;
             } else {
                 // TODO: here we should attempt to find source ID, either through search or maybe based on manual sitePerson attributes
-                sourceId = "jY_StGoAAAAJ"; // TODO: remove hardcoded value
-                source = new PersonSource { Source = "scholar", SourceKey = sourceId };
-                source.PersonId = personId;
+                var personName = await this.dbContext.People.Where(p => p.Id == personId).Select(p => p.FullName).SingleOrDefaultAsync();
+                var matchingIds = await FindScholarIds(personName);
+
+                if (matchingIds.Length == 1) {
+                    // if we have exactly one match, use that
+                    sourceId = matchingIds[0];
+                    source = new PersonSource { Source = "scholar", SourceKey = sourceId };
+                    source.PersonId = personId;
+                } else {
+                    // else we have no match, just add an empty record until it can be manually updated
+                    source = new PersonSource { Source = "scholar" };
+
+                    this.dbContext.PeopleSources.Add(source);
+                    await this.dbContext.SaveChangesAsync();
+
+                    return;
+                }
             }
 
             var sourceData = await GetTagsAndPublicationsById(sourceId);

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using FacultyDirectory.Core.Data;
 using FacultyDirectory.Core.Models;
 using FacultyDirectory.Core.Services;
@@ -29,9 +31,26 @@ namespace FacultyDirectory.Jobs.ProcessSources
 
             // setup di
             var provider = ConfigureServices();
-            // var directoryPopulationService = provider.GetService<IDirectoryPopulationService>();
+            var scholarService = provider.GetService<IScholarService>();
+            var dbContext = provider.GetService<ApplicationDbContext>();
+
+            // First, get anyone who hasn't had any scholar information added yet
+            ProcessFirstTimers(dbContext, scholarService).GetAwaiter().GetResult(); 
 
             _log.Information("Process Sources Job Finished");
+        }
+
+        private static async Task ProcessFirstTimers(ApplicationDbContext dbContext, IScholarService scholarService) {
+            // grab N random people who need sources setup first time
+            var firstTimePeopleWithoutScholarSource = await dbContext.People.Where(p => !p.Sources.Any(s => s.Source == "scholar")).Take(25).ToListAsync();
+
+            foreach (var person in firstTimePeopleWithoutScholarSource)
+            {
+                await scholarService.SyncForPerson(person.Id);
+
+                // wait a little before trying the next one to make sure our data source is happy
+                await Task.Delay(500);
+            }
         }
 
         private static ServiceProvider ConfigureServices()
@@ -40,8 +59,7 @@ namespace FacultyDirectory.Jobs.ProcessSources
             services.AddOptions();
             services.AddDbContextPool<ApplicationDbContext>(o => o.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddHttpClient<IDirectoryPopulationService, DirectoryPopulationService>();
-            services.Configure<DirectoryConfiguration>(Configuration.GetSection("Directory"));
+            services.AddHttpClient<IScholarService, ScholarService>();
 
             return services.BuildServiceProvider();
         }
