@@ -35,19 +35,20 @@ namespace FacultyDirectory.Core.Services
             // TODO: query source values out of enum or resources
             var source = await this.dbContext.PeopleSources.SingleOrDefaultAsync(s => s.Source == "scholar" && s.PersonId == personId);
 
-            var sourceId = string.Empty;
+            var sourceKey = string.Empty;
 
-            if (source != null) {
-                sourceId = source.SourceKey;
+            if (source != null && !string.IsNullOrWhiteSpace(source.SourceKey)) {
+                // if we already have a source with a valid key, then move on to the update
+                sourceKey = source.SourceKey;
             } else {
-                // TODO: here we should attempt to find source ID, either through search or maybe based on manual sitePerson attributes
+                // here we attempt to find source ID through search
                 var personName = await this.dbContext.People.Where(p => p.Id == personId).Select(p => p.FullName).SingleOrDefaultAsync();
                 var matchingIds = await FindScholarIds(personName);
 
                 if (matchingIds.Length == 1) {
                     // if we have exactly one match, use that
-                    sourceId = matchingIds[0];
-                    source = new PersonSource { Source = "scholar", SourceKey = sourceId, PersonId = personId };
+                    sourceKey = matchingIds[0];
+                    source = new PersonSource { Source = "scholar", SourceKey = sourceKey, PersonId = personId };
                 } else {
                     // else we have no match, just add an empty record until it can be manually updated
                     source = new PersonSource { Source = "scholar" , PersonId = personId};
@@ -59,7 +60,8 @@ namespace FacultyDirectory.Core.Services
                 }
             }
 
-            var sourceData = await GetTagsAndPublicationsById(sourceId);
+            // go grab updated info
+            var sourceData = await GetTagsAndPublicationsById(sourceKey);
 
             source.Data = JsonConvert.SerializeObject(sourceData);
             source.HasKeywords = sourceData.Tags.Any();

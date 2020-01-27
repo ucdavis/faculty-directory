@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using FacultyDirectory.Core.Data;
-using FacultyDirectory.Core.Models;
 using FacultyDirectory.Core.Services;
 using FacultyDirectory.Jobs.Core;
 using Microsoft.EntityFrameworkCore;
@@ -35,18 +34,43 @@ namespace FacultyDirectory.Jobs.ProcessSources
             var dbContext = provider.GetService<ApplicationDbContext>();
 
             // First, get anyone who hasn't had any scholar information added yet
-            ProcessFirstTimers(dbContext, scholarService).GetAwaiter().GetResult(); 
+            ProcessFirstTimers(dbContext, scholarService).GetAwaiter().GetResult();
+
+            // Now look for updates for people who haven't been updated recently
+            ProcessExisting(dbContext, scholarService).GetAwaiter().GetResult();
 
             _log.Information("Process Sources Job Finished");
         }
 
-        private static async Task ProcessFirstTimers(ApplicationDbContext dbContext, IScholarService scholarService) {
+        private static async Task ProcessFirstTimers(ApplicationDbContext dbContext, IScholarService scholarService)
+        {
             // grab N random people who need sources setup first time
-            var firstTimePeopleWithoutScholarSource = await dbContext.People.Where(p => !p.Sources.Any(s => s.Source == "scholar")).Take(25).ToListAsync();
+            var firstTimePeopleWithoutScholarSource = await dbContext.People.Where(p => !p.Sources.Any(s => s.Source == "scholar")).Take(25).ToArrayAsync();
+
+            _log.Information("Processing {num} people without scholar sources", firstTimePeopleWithoutScholarSource.Length);
 
             foreach (var person in firstTimePeopleWithoutScholarSource)
             {
                 await scholarService.SyncForPerson(person.Id);
+
+                // wait a little before trying the next one to make sure our data source is happy
+                await Task.Delay(500);
+            }
+        }
+
+        private static async Task ProcessExisting(ApplicationDbContext dbContext, IScholarService scholarService)
+        {
+            // grab N people with scholar who haven't been updated recently
+            var oldestUpdatedScholarPeopleIds = await dbContext.PeopleSources
+                    .Where(s => s.Source == "scholar")
+                    .OrderBy(s => s.LastUpdate)
+                    .Select(s => s.PersonId).Take(25).ToArrayAsync();
+
+            _log.Information("Updating scholar information for {num} people ", oldestUpdatedScholarPeopleIds.Length);
+
+            foreach (var personId in oldestUpdatedScholarPeopleIds)
+            {
+                await scholarService.SyncForPerson(personId);
 
                 // wait a little before trying the next one to make sure our data source is happy
                 await Task.Delay(500);
