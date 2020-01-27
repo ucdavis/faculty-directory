@@ -43,15 +43,43 @@ namespace FacultyDirectory.Core.Services
                 FirstName = sitePerson.FirstName ?? sitePerson.Person.FirstName,
                 LastName = sitePerson.LastName ?? sitePerson.Person.LastName,
                 Title = sitePerson.Title ?? sitePerson.Person.Title,
-                Emails = new[] { "example@ucdavis.edu" },
-                Phones = new[] { "555-5555" },
-                Departments = departmentValues?.Split("|"), // TODO: should it be null or empty array if we don't have any?
+                Emails = GetEmails(sitePerson, sources),
+                Phones = GetPhones(sitePerson, sources),
+                Departments = departmentValues?.Split("|").Distinct().ToArray(), // TODO: should it be null or empty array if we don't have any?
                 Tags = tags,
                 Websites = websites,
                 Bio = bio
             };
 
             return person;
+        }
+
+        private string[] GetEmails(SitePerson sitePerson, PersonSource[] sources) {
+            if (!string.IsNullOrWhiteSpace(sitePerson.Email)) {
+                // site person entry overrides all
+                return new[] { sitePerson.Email };
+            } else if (!string.IsNullOrWhiteSpace(sitePerson.Person.Email)) {
+                return new[] { sitePerson.Person.Email };
+            }
+
+            // TODO: pull from sources
+            return new string[0];
+        }
+
+        private string[] GetPhones(SitePerson sitePerson, PersonSource[] sources)
+        {
+            if (!string.IsNullOrWhiteSpace(sitePerson.Phone))
+            {
+                // site person entry overrides all
+                return new[] { sitePerson.Phone };
+            }
+            else if (!string.IsNullOrWhiteSpace(sitePerson.Person.Phone))
+            {
+                return new[] { sitePerson.Person.Phone };
+            }
+
+            // TODO: pull from sources
+            return new string[0];
         }
 
         private string[] GetSourceTags(PersonSource[] sources)
