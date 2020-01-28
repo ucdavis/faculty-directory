@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FacultyDirectory.Core.Data;
 using FacultyDirectory.Core.Domain;
+using FacultyDirectory.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,10 +17,12 @@ namespace FacultyDirectory.Controllers
     {
         const int SiteId = 1; // TODO: support more sites
         private readonly ApplicationDbContext dbContext;
+        private readonly IBiographyGenerationService biographyGenerationService;
 
-        public SitePeopleController(ApplicationDbContext dbContext)
+        public SitePeopleController(ApplicationDbContext dbContext, IBiographyGenerationService biographyGenerationService)
         {
             this.dbContext = dbContext;
+            this.biographyGenerationService = biographyGenerationService;
         }
 
         [HttpGet]
@@ -31,9 +34,16 @@ namespace FacultyDirectory.Controllers
         [HttpGet("{personId}")]
         public async Task<ActionResult> Get(int personId)
         {
-            var person = SitePersonJoinQuery().Where(p => p.Person.Id == personId);
+            var personQueryResult = await SitePersonJoinQuery().Where(p => p.Person.Id == personId).AsNoTracking().FirstOrDefaultAsync();
 
-            return Ok(await person.FirstOrDefaultAsync());
+            var sources = await dbContext.PeopleSources.Where(p => p.PersonId == personId).AsNoTracking().ToArrayAsync();
+
+            var sitePerson = personQueryResult.SitePerson ?? new SitePerson();
+            sitePerson.Person = personQueryResult.Person;
+
+            var bio = this.biographyGenerationService.Generate(sitePerson, sources);
+
+            return Ok(new { SitePerson = sitePerson, Bio = bio, Sources = sources.Select(s => new { s.Source, s.SourceKey }) });
         }
 
         [HttpPost("{personId}")]
@@ -44,6 +54,13 @@ namespace FacultyDirectory.Controllers
                 dbSitePerson = sitePerson; // TODO: copy properties
 
                 this.dbContext.SitePeople.Add(dbSitePerson);
+            } else {
+                // existing site person, just update props
+
+                // TOOD: copy properties
+                dbSitePerson.FirstName = sitePerson.FirstName;
+                dbSitePerson.LastName = sitePerson.LastName;
+                dbSitePerson.Title = sitePerson.Title;
             }
 
             dbSitePerson.PersonId = personId;
