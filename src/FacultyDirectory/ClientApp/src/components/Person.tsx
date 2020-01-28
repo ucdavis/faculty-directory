@@ -4,15 +4,17 @@ import { useParams } from 'react-router-dom';
 export const Person = () => {
   let { id } = useParams();
 
-  const [person, setPerson] = useState<any>(null);
+  const [sources, setSources] = useState<any>([]);
+  const [bio, setBio] = useState<any>(null);
   const [sitePerson, setSitePerson] = useState<any>({});
 
   useEffect(() => {
     const fetchPerson = async () => {
       const result = await fetch('SitePeople/' + id).then(r => r.json());
 
-      setPerson(result.person);
+      setBio(result.bio);
       setSitePerson(result.sitePerson || {});
+      setSources(result.sources || []);
     };
 
     fetchPerson();
@@ -40,23 +42,24 @@ export const Person = () => {
     });
   };
 
-  if (!person) {
+  if (!bio) {
     return <div>loading</div>;
   }
 
   const hasSitePerson = !!sitePerson.id;
 
   return (
-    <div className="content-wrapper">
+    <div className='content-wrapper'>
       <h1>
-        {person.firstName} {person.lastName}
+        {bio.firstName} {bio.lastName}
       </h1>
-      <p>
-        Last Synced on Jan 1st, 2020
-      </p>
-      <p className="sourceIDs">
-        Google Scholar ID 145335 <br/>
-        Orchid ID n/a <a>add one</a>
+      <p>Last Synced on {sitePerson.lastSync || 'never'}</p>
+      <p className='sourceIDs'>
+        {sources.map((source: any) => (
+          <span key={source.source}>
+            {source.source} - {source.sourceKey}
+          </span>
+        ))}
       </p>
       <form onSubmit={onSubmit}>
         <div className='form-group'>
@@ -65,7 +68,7 @@ export const Person = () => {
             type='text'
             className='form-control'
             name='firstName'
-            placeholder={person.firstName}
+            placeholder={bio.firstName}
             value={sitePerson.firstName || ''}
             onChange={changeHandler}
           />
@@ -76,7 +79,7 @@ export const Person = () => {
             type='text'
             className='form-control'
             name='lastName'
-            placeholder={person.lastName}
+            placeholder={bio.lastName}
             value={sitePerson.lastName || ''}
             onChange={changeHandler}
           />
@@ -87,7 +90,7 @@ export const Person = () => {
             type='text'
             className='form-control'
             name='title'
-            placeholder={person.title}
+            placeholder={bio.title}
             value={sitePerson.title || ''}
             onChange={changeHandler}
           />

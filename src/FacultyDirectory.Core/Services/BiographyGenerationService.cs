@@ -13,6 +13,8 @@ namespace FacultyDirectory.Core.Services
     public interface IBiographyGenerationService
     {
         Task<DrupalPerson> Generate(SitePerson sitePerson);
+
+        DrupalPerson Generate(SitePerson sitePerson, PersonSource[] sources);
     }
 
     public class BiographyGenerationService : IBiographyGenerationService
@@ -24,11 +26,7 @@ namespace FacultyDirectory.Core.Services
             this.dbContext = dbContext;
         }
 
-        public async Task<DrupalPerson> Generate(SitePerson sitePerson)
-        {
-            // Get external source info for this person
-            var sources = await this.dbContext.PeopleSources.Where(s => s.PersonId == sitePerson.PersonId).AsNoTracking().ToArrayAsync();
-
+        public DrupalPerson Generate(SitePerson sitePerson, PersonSource[] sources) {
             var departmentValues = sitePerson.Departments ?? sitePerson.Person.Departments;
 
             // TODO: add tags to sitePerson and check there too
@@ -52,6 +50,15 @@ namespace FacultyDirectory.Core.Services
             };
 
             return person;
+        }
+
+
+        public async Task<DrupalPerson> Generate(SitePerson sitePerson)
+        {
+            // Get external source info for this person
+            var sources = await this.dbContext.PeopleSources.Where(s => s.PersonId == sitePerson.PersonId).AsNoTracking().ToArrayAsync();
+
+            return Generate(sitePerson, sources);
         }
 
         private string[] GetEmails(SitePerson sitePerson, PersonSource[] sources) {
