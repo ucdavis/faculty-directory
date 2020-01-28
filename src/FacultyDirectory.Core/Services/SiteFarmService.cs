@@ -182,9 +182,11 @@ namespace FacultyDirectory.Core.Services
             {
                 // if this is a new site entity, save the page uid for future updates
                 sitePerson.PageUid = id;
-
-                await this.dbContext.SaveChangesAsync();
             }
+
+            sitePerson.LastSync = DateTime.UtcNow;
+
+            await this.dbContext.SaveChangesAsync();
 
             return content;
         }
