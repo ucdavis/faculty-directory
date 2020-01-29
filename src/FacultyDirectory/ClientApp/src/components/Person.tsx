@@ -58,7 +58,7 @@ export const Person = () => {
       <h1>
         {bio.firstName} {bio.lastName}
       </h1>
-      <p>Last Synced on {sitePerson.lastSync || 'never'}</p>
+      <p>Last Synced on {sitePerson.lastSync ? new Date(sitePerson.lastSync).toLocaleString() : 'never'}</p>
       <p className='sourceIDs'>
         {sources.map((source: any) => (
           <span key={source.source}>
