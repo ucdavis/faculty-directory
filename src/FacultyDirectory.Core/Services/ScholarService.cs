@@ -30,7 +30,8 @@ namespace FacultyDirectory.Core.Services
             this.httpClient = httpClient;
         }
 
-        public async Task SyncForPerson(int personId) {
+        public async Task SyncForPerson(int personId)
+        {
             // see if we already have a scholar record for this person
             // TODO: query source values out of enum or resources
             var source = await this.dbContext.PeopleSources.SingleOrDefaultAsync(s => s.Source == "scholar" && s.PersonId == personId);
@@ -57,7 +58,8 @@ namespace FacultyDirectory.Core.Services
                 else
                 {
                     // else we have no match, just use the empty record until it can be manually updated
-                    if (source.Id == default(int)) {
+                    if (source.Id == default(int))
+                    {
                         this.dbContext.Add(source);
                     }
 
@@ -81,7 +83,8 @@ namespace FacultyDirectory.Core.Services
 
         public async Task<SourceData> GetTagsAndPublicationsById(string id)
         {
-            if (string.IsNullOrWhiteSpace(id)) {
+            if (string.IsNullOrWhiteSpace(id))
+            {
                 throw new ArgumentNullException();
             }
 
@@ -103,16 +106,39 @@ namespace FacultyDirectory.Core.Services
             var publications = document.All.Where(m => m.LocalName == "a" &&
                 m.ParentElement.ClassName == "gsc_a_t");
 
+            // pubs are rows of the gsc_a_t table
+            var pubs = document.All.Where(m => m.ClassName == "gsc_a_t" && m.ParentElement.ClassName == "gsc_a_tr");
+
+            var firstPub = pubs.First();
+            var greyEls = firstPub.Children.Where(c => c.LocalName == "div" && c.ClassName == "gs_gray");
+            var firstSub = greyEls.First().TextContent;
+
+            var sourcePublications = new List<SourcePublication>();
+
+            foreach (var pub in pubs)
+            {
+                var header = pub.Children.Where(c => c.LocalName == "a").First();
+                var subInfo = pub.Children.Where(c => c.LocalName == "div" && c.ClassName == "gs_gray").ToArray();
+
+                sourcePublications.Add(new SourcePublication {
+                    Title = header.TextContent,
+                    Url = header.GetAttribute("data-href"),
+                    Authors = subInfo[0].TextContent,
+                    ShortDetail = subInfo[1].TextContent
+                });
+            }
+
             var data = new SourceData
             {
                 Tags = tags.Select(t => t.TextContent).ToArray(),
-                Publications = publications.Select(p => new SourcePublication { Title = p.TextContent, Url = p.GetAttribute("data-href") }).ToArray()
+                Publications = sourcePublications.ToArray()
             };
 
             return data;
         }
 
-        public async Task<string[]> FindScholarIds(string name) {
+        public async Task<string[]> FindScholarIds(string name)
+        {
             var siteUrl = "https://scholar.google.com/citations?hl=en&view_op=search_authors&mauthors=" + name;
 
             var request = await this.httpClient.GetAsync(siteUrl);
@@ -153,11 +179,12 @@ namespace FacultyDirectory.Core.Services
                     if (string.Equals(e.TextContent, "Verified email at ucdavis.edu", StringComparison.OrdinalIgnoreCase))
                     {
                         isUcdAffiliate = true;
-                    }                
+                    }
                 }
 
                 // if we found a ucd school or email, then extract their scholar id and add to the list
-                if (isUcdAffiliate) {
+                if (isUcdAffiliate)
+                {
                     // TODO: maybe use regex as more reliable method of getting out id string?
                     var user = item.GetElementsByClassName("gs_ai_pho");
                     var userId = user.Single().GetAttribute("href");
@@ -183,5 +210,7 @@ namespace FacultyDirectory.Core.Services
     {
         public string Title { get; set; }
         public string Url { get; set; }
+        public string Authors { get; set; }
+        public string ShortDetail { get; set; }
     }
 }
