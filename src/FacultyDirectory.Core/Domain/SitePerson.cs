@@ -39,6 +39,8 @@ namespace FacultyDirectory.Core.Domain
 
         public string Departments { get; set; }
 
+        public string Tags { get; set; }
+
         public bool ShouldSync { get; set; }
 
         public DateTime? LastSync { get; set; }
