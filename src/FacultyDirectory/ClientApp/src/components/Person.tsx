@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { ISource } from '../models/ISource';
+import { IBio } from '../models/IBio';
+import { ISitePerson } from '../models/ISitePerson';
 
 export const Person = () => {
   let { id } = useParams();
 
-  const [sources, setSources] = useState<any>([]);
-  const [bio, setBio] = useState<any>(null);
-  const [sitePerson, setSitePerson] = useState<any>({});
+  const [sources, setSources] = useState<ISource[]>([]);
+  const [bio, setBio] = useState<IBio>({} as IBio);
+  const [sitePerson, setSitePerson] = useState<ISitePerson>({} as ISitePerson);
 
   useEffect(() => {
     const fetchPerson = async () => {
