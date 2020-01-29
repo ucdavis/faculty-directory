@@ -8,7 +8,7 @@ export const Person = () => {
   let { id } = useParams();
 
   const [sources, setSources] = useState<ISource[]>([]);
-  const [bio, setBio] = useState<IBio>({} as IBio);
+  const [bio, setBio] = useState<IBio>();
   const [sitePerson, setSitePerson] = useState<ISitePerson>({} as ISitePerson);
 
   useEffect(() => {
@@ -48,6 +48,8 @@ export const Person = () => {
   if (!bio) {
     return <div>loading</div>;
   }
+
+  console.log(bio);
 
   const hasSitePerson = !!sitePerson.id;
 
@@ -95,6 +97,70 @@ export const Person = () => {
             name='title'
             placeholder={bio.title}
             value={sitePerson.title || ''}
+            onChange={changeHandler}
+          />
+        </div>
+        <div className='form-group'>
+          <label>Email (ALLOW LIST)</label>
+          <input
+            type='text'
+            className='form-control'
+            name='email'
+            placeholder={bio.emails.join(' ')}
+            value={sitePerson.email || ''}
+            onChange={changeHandler}
+          />
+        </div>
+        <div className='form-group'>
+          <label>Phone (ALLOW LIST)</label>
+          <input
+            type='text'
+            className='form-control'
+            name='phone'
+            placeholder={bio.phones.join(' ')}
+            value={sitePerson.phone || ''}
+            onChange={changeHandler}
+          />
+        </div>
+        <div className='form-group'>
+          <label>Departments (ALLOW LIST)</label>
+          <input
+            type='text'
+            className='form-control'
+            name='departments'
+            placeholder={bio.departments.join(' ')}
+            value={sitePerson.departments || ''}
+            onChange={changeHandler}
+          />
+        </div>
+        <div className='form-group'>
+          <label>Websites (TODO)</label>
+          <input
+            type='text'
+            readOnly
+            className='form-control'
+            name='websites'
+            placeholder={bio.websites.map(w => w.uri).join(' ')}
+          />
+        </div>
+        <div className='form-group'>
+          <label>Bio</label>
+          <textarea
+            className='form-control'
+            name='bio'
+            placeholder={bio.bio}
+            value={sitePerson.bio || ''}
+            onChange={changeHandler}
+          />
+        </div>
+        <div className='form-group'>
+          <label>Tags (TODO)</label>
+          <input
+            type='text'
+            className='form-control'
+            name='tags'
+            placeholder={bio.tags.join(' ')}
+            value={''}
             onChange={changeHandler}
           />
         </div>
