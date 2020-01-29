@@ -8,6 +8,6 @@ export interface ISitePerson extends ICorePersonProperties {
     siteId: number;
     bio: string;
     shouldSync: boolean;
-    lastSync: Date;
-    lastUpdate: Date;
+    lastSync: string;
+    lastUpdate: string;
 }
