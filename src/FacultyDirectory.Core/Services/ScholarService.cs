@@ -63,6 +63,8 @@ namespace FacultyDirectory.Core.Services
                         this.dbContext.Add(source);
                     }
 
+                    source.LastUpdate = DateTime.UtcNow;
+
                     await this.dbContext.SaveChangesAsync();
 
                     return;
