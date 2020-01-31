@@ -43,7 +43,7 @@ namespace FacultyDirectory.Core.Services
                 Title = sitePerson.Title ?? sitePerson.Person.Title,
                 Emails = GetEmails(sitePerson, sources),
                 Phones = GetPhones(sitePerson, sources),
-                Departments = departmentValues?.Split("|").Distinct().ToArray(), // TODO: should it be null or empty array if we don't have any?
+                Departments = departmentValues?.Split("|").ToArray(), // TODO: should it be null or empty array if we don't have any?
                 Tags = tags,
                 Websites = websites,
                 Bio = bio
