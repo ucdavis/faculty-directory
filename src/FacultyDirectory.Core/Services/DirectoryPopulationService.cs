@@ -169,6 +169,9 @@ namespace FacultyDirectory.Core.Services
                 // lookup the display name value of their first association from title code
                 var title = Titles.Names.GetValueOrDefault(firstAssociation?.titleCode) ?? null;
 
+                // default to faculty classification unless they have an emeriti title code
+                var classification = personAssociations.Any(a => Titles.Emeriti.Contains(a.titleCode)) ? "emeriti" : "faculty";
+
                 validCandidates.Add(new Person
                 {
                     IamId = person.IamId,
@@ -179,7 +182,8 @@ namespace FacultyDirectory.Core.Services
                     Email = contactInfo.FirstOrDefault()?.Email,
                     Phone = contactInfo.FirstOrDefault()?.WorkPhone,
                     Title = title,
-                    Departments = string.Join("|", departments)
+                    Departments = string.Join("|", departments),
+                    Classification = classification
                 });
             }
 
