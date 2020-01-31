@@ -164,9 +164,11 @@ namespace FacultyDirectory.Core.Services
                 var firstAssociation = personAssociations.FirstOrDefault();
 
                 // lookup this person's valid dept names
-                var departments = personAssociations.Select(pa => Departments.Names[pa.deptCode]).Where(name => !string.IsNullOrWhiteSpace(name)).Distinct();
+                var departments = personAssociations.Select(pa => Departments.Names.GetValueOrDefault(pa.deptCode)).Where(name => !string.IsNullOrWhiteSpace(name)).Distinct();
 
-                // TODO: get title from lookup values
+                // lookup the display name value of their first association from title code
+                var title = Titles.Names.GetValueOrDefault(firstAssociation?.titleCode) ?? null;
+
                 validCandidates.Add(new Person
                 {
                     IamId = person.IamId,
@@ -176,7 +178,7 @@ namespace FacultyDirectory.Core.Services
                     FullName = person.DFullName ?? person.OFullName,
                     Email = contactInfo.FirstOrDefault()?.Email,
                     Phone = contactInfo.FirstOrDefault()?.WorkPhone,
-                    Title = firstAssociation?.titleDisplayName,
+                    Title = title,
                     Departments = string.Join("|", departments)
                 });
             }
