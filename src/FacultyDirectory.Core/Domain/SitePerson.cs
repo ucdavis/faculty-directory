@@ -30,10 +30,14 @@ namespace FacultyDirectory.Core.Domain
         [StringLength(256)]
         public string Name { get; set; }
 
-        [StringLength(128)]
-        public string Email { get; set; }
-        [StringLength(128)]
-        public string Phone { get; set; }
+        [StringLength(512)]
+        public string Emails { get; set; }
+
+        [StringLength(512)]
+        public string Phones { get; set; }
+
+        public string Websites { get; set; }
+
         [StringLength(256)]
         public string Title { get; set; }
 

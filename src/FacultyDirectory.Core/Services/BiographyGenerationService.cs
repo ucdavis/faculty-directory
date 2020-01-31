@@ -62,9 +62,9 @@ namespace FacultyDirectory.Core.Services
         }
 
         private string[] GetEmails(SitePerson sitePerson, PersonSource[] sources) {
-            if (!string.IsNullOrWhiteSpace(sitePerson.Email)) {
+            if (!string.IsNullOrWhiteSpace(sitePerson.Emails)) {
                 // site person entry overrides all
-                return new[] { sitePerson.Email };
+                return new[] { sitePerson.Emails };
             } else if (!string.IsNullOrWhiteSpace(sitePerson.Person.Email)) {
                 return new[] { sitePerson.Person.Email };
             }
@@ -75,10 +75,10 @@ namespace FacultyDirectory.Core.Services
 
         private string[] GetPhones(SitePerson sitePerson, PersonSource[] sources)
         {
-            if (!string.IsNullOrWhiteSpace(sitePerson.Phone))
+            if (!string.IsNullOrWhiteSpace(sitePerson.Phones))
             {
                 // site person entry overrides all
-                return new[] { sitePerson.Phone };
+                return new[] { sitePerson.Phones };
             }
             else if (!string.IsNullOrWhiteSpace(sitePerson.Person.Phone))
             {
