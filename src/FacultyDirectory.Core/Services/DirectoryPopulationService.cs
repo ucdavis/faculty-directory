@@ -139,13 +139,13 @@ namespace FacultyDirectory.Core.Services
                 }
 
                 // yes they are faculty
-                if (personAssociations.Any(a => TitleCodes.Faculty.Contains(a.titleCode)))
+                if (personAssociations.Any(a => Titles.Faculty.Contains(a.titleCode)))
                 {
                     return true;
                 }
 
                 // yes they are emeriti
-                if (personAssociations.Any(a => TitleCodes.Emeriti.Contains(a.titleCode)))
+                if (personAssociations.Any(a => Titles.Emeriti.Contains(a.titleCode)))
                 {
                     return true;
                 }                
@@ -163,7 +163,15 @@ namespace FacultyDirectory.Core.Services
 
                 var firstAssociation = personAssociations.FirstOrDefault();
 
-                // TODO: get title and deptment names from lookup values
+                // lookup this person's valid dept names
+                var departments = personAssociations.Select(pa => Departments.Names.GetValueOrDefault(pa.deptCode)).Where(name => !string.IsNullOrWhiteSpace(name)).Distinct();
+
+                // lookup the display name value of their first association from title code
+                var title = Titles.Names.GetValueOrDefault(firstAssociation?.titleCode) ?? null;
+
+                // default to faculty classification unless they have an emeriti title code
+                var classification = personAssociations.Any(a => Titles.Emeriti.Contains(a.titleCode)) ? "emeriti" : "faculty";
+
                 validCandidates.Add(new Person
                 {
                     IamId = person.IamId,
@@ -173,8 +181,9 @@ namespace FacultyDirectory.Core.Services
                     FullName = person.DFullName ?? person.OFullName,
                     Email = contactInfo.FirstOrDefault()?.Email,
                     Phone = contactInfo.FirstOrDefault()?.WorkPhone,
-                    Title = firstAssociation?.titleDisplayName,
-                    Departments = string.Join("|", personAssociations.Select(pa => pa.deptDisplayName).Distinct())
+                    Title = title,
+                    Departments = string.Join("|", departments),
+                    Classification = classification
                 });
             }
 

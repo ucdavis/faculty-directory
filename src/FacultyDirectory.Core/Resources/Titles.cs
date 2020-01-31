@@ -1,0 +1,102 @@
+﻿using System.Collections.Generic;
+
+namespace FacultyDirectory.Core.Resources
+{
+    public static class Titles
+    {
+        public static string[] Faculty = new string[] {
+            "003258",
+            "003259",
+            "003378",
+            "003000",
+            "003012",
+            "003062",
+            "003060",
+            "003278",
+            "003372",
+            "003279",
+            "003080",
+            "003082",
+            "003270",
+            "001343",
+            "001300",
+            "003268",
+            "003269",
+            "003010",
+            "003070",
+            "003072",
+            "001010",
+            "001506",
+            "001243",
+            "001210",
+            "001244",
+            "001200",
+            "001096",
+            "001094",
+            "001055",
+            "001630",
+            "001633",
+            "001632",
+            "001631",
+            "001620",
+            "001675",
+            "001100",
+            "001143",
+            "001110",
+            "001144",
+            "001680",
+            "003207",
+            "001688",
+            "001680",
+            "001680",
+            "001680",
+            "001680",
+            "001680",
+            "007120",
+            "003202",
+            "003403",
+            "001607"
+        };
+
+        public static string[] Emeriti = new string[] {
+            "003800", "001132", "001621"
+        };
+
+        public static Dictionary<string, string> Names = new Dictionary<string, string> {
+            { "000900", "Director" },
+            { "001010", "Associate Dean" },
+            { "001055", "Faculty Assistant to the Provost/Dean" },
+            { "001065", "Academic Administrator" },
+            { "001067", "Director/CE Specialist" },
+            { "001094", "Department Vice Chair" },
+            { "001096", "Department Chair" },
+            { "001100", "Professor" },
+            { "001110", "Professor" },
+            { "001132", "Professor Emeritus" },
+            { "001143", "Professor" },
+            { "001144", "Professor" },
+            { "001200", "Associate Professor" },
+            { "001210", "Associate Professor" },
+            { "001243", "Associate Professor" },
+            { "001244", "Associate Professor" },
+            { "001300", "Assistant Professor" },
+            { "001343", "Assistant Professor" },
+            { "001607", "Associate Professor" },
+            { "001621", "Senior Lecturer Emeritus" },
+            { "001675", "Cooperative Extension Specialist" },
+            { "001680", "Lecturer with Potential SOE" },
+            { "001688", "Lecturer with Potential SOE" },
+            { "003000", "Professor" },
+            { "003010", "Associate Professor" },
+            { "003012", "Professor" },
+            { "003060", "Professor" },
+            { "003062", "Professor" },
+            { "003070", "Associate Professor" },
+            { "003072", "Associate Professor" },
+            { "003080", "Assistant Professor" },
+            { "003201", "Professor" },
+            { "003475", "Assistant Cooperative Extension Specialist" },
+            { "003800", "Emeriti" }
+        };
+    }
+}
