@@ -174,7 +174,7 @@ namespace FacultyDirectory.Core.Services
                     Email = contactInfo.FirstOrDefault()?.Email,
                     Phone = contactInfo.FirstOrDefault()?.WorkPhone,
                     Title = firstAssociation?.titleDisplayName,
-                    Departments = string.Join("|", personAssociations.Select(pa => pa.deptDisplayName))
+                    Departments = string.Join("|", personAssociations.Select(pa => pa.deptDisplayName).Distinct())
                 });
             }
 
