@@ -139,13 +139,13 @@ namespace FacultyDirectory.Core.Services
                 }
 
                 // yes they are faculty
-                if (personAssociations.Any(a => TitleCodes.Faculty.Contains(a.titleCode)))
+                if (personAssociations.Any(a => Titles.Faculty.Contains(a.titleCode)))
                 {
                     return true;
                 }
 
                 // yes they are emeriti
-                if (personAssociations.Any(a => TitleCodes.Emeriti.Contains(a.titleCode)))
+                if (personAssociations.Any(a => Titles.Emeriti.Contains(a.titleCode)))
                 {
                     return true;
                 }                
