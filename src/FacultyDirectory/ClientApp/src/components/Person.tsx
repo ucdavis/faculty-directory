@@ -105,7 +105,7 @@ export const Person = () => {
           <input
             type='text'
             className='form-control'
-            name='email'
+            name='emails'
             placeholder={bio.emails.join(' ')}
             value={sitePerson.email || ''}
             onChange={changeHandler}
@@ -116,7 +116,7 @@ export const Person = () => {
           <input
             type='text'
             className='form-control'
-            name='phone'
+            name='phones'
             placeholder={bio.phones.join(' ')}
             value={sitePerson.phone || ''}
             onChange={changeHandler}
