@@ -84,6 +84,7 @@ namespace FacultyDirectory.Core.Resources
             { "001607", "Associate Professor" },
             { "001621", "Senior Lecturer Emeritus" },
             { "001675", "Cooperative Extension Specialist" },
+            { "001702", "Cooperative Extension Specialist" },
             { "001680", "Lecturer with Potential SOE" },
             { "001688", "Lecturer with Potential SOE" },
             { "003000", "Professor" },
@@ -94,6 +95,8 @@ namespace FacultyDirectory.Core.Resources
             { "003070", "Associate Professor" },
             { "003072", "Associate Professor" },
             { "003080", "Assistant Professor" },
+            { "003270", "Assistant Professor" },
+            { "003082", "Assistant Professor" },
             { "003201", "Professor" },
             { "003475", "Assistant Cooperative Extension Specialist" },
             { "003800", "Emeriti" }
