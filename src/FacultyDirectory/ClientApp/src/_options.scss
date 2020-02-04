@@ -1,11 +1,11 @@
 form {
   &.dark-form {
     select, option, input, textarea {
-      background-color: $bg-color-secondary;
+      background-color: $bg-color-form;
       border: none;
       color: $default-form-text;
       &:focus {
-        background-color: $bg-color-secondary;
+        background-color: $bg-color-form;
         box-shadow: none;
         color: $default-form-text;
       }
@@ -16,7 +16,7 @@ form {
       }
       &:focus {
         border: 1px solid $borders;
-        &::placeholder {
+        &:not(:read-only):not(:disabled)::placeholder {
           color: transparent;
         }
       }

@@ -36,10 +36,11 @@ $bg-color: #202124; // background
 $bg-color-secondary: #35363A;
 
 
-$placeholder-text: $secondary-font;
+$placeholder-text: darken($secondary-font, 10%);
 $default-form-text: $primary-font;
 
-$bg-color-form-disabled: $bg-color;
+$bg-color-form: #3d454d;
+$bg-color-form-disabled: #192937;
 
 $borders: #ced4da; // border color
 
