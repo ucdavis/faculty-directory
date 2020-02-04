@@ -66,7 +66,7 @@ export const Person = () => {
           </span>
         ))}
       </p>
-      <form onSubmit={onSubmit}>
+      <form className="dark-form" onSubmit={onSubmit}>
         <div className='form-group'>
           <label>First Name</label>
           <input

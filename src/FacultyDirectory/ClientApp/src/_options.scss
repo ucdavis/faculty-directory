@@ -3,17 +3,16 @@ form {
     select, option, input, textarea {
       background-color: $bg-color-secondary;
       border: none;
-      color: $primary-font;
+      color: $default-form-text;
       &:focus {
         background-color: $bg-color-secondary;
         box-shadow: none;
-        color: $primary-font;
+        color: $default-form-text;
       }
     }
     input, textarea {
       &::placeholder {
         color: $placeholder-text;
-        font-style: italic;
       }
       &:focus {
         border: 1px solid $borders;
@@ -26,13 +25,5 @@ form {
         border: 1px dotted $borders;
       }
     }
-    // option {
-    //   &:hover {
-    //     background-color: $bg-color-secondary;
-    //   }
-    // }
-    // select {
-    //   appearance: none;
-    // }
   }
 }
