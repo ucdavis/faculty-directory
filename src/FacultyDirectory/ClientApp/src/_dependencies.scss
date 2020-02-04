@@ -34,6 +34,9 @@ $tertiary-font: #ffffff; //
 
 $bg-color: #202124; // background
 $bg-color-secondary: #35363A;
+
+$bg-color-form-disabled: $bg-color;
+
 $borders: #ced4da; // border color
 
 $box-shadow: 0 0 0 1px rgba(49,49,93,.03), 0 2px 5px 0 rgba(49,49,93,.1), 0 1px 2px 0 rgba(0,0,0,.08);
@@ -61,6 +64,8 @@ $wintersky-gray: #5b7f95;
 $cenwalk-gray: #b1b3b3;
 $cork-oak: #aca39a;
 $shingle-brown: #4f2c1d;
+
+$placeholder-text: transparentize($western-redbud, 0.5);
 
 // Layouts
 @mixin breakpoint($point) {
