@@ -73,7 +73,8 @@ namespace FacultyDirectory.Core.Services
             }
         }
 
-        private async Task<ContactResult[]> GetContactInfo(string iamId) {
+        private async Task<ContactResult[]> GetContactInfo(string iamId)
+        {
             var queryUrl = $"{PeopleLookupBaseUrl}/api/Iamws/Contact/{iamId}?key={this.peopleLookupKey}";
 
             using (var stream = await this.httpClient.GetStreamAsync(queryUrl))
@@ -138,17 +139,13 @@ namespace FacultyDirectory.Core.Services
                     return false;
                 }
 
-                // yes they are faculty
-                if (personAssociations.Any(a => Titles.Faculty.Contains(a.titleCode)))
+                // any named title is valid.  Include anyone with any of these tiles
+                var validTitles = Titles.Names.Keys;
+
+                if (personAssociations.Any(a => validTitles.Contains(a.titleCode)))
                 {
                     return true;
                 }
-
-                // yes they are emeriti
-                if (personAssociations.Any(a => Titles.Emeriti.Contains(a.titleCode)))
-                {
-                    return true;
-                }                
 
                 return false;
             });
@@ -169,8 +166,17 @@ namespace FacultyDirectory.Core.Services
                 // lookup the display name value of their first association from title code
                 var title = Titles.Names.GetValueOrDefault(firstAssociation?.titleCode) ?? null;
 
-                // default to faculty classification unless they have an emeriti title code
-                var classification = personAssociations.Any(a => Titles.Emeriti.Contains(a.titleCode)) ? "emeriti" : "faculty";
+                // default to faculty classification unless they have an emeriti or leadership title code
+                var classification = "faculty";
+
+                if (personAssociations.Any(a => Titles.Leadership.Contains(a.titleCode)))
+                {
+                    classification = "leadership";
+                }
+                else if (personAssociations.Any(a => Titles.Emeriti.Contains(a.titleCode)))
+                {
+                    classification = "emeriti";
+                }
 
                 validCandidates.Add(new Person
                 {

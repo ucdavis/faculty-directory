@@ -4,66 +4,17 @@ namespace FacultyDirectory.Core.Resources
 {
     public static class Titles
     {
-        public static string[] Faculty = new string[] {
-            "003258",
-            "003259",
-            "003378",
-            "003000",
-            "003012",
-            "003062",
-            "003060",
-            "003278",
-            "003372",
-            "003279",
-            "003080",
-            "003082",
-            "003270",
-            "001343",
-            "001300",
-            "003268",
-            "003269",
-            "003010",
-            "003070",
-            "003072",
-            "001010",
-            "001506",
-            "001243",
-            "001210",
-            "001244",
-            "001200",
-            "001096",
-            "001094",
-            "001055",
-            "001630",
-            "001633",
-            "001632",
-            "001631",
-            "001620",
-            "001675",
-            "001100",
-            "001143",
-            "001110",
-            "001144",
-            "001680",
-            "003207",
-            "001688",
-            "001680",
-            "001680",
-            "001680",
-            "001680",
-            "001680",
-            "007120",
-            "003202",
-            "003403",
-            "001607"
-        };
-
         public static string[] Emeriti = new string[] {
             "003800", "001132", "001621"
         };
 
+        public static string[] Leadership = new string[] {
+            "001000", "001010"
+        };
+
         public static Dictionary<string, string> Names = new Dictionary<string, string> {
             { "000900", "Director" },
+            { "001000", "Dean" },
             { "001010", "Associate Dean" },
             { "001055", "Faculty Assistant to the Provost/Dean" },
             { "001065", "Academic Administrator" },
