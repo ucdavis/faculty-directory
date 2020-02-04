@@ -43,7 +43,7 @@ namespace FacultyDirectory.Core.Services
                 Title = sitePerson.Title ?? sitePerson.Person.Title,
                 Emails = GetEmails(sitePerson, sources),
                 Phones = GetPhones(sitePerson, sources),
-                Departments = departmentValues?.Split("|").Distinct().ToArray(), // TODO: should it be null or empty array if we don't have any?
+                Departments = departmentValues?.Split("|").ToArray(), // TODO: should it be null or empty array if we don't have any?
                 Tags = tags,
                 Websites = websites,
                 Bio = bio
@@ -62,9 +62,9 @@ namespace FacultyDirectory.Core.Services
         }
 
         private string[] GetEmails(SitePerson sitePerson, PersonSource[] sources) {
-            if (!string.IsNullOrWhiteSpace(sitePerson.Email)) {
+            if (!string.IsNullOrWhiteSpace(sitePerson.Emails)) {
                 // site person entry overrides all
-                return new[] { sitePerson.Email };
+                return new[] { sitePerson.Emails };
             } else if (!string.IsNullOrWhiteSpace(sitePerson.Person.Email)) {
                 return new[] { sitePerson.Person.Email };
             }
@@ -75,10 +75,10 @@ namespace FacultyDirectory.Core.Services
 
         private string[] GetPhones(SitePerson sitePerson, PersonSource[] sources)
         {
-            if (!string.IsNullOrWhiteSpace(sitePerson.Phone))
+            if (!string.IsNullOrWhiteSpace(sitePerson.Phones))
             {
                 // site person entry overrides all
-                return new[] { sitePerson.Phone };
+                return new[] { sitePerson.Phones };
             }
             else if (!string.IsNullOrWhiteSpace(sitePerson.Person.Phone))
             {
@@ -93,6 +93,11 @@ namespace FacultyDirectory.Core.Services
         {
             foreach (var source in sources)
             {
+                if (source.Data == null) {
+                    // skip to the next source if we don't have any data
+                    continue;
+                }
+
                 var data = JsonConvert.DeserializeObject<SourceData>(source.Data);
 
                 // TODO: this will return first source tags.
@@ -111,6 +116,12 @@ namespace FacultyDirectory.Core.Services
         {
             foreach (var source in sources)
             {
+                if (source.Data == null)
+                {
+                    // skip to the next source if we don't have any data
+                    continue;
+                }
+
                 var data = JsonConvert.DeserializeObject<SourceData>(source.Data);
 
                 // TODO: this will return first source tags.
@@ -123,6 +134,10 @@ namespace FacultyDirectory.Core.Services
                     foreach (var pub in data.Publications.Take(5))
                     {
                         sb.Append(pub.Title);
+                        sb.Append("<br/>");
+                        sb.Append(pub.Authors);
+                        sb.Append("<br/>");
+                        sb.Append(pub.ShortDetail);
                         sb.Append("<br/><br/>");
                     }
 

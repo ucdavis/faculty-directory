@@ -34,6 +34,10 @@ namespace FacultyDirectory.Core.Domain {
         [StringLength(256)]
         public string Departments { get; set; }
 
+        // Faculty or Emeriti
+        [StringLength(16)]
+        public string Classification { get; set; }
+
         public List<PersonSource> Sources { get; set; }
     }
 }
