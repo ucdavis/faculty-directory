@@ -66,7 +66,7 @@ export const Person = () => {
       <p className='sourceIDs'>
         {sources.map((source: any) => (
           <span key={source.source}>
-            {source.source} - {source.sourceKey}
+            {source.source} - {source.sourceKey || 'not found'}
           </span>
         ))}
       </p>

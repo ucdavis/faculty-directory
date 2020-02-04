@@ -93,6 +93,11 @@ namespace FacultyDirectory.Core.Services
         {
             foreach (var source in sources)
             {
+                if (source.Data == null) {
+                    // skip to the next source if we don't have any data
+                    continue;
+                }
+
                 var data = JsonConvert.DeserializeObject<SourceData>(source.Data);
 
                 // TODO: this will return first source tags.
@@ -111,6 +116,12 @@ namespace FacultyDirectory.Core.Services
         {
             foreach (var source in sources)
             {
+                if (source.Data == null)
+                {
+                    // skip to the next source if we don't have any data
+                    continue;
+                }
+
                 var data = JsonConvert.DeserializeObject<SourceData>(source.Data);
 
                 // TODO: this will return first source tags.
