@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { ISource } from '../models/ISource';
 import { IBio } from '../models/IBio';
 import { ISitePerson } from '../models/ISitePerson';
 
 export const Person = () => {
   let { id } = useParams();
+  let history = useHistory();
 
   const [sources, setSources] = useState<ISource[]>([]);
   const [bio, setBio] = useState<IBio>();
@@ -33,6 +34,9 @@ export const Person = () => {
     };
     const body = JSON.stringify(sitePerson);
     await fetch('SitePeople/' + id, { method: 'POST', headers, body }).then(r => r.json());
+
+    // saved, redirect back to people home
+    history.push('/people');
   };
 
   const changeHandler = (event: any) => {
@@ -62,7 +66,7 @@ export const Person = () => {
       <p className='sourceIDs'>
         {sources.map((source: any) => (
           <span key={source.source}>
-            {source.source} - {source.sourceKey}
+            {source.source} - {source.sourceKey || 'not found'}
           </span>
         ))}
       </p>
