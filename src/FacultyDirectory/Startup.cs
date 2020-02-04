@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Serilog;
 
 namespace FacultyDirectory
@@ -29,6 +30,13 @@ namespace FacultyDirectory
             services.AddDbContextPool<ApplicationDbContext>(o =>
             {
                 o.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            services.AddAuthentication().AddOpenIdConnect(oidc => {
+                oidc.ClientId = "";
+                oidc.ClientSecret = "";
+                oidc.Authority = "";
+                oidc.ResponseType = OpenIdConnectResponseType.Code;
             });
 
             services.AddControllersWithViews();
@@ -69,6 +77,8 @@ namespace FacultyDirectory
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
+
+            // app.UseAuthentication();
 
             app.UseSerilogRequestLogging();
 
