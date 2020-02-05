@@ -1,12 +1,29 @@
-.form-control {
-  background-color: $bg-color;
-  border:none;
-
-}
-.form-control:focus {
-  color:$tertiary-font;
-    background-color: $bg-color;
-}
-input::placeholder {
-  color: red;
+form {
+  &.dark-form {
+    select, option, input, textarea {
+      background-color: $bg-color-form;
+      border: none;
+      color: $default-form-text;
+      &:focus {
+        background-color: $bg-color-form;
+        box-shadow: none;
+        color: $default-form-text;
+      }
+    }
+    input, textarea {
+      &::placeholder {
+        color: $placeholder-text;
+      }
+      &:focus {
+        border: 1px solid $borders;
+        &:not(:read-only):not(:disabled)::placeholder {
+          color: transparent;
+        }
+      }
+      &:disabled, &:read-only {
+        background-color: $bg-color-form-disabled;
+        border: 1px dotted $borders;
+      }
+    }
+  }
 }
