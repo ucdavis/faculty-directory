@@ -88,6 +88,13 @@ namespace FacultyDirectory.Core.Services
         // TODO: handle multiple sites?
         public async Task<string> PublishPerson(SitePerson sitePerson)
         {
+            // TODO: get from site settings or query dynamically from site settings?
+            var personTypes = new Dictionary<string, string> {
+                { "faculty", "8338d79c-1105-4845-ae56-1919c8738249" },
+                { "emeriti", "dc92d966-f3fc-48bf-b187-bcb3184eae3d" },
+                { "leadership", "b2736747-a96c-4ce1-8572-9b2b818d53b0" } 
+            };
+
             // TODO: determine which site values to use for each property
             var drupalPerson = await this.biographyGenerationService.Generate(sitePerson);
 
@@ -98,15 +105,17 @@ namespace FacultyDirectory.Core.Services
 
             await foreach (var tagId in this.SyncTags(tags))
             {
-                tagNodes.Add(new {
+                tagNodes.Add(new
+                {
                     type = "taxonomy_term--sf_tags",
                     id = tagId
                 });
             }
 
             // now we have our tag relationship
-            var field_sf_tags = new {
-                    data = tagNodes
+            var field_sf_tags = new
+            {
+                data = tagNodes
             };
 
             // Step 2: form POST/PATCH depending on prior existance of user page
@@ -135,11 +144,13 @@ namespace FacultyDirectory.Core.Services
                         field_sf_emails = drupalPerson.Emails,
                         field_sf_phone_numbers = drupalPerson.Phones,
                         field_sf_unit = drupalPerson.Departments,
-                        field_sf_websites = drupalPerson.Websites.Select(w => new {
+                        field_sf_websites = drupalPerson.Websites.Select(w => new
+                        {
                             uri = w.Uri,
                             title = w.Title
                         }), // TODO: collect websites
-                        body = new {
+                        body = new
+                        {
                             value = drupalPerson.Bio,
                             format = "basic_html",
                             summary = "" // TODO: do we need summary?
@@ -152,7 +163,7 @@ namespace FacultyDirectory.Core.Services
                             data = new
                             {
                                 type = "taxonomy_term--sf_person_type",
-                                id = "8238d79c-1105-4845-ae56-1919c8738249" // Staff type.  TODO: get from site settings or query dynamically?
+                                id = personTypes[sitePerson.Person.Classification]
                             }
                         },
                         field_sf_tags

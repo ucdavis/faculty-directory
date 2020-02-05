@@ -104,7 +104,7 @@ namespace FacultyDirectory.Core.Services
                 // Once we get more sources, we need to determine a ranking in case there are multiple tags
                 if (data.Tags != null && data.Tags.Any())
                 {
-                    return data.Tags;
+                    return data.Tags.Select(t => t.ToLower()).ToArray();
                 }
             }
 
