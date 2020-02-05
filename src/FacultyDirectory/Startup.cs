@@ -1,9 +1,11 @@
 using FacultyDirectory.Core.Data;
 using FacultyDirectory.Core.Models;
 using FacultyDirectory.Core.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -32,10 +34,16 @@ namespace FacultyDirectory
                 o.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            services.AddAuthentication().AddOpenIdConnect(oidc => {
-                oidc.ClientId = "";
-                oidc.ClientSecret = "";
-                oidc.Authority = "";
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+            })
+            .AddCookie()
+            .AddOpenIdConnect(oidc => {
+                oidc.ClientId = Configuration["Authentication:ClientId"];
+                oidc.ClientSecret = Configuration["Authentication:ClientSecret"];
+                oidc.Authority = Configuration["Authentication:Authority"];
                 oidc.ResponseType = OpenIdConnectResponseType.Code;
             });
 
@@ -78,11 +86,25 @@ namespace FacultyDirectory
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
-            // app.UseAuthentication();
-
             app.UseSerilogRequestLogging();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.Use(async (context, next) =>
+            {
+                // TODO: remove isDevelopment and make everyone login
+                if (!context.User.Identity.IsAuthenticated && !env.IsDevelopment())
+                {
+                    await context.ChallengeAsync(OpenIdConnectDefaults.AuthenticationScheme);
+                }
+                else
+                {
+                    await next();
+                }
+            });
 
             app.UseEndpoints(endpoints =>
             {
