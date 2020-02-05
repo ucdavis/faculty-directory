@@ -45,6 +45,10 @@ namespace FacultyDirectory
                 oidc.ClientSecret = Configuration["Authentication:ClientSecret"];
                 oidc.Authority = Configuration["Authentication:Authority"];
                 oidc.ResponseType = OpenIdConnectResponseType.Code;
+                oidc.Scope.Add("openid");
+                oidc.Scope.Add("profile");
+                oidc.Scope.Add("email");
+                oidc.Scope.Add("ucdProfile");
             });
 
             services.AddControllersWithViews();
