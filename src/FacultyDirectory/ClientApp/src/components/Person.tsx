@@ -50,13 +50,15 @@ export const Person = () => {
     });
   };
 
-  if (!bio) {
+  if (!bio || !sitePerson.person) {
     return <div>loading</div>;
   }
 
   console.log('site person', sitePerson);
 
   const hasSitePerson = !!sitePerson.id;
+
+  const { person } = sitePerson;
 
   return (
     <div className='content-wrapper'>
@@ -78,7 +80,7 @@ export const Person = () => {
             type='text'
             className='form-control'
             name='firstName'
-            placeholder={bio.firstName}
+            placeholder={person.firstName}
             value={sitePerson.firstName || ''}
             onChange={changeHandler}
           />
@@ -89,7 +91,7 @@ export const Person = () => {
             type='text'
             className='form-control'
             name='lastName'
-            placeholder={bio.lastName}
+            placeholder={person.lastName}
             value={sitePerson.lastName || ''}
             onChange={changeHandler}
           />
@@ -100,7 +102,7 @@ export const Person = () => {
             type='text'
             className='form-control'
             name='title'
-            placeholder={bio.title}
+            placeholder={person.title}
             value={sitePerson.title || ''}
             onChange={changeHandler}
           />
