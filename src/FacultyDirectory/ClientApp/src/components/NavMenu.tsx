@@ -26,11 +26,12 @@ export class NavMenu extends Component<any, State> {
   render () {
     return (
       <header className="container">
-        <h1>Faculty importing tool</h1>
+        <h1>Faculty list encompassing everyone current &amp; Emeriti</h1>
         <p className="discreet">
         <span>Calvin Doval | CAES</span> •
         Sign out
         </p>
+        <a href="/">Home Table</a>
       </header>
     );
   }
