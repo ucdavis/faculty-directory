@@ -14,6 +14,14 @@ In the root
 
 Add secrets file from 1password. Can do it manually but my trick is to type `dotnet user-secrets set a b` and it'll create you a dummy secrets file, which you can then replace with the proper version.  On a map file is located at `~/.microsoft/usersecrets/3300ed04-c997-4a05-8ce8-7a65defad5ce`
 
+## Install Tools (If you want to run migrations)
+
+In the root
+
+`dotnet tool restore`
+
+Currently the only tool is dotnet-ef.
+
 ## Run
 
 Go into the web project /src/FacultyDirectory and type `dotnet watch run`.  If you are using VSCode you can just click run or debug.
