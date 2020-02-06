@@ -3,6 +3,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import { ISource } from '../models/ISource';
 import { IBio } from '../models/IBio';
 import { ISitePerson } from '../models/ISitePerson';
+import { InputArray } from './InputArray';
 
 export const Person = () => {
   let { id } = useParams();
@@ -49,13 +50,15 @@ export const Person = () => {
     });
   };
 
-  if (!bio) {
+  if (!bio || !sitePerson.person) {
     return <div>loading</div>;
   }
 
-  console.log(bio);
+  console.log('site person', sitePerson);
 
   const hasSitePerson = !!sitePerson.id;
+
+  const { person } = sitePerson;
 
   return (
     <div className='content-wrapper'>
@@ -77,7 +80,7 @@ export const Person = () => {
             type='text'
             className='form-control'
             name='firstName'
-            placeholder={bio.firstName}
+            placeholder={person.firstName}
             value={sitePerson.firstName || ''}
             onChange={changeHandler}
           />
@@ -88,7 +91,7 @@ export const Person = () => {
             type='text'
             className='form-control'
             name='lastName'
-            placeholder={bio.lastName}
+            placeholder={person.lastName}
             value={sitePerson.lastName || ''}
             onChange={changeHandler}
           />
@@ -99,57 +102,30 @@ export const Person = () => {
             type='text'
             className='form-control'
             name='title'
-            placeholder={bio.title}
+            placeholder={person.title}
             value={sitePerson.title || ''}
             onChange={changeHandler}
           />
         </div>
         <div className='form-group'>
-          <label>Email (ALLOW LIST)</label>
-          <input
-            type='text'
-            className='form-control'
-            name='emails'
-            placeholder={bio.emails.join(' ')}
-            value={sitePerson.email || ''}
-            onChange={changeHandler}
-          />
+          <label>Email</label>
+          <InputArray data={bio.emails} name="emails" onChange={changeHandler}></InputArray>
         </div>
         <div className='form-group'>
-          <label>Phone (ALLOW LIST)</label>
-          <input
-            type='text'
-            className='form-control'
-            name='phones'
-            placeholder={bio.phones.join(' ')}
-            value={sitePerson.phone || ''}
-            onChange={changeHandler}
-          />
+          <label>Phone</label>
+          <InputArray data={bio.phones} name="phones" onChange={changeHandler}></InputArray>
         </div>
         <div className='form-group'>
-          <label>Departments (ALLOW LIST)</label>
-          <input
-            type='text'
-            className='form-control'
-            name='departments'
-            placeholder={bio.departments.join(' ')}
-            value={sitePerson.departments || ''}
-            onChange={changeHandler}
-          />
+          <label>Departments</label>
+          <InputArray data={bio.departments} name="departments" onChange={changeHandler}></InputArray>
         </div>
         <div className='form-group'>
           <label>Websites (TODO)</label>
-          <input
-            type='text'
-            readOnly
-            className='form-control'
-            name='websites'
-            placeholder={bio.websites.map(w => w.uri).join(' ')}
-          />
         </div>
         <div className='form-group'>
           <label>Bio</label>
           <textarea
+            rows={5}
             className='form-control'
             name='bio'
             placeholder={bio.bio}
@@ -158,15 +134,8 @@ export const Person = () => {
           />
         </div>
         <div className='form-group'>
-          <label>Tags (TODO)</label>
-          <input
-            type='text'
-            className='form-control'
-            name='tags'
-            placeholder={bio.tags.join(' ')}
-            value={''}
-            onChange={changeHandler}
-          />
+          <label>Tags</label>
+          <InputArray data={bio.tags} name="tags" onChange={changeHandler}></InputArray>
         </div>
         {hasSitePerson && (
           <button type='submit' className='btn btn-primary'>
