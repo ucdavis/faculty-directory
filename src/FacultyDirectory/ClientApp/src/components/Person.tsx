@@ -3,6 +3,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import { ISource } from '../models/ISource';
 import { IBio } from '../models/IBio';
 import { ISitePerson } from '../models/ISitePerson';
+import { InputArray } from './InputArray';
 
 export const Person = () => {
   let { id } = useParams();
@@ -53,7 +54,7 @@ export const Person = () => {
     return <div>loading</div>;
   }
 
-  console.log(bio);
+  console.log('site person', sitePerson);
 
   const hasSitePerson = !!sitePerson.id;
 
@@ -139,13 +140,6 @@ export const Person = () => {
         </div>
         <div className='form-group'>
           <label>Websites (TODO)</label>
-          <input
-            type='text'
-            readOnly
-            className='form-control'
-            name='websites'
-            placeholder={bio.websites.map(w => w.uri).join(' ')}
-          />
         </div>
         <div className='form-group'>
           <label>Bio</label>
@@ -157,6 +151,7 @@ export const Person = () => {
             onChange={changeHandler}
           />
         </div>
+        <InputArray data={bio.tags} name="tags" onChange={changeHandler}></InputArray>
         <div className='form-group'>
           <label>Tags (TODO)</label>
           <input
