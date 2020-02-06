@@ -58,7 +58,7 @@ stages:
         - task: CmdLine@2
           displayName: 'Generate EF Migration Script'
           inputs:
-            script: 'dotnet ef migrations script --project ./src/FacultyDirectory.Core/FacultyDirectory.Core.csproj --idempotent --output $(build.artifactstagingdirectory)/migrations'
+            script: 'dotnet ef migrations script --startup-project ./src/FacultyDirectory/FacultyDirectory.csproj --project ./src/FacultyDirectory.Core/FacultyDirectory.Core.csproj --idempotent --output $(build.artifactstagingdirectory)/migrations'
 
         - task: DotNetCoreCLI@2
           displayName: 'Publish FacultyDirectory MVC project'
@@ -68,7 +68,7 @@ stages:
             zipAfterPublish: false
             modifyOutputPath: false
             projects: './src/FacultyDirectory/FacultyDirectory.csproj'
-            arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)/'
+            arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)/build'
 
         - task: PublishBuildArtifacts@1
           displayName: 'Publish Artifact'
