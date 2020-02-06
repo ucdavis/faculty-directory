@@ -106,37 +106,16 @@ export const Person = () => {
           />
         </div>
         <div className='form-group'>
-          <label>Email (ALLOW LIST)</label>
-          <input
-            type='text'
-            className='form-control'
-            name='emails'
-            placeholder={bio.emails.join(' ')}
-            value={sitePerson.email || ''}
-            onChange={changeHandler}
-          />
+          <label>Email</label>
+          <InputArray data={bio.emails} name="emails" onChange={changeHandler}></InputArray>
         </div>
         <div className='form-group'>
-          <label>Phone (ALLOW LIST)</label>
-          <input
-            type='text'
-            className='form-control'
-            name='phones'
-            placeholder={bio.phones.join(' ')}
-            value={sitePerson.phone || ''}
-            onChange={changeHandler}
-          />
+          <label>Phone</label>
+          <InputArray data={bio.phones} name="phones" onChange={changeHandler}></InputArray>
         </div>
         <div className='form-group'>
-          <label>Departments (ALLOW LIST)</label>
-          <input
-            type='text'
-            className='form-control'
-            name='departments'
-            placeholder={bio.departments.join(' ')}
-            value={sitePerson.departments || ''}
-            onChange={changeHandler}
-          />
+          <label>Departments</label>
+          <InputArray data={bio.departments} name="departments" onChange={changeHandler}></InputArray>
         </div>
         <div className='form-group'>
           <label>Websites (TODO)</label>
@@ -144,6 +123,7 @@ export const Person = () => {
         <div className='form-group'>
           <label>Bio</label>
           <textarea
+            rows={5}
             className='form-control'
             name='bio'
             placeholder={bio.bio}
@@ -151,17 +131,9 @@ export const Person = () => {
             onChange={changeHandler}
           />
         </div>
-        <InputArray data={bio.tags} name="tags" onChange={changeHandler}></InputArray>
         <div className='form-group'>
-          <label>Tags (TODO)</label>
-          <input
-            type='text'
-            className='form-control'
-            name='tags'
-            placeholder={bio.tags.join(' ')}
-            value={''}
-            onChange={changeHandler}
-          />
+          <label>Tags</label>
+          <InputArray data={bio.tags} name="tags" onChange={changeHandler}></InputArray>
         </div>
         {hasSitePerson && (
           <button type='submit' className='btn btn-primary'>
