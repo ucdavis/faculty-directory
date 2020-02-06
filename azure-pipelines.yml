@@ -35,6 +35,12 @@ stages:
         restoreSolution: '$(solution)'
 
     - task: DotNetCoreCLI@2
+      displayName: 'Restore Tools'
+      inputs:
+        command: 'custom'
+        custom: 'tool restore'
+
+    - task: DotNetCoreCLI@2
       displayName: 'Build FacultyDirectory MVC project'
       inputs:
         command: 'build'
@@ -51,6 +57,12 @@ stages:
   jobs:
     - job:
       steps:
+        - task: DotNetCoreCLI@2
+          inputs:
+            command: 'custom'
+            custom: 'ef migrations script'
+            arguments: '--project ./src/FacultyDirectory.Core/FacultyDirectory.Core.csproj --idempotent --output $(build.artifactstagingdirectory)/migrations'
+
         - task: DotNetCoreCLI@2
           displayName: 'Publish FacultyDirectory MVC project'
           inputs:
