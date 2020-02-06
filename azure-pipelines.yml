@@ -58,7 +58,7 @@ stages:
         - task: CmdLine@2
           displayName: 'Generate EF Migration Script'
           inputs:
-            script: 'dotnet ef migrations script --startup-project ./src/FacultyDirectory/FacultyDirectory.csproj --project ./src/FacultyDirectory.Core/FacultyDirectory.Core.csproj --idempotent --output $(build.artifactstagingdirectory)/migrations'
+            script: 'dotnet ef migrations script --startup-project ./src/FacultyDirectory/FacultyDirectory.csproj --project ./src/FacultyDirectory.Core/FacultyDirectory.Core.csproj --idempotent --output $(build.artifactstagingdirectory)/migrations.sql'
 
         - task: DotNetCoreCLI@2
           displayName: 'Publish FacultyDirectory MVC project'
