@@ -34,11 +34,9 @@ stages:
       inputs:
         restoreSolution: '$(solution)'
 
-    - task: DotNetCoreCLI@2
-      displayName: 'Restore Tools'
+    - task: CmdLine@2
       inputs:
-        command: 'custom'
-        custom: 'tool restore'
+        script: 'dotnet tool restore'
 
     - task: DotNetCoreCLI@2
       displayName: 'Build FacultyDirectory MVC project'
@@ -57,11 +55,10 @@ stages:
   jobs:
     - job:
       steps:
-        - task: DotNetCoreCLI@2
+        - task: CmdLine@2
+          displayName: 'Generate EF Migration Script'
           inputs:
-            command: 'custom'
-            custom: 'ef migrations script'
-            arguments: '--project ./src/FacultyDirectory.Core/FacultyDirectory.Core.csproj --idempotent --output $(build.artifactstagingdirectory)/migrations'
+            script: 'dotnet ef migrations script --project ./src/FacultyDirectory.Core/FacultyDirectory.Core.csproj --idempotent --output $(build.artifactstagingdirectory)/migrations'
 
         - task: DotNetCoreCLI@2
           displayName: 'Publish FacultyDirectory MVC project'
