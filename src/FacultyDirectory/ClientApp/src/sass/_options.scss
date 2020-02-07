@@ -1,3 +1,13 @@
+a.back-link {
+  color: $primary-font;
+  .fa-arrow-left {
+    color: $unitrans-red;
+  }
+  &:hover {
+    color: $ucd-gold;
+  }
+}
+
 form {
   &.dark-form {
     select, option, input, textarea {

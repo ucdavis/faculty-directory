@@ -1,11 +1,10 @@
 html {
-  height:100%;
-
+  height: 100%;
 }
 body {
   display: flex;
   flex-direction: column;
-  height:100%;
+  height: 100%;
   background: $bg-color;
 }
 .page-wrap {
@@ -13,23 +12,23 @@ body {
 }
 header {
   h1 {
-    margin-bottom:1rem;
+    margin-bottom: 1rem;
   }
 }
 .content-wrapper {
-  background-color:$bg-color-secondary;
-  padding:16px;
+  background-color: $bg-color-secondary;
+  padding: 16px;
   border-radius: 4px;
 }
 footer {
-    flex-shrink: 0;
-    margin-bottom:2rem;
+  flex-shrink: 0;
+  margin-bottom: 2rem;
 }
 .table {
   a {
-    color:$tertiary-font;
+    color: $tertiary-font;
   }
 }
 .table-dark {
-  color:$primary-font;
+  color: $primary-font;
 }

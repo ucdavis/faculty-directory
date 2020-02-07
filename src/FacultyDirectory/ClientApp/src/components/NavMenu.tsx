@@ -1,14 +1,32 @@
 import React, { Component } from 'react';
-import './NavMenu.css';
+import { Link, useLocation } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface State {
   collapsed: boolean;
 }
 
+function NavBar() {
+  let location = useLocation();
+
+  return (
+    <div className='d-flex justify-content-between mb-3'>
+      {location.pathname != '/' && (
+        <Link className="back-link" to='/'>
+          <FontAwesomeIcon icon='arrow-left' size='xs' /> Back to Faculty List
+        </Link>
+      )}
+      <span className='discreet ml-auto'>
+        <span>Calvin Doval | CAES</span> • Sign out
+      </span>
+    </div>
+  );
+}
+
 export class NavMenu extends Component<any, State> {
   static displayName = NavMenu.name;
 
-  constructor (props: any) {
+  constructor(props: any) {
     super(props);
 
     this.toggleNavbar = this.toggleNavbar.bind(this);
@@ -17,21 +35,18 @@ export class NavMenu extends Component<any, State> {
     };
   }
 
-  toggleNavbar () {
+  toggleNavbar() {
     this.setState({
       collapsed: !this.state.collapsed
     });
   }
 
-  render () {
+  render() {
     return (
-      <header className="container">
-        <h1>Faculty list encompassing everyone current &amp; Emeriti</h1>
-        <p className="discreet">
-        <span>Calvin Doval | CAES</span> •
-        Sign out
-        </p>
-        <a href="/">Home Table</a>
+      <header className='container'>
+        <img src='/media/fleece.svg' />
+        <h3>Faculty list encompassing everyone current &amp; Emeriti</h3>
+        <NavBar />
       </header>
     );
   }
