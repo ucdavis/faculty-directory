@@ -37,7 +37,7 @@ namespace FacultyDirectory.Jobs.ProcessSources
             ProcessFirstTimers(dbContext, scholarService).GetAwaiter().GetResult();
 
             // Now look for updates for people who haven't been updated recently
-            ProcessExisting(dbContext, scholarService).GetAwaiter().GetResult();
+            // ProcessExisting(dbContext, scholarService).GetAwaiter().GetResult();
 
             _log.Information("Process Sources Job Finished");
         }
@@ -45,12 +45,14 @@ namespace FacultyDirectory.Jobs.ProcessSources
         private static async Task ProcessFirstTimers(ApplicationDbContext dbContext, IScholarService scholarService)
         {
             // grab N random people who need sources setup first time
-            var firstTimePeopleWithoutScholarSource = await dbContext.People.Where(p => !p.Sources.Any(s => s.Source == "scholar")).Take(25).ToArrayAsync();
+            var firstTimePeopleWithoutScholarSource = await dbContext.People.Where(p => !p.Sources.Any(s => s.Source == "scholar")).Take(100).ToArrayAsync();
 
             _log.Information("Processing {num} people without scholar sources", firstTimePeopleWithoutScholarSource.Length);
 
             foreach (var person in firstTimePeopleWithoutScholarSource)
             {
+                _log.Information("Processing Person {id}", person.Id);
+
                 await scholarService.SyncForPerson(person.Id);
 
                 // wait a little before trying the next one to make sure our data source is happy

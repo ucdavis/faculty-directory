@@ -102,6 +102,8 @@ namespace FacultyDirectory.Core.Services
                 document = parser.ParseDocument(responseStream);
             }
 
+            EnsureValidResponse(document, siteUrl);
+
             var tags = document.All.Where(m => m.LocalName == "a" &&
                 m.ParentElement.Id == "gsc_prf_int");
 
@@ -156,6 +158,8 @@ namespace FacultyDirectory.Core.Services
                 document = parser.ParseDocument(responseStream);
             }
 
+            EnsureValidResponse(document, siteUrl);
+
             //  Query Profiles
             var profiles = document.All.Where(m => m.ClassName == "gs_ai gs_scl gs_ai_chpr" &&
                 m.ParentElement.ClassName == "gsc_1usr");
@@ -201,6 +205,16 @@ namespace FacultyDirectory.Core.Services
             }
 
             return foundScholarIds.ToArray();
+        }
+
+        private void EnsureValidResponse(IHtmlDocument document, string siteUrl) {
+            // Get the main body to determine if we've properly loaded the document
+            var body = document.GetElementById("gs_bdy_ccl");
+
+            if (body == null)
+            {
+                throw new ApplicationException($"{siteUrl} could not be loaded");
+            }
         }
     }
 
