@@ -31,6 +31,7 @@ export const People = (props: any) => {
   };
 
   const decision = ({ sitePerson }: any) => {
+    // todo: decide what info we want to show for person sync status
     if (sitePerson) {
       return sitePerson.shouldSync ? 'sync' : 'hold';
     } else {
