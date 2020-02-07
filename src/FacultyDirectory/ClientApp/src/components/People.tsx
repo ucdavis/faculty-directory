@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ReactTable } from './ReactTable';
 import { IPerson } from '../models/IPerson';
 import { ISitePerson } from '../models/ISitePerson';
+import { Row } from 'react-table';
 
 interface IPersonRecord {
   person: IPerson;
@@ -32,7 +33,7 @@ export const People = () => {
     a.person.lastName.localeCompare(b.person.lastName)
   );
 
-  const navLink = ({ row }: any) => {
+  const navLink = ({ row }: { row: Row<IPersonRecord> }) => {
     const { person } = row.original; // get the original data back for this row
     return <Link to={'/People/' + person.id}>View Record</Link>;
   };
@@ -44,7 +45,7 @@ export const People = () => {
     } else {
       return 'none';
     }
-  }
+  };
 
   const columns = [
     { Header: '', id: 'detail', Cell: navLink },
