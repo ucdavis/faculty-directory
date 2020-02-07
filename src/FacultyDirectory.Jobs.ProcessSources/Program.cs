@@ -49,7 +49,7 @@ namespace FacultyDirectory.Jobs.ProcessSources
         private static async Task ProcessFirstTimers(ApplicationDbContext dbContext, IScholarService scholarService)
         {
             // grab N random people who need sources setup first time
-            var firstTimePeopleWithoutScholarSource = await dbContext.People.Where(p => !p.Sources.Any(s => s.Source == "scholar")).Take(100).ToArrayAsync();
+            var firstTimePeopleWithoutScholarSource = await dbContext.People.Where(p => !p.Sources.Any(s => s.Source == "scholar")).Take(20).ToArrayAsync();
 
             _log.Information("Processing {num} people without scholar sources", firstTimePeopleWithoutScholarSource.Length);
 
