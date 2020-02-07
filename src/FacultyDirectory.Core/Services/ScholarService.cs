@@ -111,23 +111,26 @@ namespace FacultyDirectory.Core.Services
             // pubs are rows of the gsc_a_t table
             var pubs = document.All.Where(m => m.ClassName == "gsc_a_t" && m.ParentElement.ClassName == "gsc_a_tr");
 
-            var firstPub = pubs.First();
-            var greyEls = firstPub.Children.Where(c => c.LocalName == "div" && c.ClassName == "gs_gray");
-            var firstSub = greyEls.First().TextContent;
-
             var sourcePublications = new List<SourcePublication>();
 
-            foreach (var pub in pubs)
-            {
-                var header = pub.Children.Where(c => c.LocalName == "a").First();
-                var subInfo = pub.Children.Where(c => c.LocalName == "div" && c.ClassName == "gs_gray").ToArray();
+            if (pubs.Any()) {
+                var firstPub = pubs.First();
+                var greyEls = firstPub.Children.Where(c => c.LocalName == "div" && c.ClassName == "gs_gray");
+                var firstSub = greyEls.First().TextContent;
 
-                sourcePublications.Add(new SourcePublication {
-                    Title = header.TextContent,
-                    Url = header.GetAttribute("data-href"),
-                    Authors = subInfo[0].TextContent,
-                    ShortDetail = subInfo[1].TextContent
-                });
+                foreach (var pub in pubs)
+                {
+                    var header = pub.Children.Where(c => c.LocalName == "a").First();
+                    var subInfo = pub.Children.Where(c => c.LocalName == "div" && c.ClassName == "gs_gray").ToArray();
+
+                    sourcePublications.Add(new SourcePublication
+                    {
+                        Title = header.TextContent,
+                        Url = header.GetAttribute("data-href"),
+                        Authors = subInfo[0].TextContent,
+                        ShortDetail = subInfo[1].TextContent
+                    });
+                }
             }
 
             var data = new SourceData
