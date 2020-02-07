@@ -1,49 +1,49 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { ReactTable } from './ReactTable';
 
 export const People = (props: any) => {
   const [people, setPeople] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const getPeople = async () => {
-      setPeople(await fetch('SitePeople').then(r => r.json()));
+      const results = await fetch('SitePeople').then(r => r.json());
+      setPeople(results);
+      setLoading(false);
     };
 
     getPeople();
   }, []);
 
-  // TOOD: use react table or something better for large lists
-  const orderedPeople = people.sort(
-    (a: any, b: any) => a.person.lastName.localeCompare(b.person.lastName)
+  if (loading) {
+    return <span>loading...</span>;
+  }
+
+  // TOOD: start paging when record get large
+  const orderedPeople = people.sort((a: any, b: any) =>
+    a.person.lastName.localeCompare(b.person.lastName)
   );
 
-  return (
-    <div className="content-wrapper">
-      <table className="table table-striped table-dark">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">First</th>
-            <th scope="col">Last</th>
-            <th scope="col">Handle</th>
-          </tr>
-        </thead>
-        <tbody>
-        {orderedPeople.map(p => (
-          <tr>
-          <th scope="row"></th>
-          <td key={p.person.id}>
-            <Link to={'/People/' + p.person.id}>
-              {p.person.firstName} {p.person.lastName}
-            </Link>
-          </td>
-          <td></td>
-          <td></td>
-          <td></td>
+  const navLink = ({ row }: any) => {
+    const { person } = row.original; // get the original data back for this row
+    return <Link to={'/People/' + person.id}>View Record</Link>;
+  };
 
-        </tr>
-        ))}
-      </tbody>
-      </table>
-    </div>
-  );
+  const decision = ({ sitePerson }: any) => {
+    if (sitePerson) {
+      return sitePerson.shouldSync ? 'sync' : 'hold';
+    } else {
+      return 'none';
+    }
+  }
+
+  const columns = [
+    { Header: '', id: 'detail', Cell: navLink },
+    { Header: 'First', accessor: 'person.firstName' },
+    { Header: 'Last', accessor: 'person.lastName' },
+    { Header: 'Decision', accessor: decision }
+  ];
+
+  return <ReactTable columns={columns} data={orderedPeople} />;
 };
