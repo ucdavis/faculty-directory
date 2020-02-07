@@ -32,3 +32,10 @@ footer {
 .table-dark {
   color: $primary-font;
 }
+.logo-container {
+  max-width: 300px;
+  margin: 5rem auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
