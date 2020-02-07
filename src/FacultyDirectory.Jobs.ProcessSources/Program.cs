@@ -14,6 +14,7 @@ namespace FacultyDirectory.Jobs.ProcessSources
     public class Program : JobBase
     {
         private static ILogger _log;
+        private static Random _random;
 
         static void Main(string[] args)
         {
@@ -33,6 +34,9 @@ namespace FacultyDirectory.Jobs.ProcessSources
             var scholarService = provider.GetService<IScholarService>();
             var dbContext = provider.GetService<ApplicationDbContext>();
 
+            // Setup random number generator
+            _random = new Random();
+
             // First, get anyone who hasn't had any scholar information added yet
             ProcessFirstTimers(dbContext, scholarService).GetAwaiter().GetResult();
 
@@ -51,12 +55,21 @@ namespace FacultyDirectory.Jobs.ProcessSources
 
             foreach (var person in firstTimePeopleWithoutScholarSource)
             {
-                _log.Information("Processing Person {id}", person.Id);
+                try
+                {
+                    _log.Information("Processing {name} ({id})", person.FullName, person.Id);
 
-                await scholarService.SyncForPerson(person.Id);
-
-                // wait a little before trying the next one to make sure our data source is happy
-                await Task.Delay(500);
+                    await scholarService.SyncForPerson(person.Id);
+                }
+                catch (ApplicationException)
+                {
+                    _log.Warning("Could not process user {id}", person.Id);
+                }
+                finally
+                {
+                    // wait a little before trying the next one to make sure our data source is happy
+                    await Task.Delay(_random.Next(500, 1500));
+                }
             }
         }
 
@@ -72,10 +85,21 @@ namespace FacultyDirectory.Jobs.ProcessSources
 
             foreach (var personId in oldestUpdatedScholarPeopleIds)
             {
-                await scholarService.SyncForPerson(personId);
+                try
+                {
+                    _log.Information("Processing {id}", personId);
 
-                // wait a little before trying the next one to make sure our data source is happy
-                await Task.Delay(500);
+                    await scholarService.SyncForPerson(personId);
+                }
+                catch (ApplicationException)
+                {
+                    _log.Warning("Could not process user {id}", personId);
+                }
+                finally
+                {
+                    // wait a little before trying the next one to make sure our data source is happy
+                    await Task.Delay(_random.Next(500, 1500));
+                }
             }
         }
 
