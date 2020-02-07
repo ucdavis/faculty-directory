@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ReactTable } from './ReactTable';
+import { IPerson } from '../models/IPerson';
+import { ISitePerson } from '../models/ISitePerson';
 
-export const People = (props: any) => {
-  const [people, setPeople] = useState<any[]>([]);
+interface IPersonRecord {
+  person: IPerson;
+  sitePerson: ISitePerson;
+}
+
+export const People = () => {
+  const [people, setPeople] = useState<IPersonRecord[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -21,7 +28,7 @@ export const People = (props: any) => {
   }
 
   // TOOD: start paging when record get large
-  const orderedPeople = people.sort((a: any, b: any) =>
+  const orderedPeople = people.sort((a, b) =>
     a.person.lastName.localeCompare(b.person.lastName)
   );
 
@@ -30,7 +37,7 @@ export const People = (props: any) => {
     return <Link to={'/People/' + person.id}>View Record</Link>;
   };
 
-  const decision = ({ sitePerson }: any) => {
+  const decision = ({ sitePerson }: { sitePerson: ISitePerson }) => {
     // todo: decide what info we want to show for person sync status
     if (sitePerson) {
       return sitePerson.shouldSync ? 'sync' : 'hold';
