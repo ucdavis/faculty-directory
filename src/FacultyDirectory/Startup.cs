@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using FacultyDirectory.Core.Data;
 using FacultyDirectory.Core.Models;
 using FacultyDirectory.Core.Services;
@@ -54,6 +55,12 @@ namespace FacultyDirectory
                 {
                     NameClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
                 };
+            });
+
+            var allowedUsers = new List<string> {  };
+
+            services.AddAuthorization(options => {
+                options.AddPolicy("Admin", policy => policy.RequireAssertion(a => allowedUsers.Contains(a.User.Identity.Name)));
             });
 
             services.AddControllersWithViews();
