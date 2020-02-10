@@ -83,6 +83,15 @@ namespace FacultyDirectory.Core.Services
             await this.dbContext.SaveChangesAsync();
         }
 
+        private HttpRequestMessage ConfigureRequest(HttpMethod method, string url) {
+            var request = new HttpRequestMessage(method, url);
+            request.Headers.Add("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36");
+            request.Headers.Add("referer","https://scholar.google.com/");
+            request.Headers.Add("accept-language", "en-US,en;q=0.9");
+            request.Headers.Add("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
+            return request;
+        }
+
         public async Task<SourceData> GetTagsAndPublicationsById(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -92,7 +101,7 @@ namespace FacultyDirectory.Core.Services
 
             var siteUrl = $"https://scholar.google.com/citations?hl=en&user={id}";
 
-            var request = await this.httpClient.GetAsync(siteUrl);
+            var request = await this.httpClient.SendAsync(ConfigureRequest(HttpMethod.Get, siteUrl));
 
             IHtmlDocument document;
 
@@ -101,6 +110,8 @@ namespace FacultyDirectory.Core.Services
                 var parser = new HtmlParser();
                 document = parser.ParseDocument(responseStream);
             }
+
+            EnsureValidResponse(document, siteUrl);
 
             var tags = document.All.Where(m => m.LocalName == "a" &&
                 m.ParentElement.Id == "gsc_prf_int");
@@ -111,23 +122,26 @@ namespace FacultyDirectory.Core.Services
             // pubs are rows of the gsc_a_t table
             var pubs = document.All.Where(m => m.ClassName == "gsc_a_t" && m.ParentElement.ClassName == "gsc_a_tr");
 
-            var firstPub = pubs.First();
-            var greyEls = firstPub.Children.Where(c => c.LocalName == "div" && c.ClassName == "gs_gray");
-            var firstSub = greyEls.First().TextContent;
-
             var sourcePublications = new List<SourcePublication>();
 
-            foreach (var pub in pubs)
-            {
-                var header = pub.Children.Where(c => c.LocalName == "a").First();
-                var subInfo = pub.Children.Where(c => c.LocalName == "div" && c.ClassName == "gs_gray").ToArray();
+            if (pubs.Any()) {
+                var firstPub = pubs.First();
+                var greyEls = firstPub.Children.Where(c => c.LocalName == "div" && c.ClassName == "gs_gray");
+                var firstSub = greyEls.First().TextContent;
 
-                sourcePublications.Add(new SourcePublication {
-                    Title = header.TextContent,
-                    Url = header.GetAttribute("data-href"),
-                    Authors = subInfo[0].TextContent,
-                    ShortDetail = subInfo[1].TextContent
-                });
+                foreach (var pub in pubs)
+                {
+                    var header = pub.Children.Where(c => c.LocalName == "a").First();
+                    var subInfo = pub.Children.Where(c => c.LocalName == "div" && c.ClassName == "gs_gray").ToArray();
+
+                    sourcePublications.Add(new SourcePublication
+                    {
+                        Title = header.TextContent,
+                        Url = header.GetAttribute("data-href"),
+                        Authors = subInfo[0].TextContent,
+                        ShortDetail = subInfo[1].TextContent
+                    });
+                }
             }
 
             var data = new SourceData
@@ -143,7 +157,7 @@ namespace FacultyDirectory.Core.Services
         {
             var siteUrl = "https://scholar.google.com/citations?hl=en&view_op=search_authors&mauthors=" + name;
 
-            var request = await this.httpClient.GetAsync(siteUrl);
+            var request = await this.httpClient.SendAsync(ConfigureRequest(HttpMethod.Get, siteUrl));
 
             IHtmlDocument document;
 
@@ -152,6 +166,8 @@ namespace FacultyDirectory.Core.Services
                 var parser = new HtmlParser();
                 document = parser.ParseDocument(responseStream);
             }
+
+            EnsureValidResponse(document, siteUrl);
 
             //  Query Profiles
             var profiles = document.All.Where(m => m.ClassName == "gs_ai gs_scl gs_ai_chpr" &&
@@ -198,6 +214,16 @@ namespace FacultyDirectory.Core.Services
             }
 
             return foundScholarIds.ToArray();
+        }
+
+        private void EnsureValidResponse(IHtmlDocument document, string siteUrl) {
+            // Get the main body to determine if we've properly loaded the document
+            var body = document.GetElementById("gs_bdy_ccl");
+
+            if (body == null)
+            {
+                throw new ApplicationException($"{siteUrl} could not be loaded");
+            }
         }
     }
 
