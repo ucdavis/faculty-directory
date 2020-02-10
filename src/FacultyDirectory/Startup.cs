@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
 
 namespace FacultyDirectory
@@ -49,6 +50,10 @@ namespace FacultyDirectory
                 oidc.Scope.Add("profile");
                 oidc.Scope.Add("email");
                 oidc.Scope.Add("ucdProfile");
+                oidc.TokenValidationParameters = new TokenValidationParameters
+                {
+                    NameClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+                };
             });
 
             services.AddControllersWithViews();
