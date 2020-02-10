@@ -10,9 +10,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FacultyDirectory.Controllers
 {
-    // TODO: authorize
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [Authorize(Policy = "Admin")]
     public class SitePeopleController : ControllerBase
     {

@@ -16,7 +16,7 @@ export const People = () => {
 
   useEffect(() => {
     const getPeople = async () => {
-      const results = await fetch('SitePeople').then(r => r.json());
+      const results = await fetch('api/sitepeople').then(r => r.json());
       setPeople(results);
       setLoading(false);
     };
