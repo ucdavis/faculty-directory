@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System.Linq;
 using FacultyDirectory.Core.Data;
 using FacultyDirectory.Core.Models;
 using FacultyDirectory.Core.Services;
@@ -57,7 +57,8 @@ namespace FacultyDirectory
                 };
             });
 
-            var allowedUsers = new List<string> {  };
+            // TODO: get a better auth system, probably using JWTs and a users/sites/roles table
+            var allowedUsers = Configuration["Authentication:AllowedUsers"].Split(",");
 
             services.AddAuthorization(options => {
                 options.AddPolicy("Admin", policy => policy.RequireAssertion(a => allowedUsers.Contains(a.User.Identity.Name)));
@@ -112,7 +113,7 @@ namespace FacultyDirectory
             app.Use(async (context, next) =>
             {
                 // TODO: remove isDevelopment and make everyone login
-                if (!context.User.Identity.IsAuthenticated && !env.IsDevelopment())
+                if (!context.User.Identity.IsAuthenticated)
                 {
                     await context.ChallengeAsync(OpenIdConnectDefaults.AuthenticationScheme);
                 }
