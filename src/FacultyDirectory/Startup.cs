@@ -125,9 +125,10 @@ namespace FacultyDirectory
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapDefaultControllerRoute();
                 endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
+                    name: "api",
+                    pattern: "api/{controller}/{action=Index}/{id?}");
             });
 
             app.UseSpa(spa =>

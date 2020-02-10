@@ -15,7 +15,7 @@ export const Person = () => {
 
   useEffect(() => {
     const fetchPerson = async () => {
-      const result = await fetch('SitePeople/' + id).then(r => r.json());
+      const result = await fetch('api/sitepeople/' + id).then(r => r.json());
 
       setBio(result.bio);
       setSitePerson(result.sitePerson || {});
@@ -34,7 +34,7 @@ export const Person = () => {
       'Content-Type': 'application/json'
     };
     const body = JSON.stringify(sitePerson);
-    await fetch('SitePeople/' + id, { method: 'POST', headers, body }).then(r => r.json());
+    await fetch('api/sitepeople/' + id, { method: 'POST', headers, body }).then(r => r.json());
 
     // saved, redirect back to people home
     history.push('/people');
