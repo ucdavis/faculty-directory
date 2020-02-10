@@ -39,7 +39,7 @@ namespace FacultyDirectory.Controllers
         [HttpGet("validate")]
         public ActionResult Validate() {
             // TODO: get auth header
-            var jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6InBvc3RpdCIsImdpdmVuX25hbWUiOiJTY290dCIsImZhbWlseV9uYW1lIjoiS2lya2xhbmQiLCJuYmYiOjE1ODEzNTY0NTQsImV4cCI6MTU4MTk2MTI1NCwiaWF0IjoxNTgxMzU2NDU0fQ.gPWdBqRqfsbxj9XxA6RJABQqAzS-4kzSr76Jx1rW93Q";
+            var jwt = "jwt";
 
             var key = Encoding.ASCII.GetBytes("secretstringhere-verycoolsecret-thebest");
             var sharedKey = new SymmetricSecurityKey(key);
