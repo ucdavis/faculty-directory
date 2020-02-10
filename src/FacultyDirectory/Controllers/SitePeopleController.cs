@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FacultyDirectory.Core.Data;
 using FacultyDirectory.Core.Domain;
 using FacultyDirectory.Core.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +13,7 @@ namespace FacultyDirectory.Controllers
     // TODO: authorize
     [ApiController]
     [Route("[controller]")]
+    [Authorize(Policy = "Admin")]
     public class SitePeopleController : ControllerBase
     {
         const int SiteId = 1; // TODO: support more sites

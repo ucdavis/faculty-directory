@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using FacultyDirectory.Core.Data;
 using FacultyDirectory.Core.Domain;
 using FacultyDirectory.Core.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace FacultyDirectory.Controllers
 {
+    [Authorize(Policy = "Admin")]
     public class SystemController : Controller
     {
         private readonly ApplicationDbContext dbContext;

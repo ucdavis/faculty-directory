@@ -1,3 +1,4 @@
+using System.Linq;
 using FacultyDirectory.Core.Data;
 using FacultyDirectory.Core.Models;
 using FacultyDirectory.Core.Services;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
 
 namespace FacultyDirectory
@@ -49,6 +51,17 @@ namespace FacultyDirectory
                 oidc.Scope.Add("profile");
                 oidc.Scope.Add("email");
                 oidc.Scope.Add("ucdProfile");
+                oidc.TokenValidationParameters = new TokenValidationParameters
+                {
+                    NameClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+                };
+            });
+
+            // TODO: get a better auth system, probably using JWTs and a users/sites/roles table
+            var allowedUsers = Configuration["Authentication:AllowedUsers"].Split(",");
+
+            services.AddAuthorization(options => {
+                options.AddPolicy("Admin", policy => policy.RequireAssertion(a => allowedUsers.Contains(a.User.Identity.Name)));
             });
 
             services.AddControllersWithViews();
@@ -100,7 +113,7 @@ namespace FacultyDirectory
             app.Use(async (context, next) =>
             {
                 // TODO: remove isDevelopment and make everyone login
-                if (!context.User.Identity.IsAuthenticated && !env.IsDevelopment())
+                if (!context.User.Identity.IsAuthenticated)
                 {
                     await context.ChallengeAsync(OpenIdConnectDefaults.AuthenticationScheme);
                 }
