@@ -19,7 +19,7 @@ namespace FacultyDirectory.Controllers
             // Return JWT with user info
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes("secret");
+            var key = Encoding.ASCII.GetBytes("secretstringhere-verycoolsecret-thebest");
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
