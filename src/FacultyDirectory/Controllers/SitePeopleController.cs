@@ -52,12 +52,13 @@ namespace FacultyDirectory.Controllers
 
             if (dbSitePerson == null) {
                 dbSitePerson = sitePerson; // TODO: copy properties
+                dbSitePerson.Person = null; // don't overwrite person info
 
                 this.dbContext.SitePeople.Add(dbSitePerson);
             } else {
+
                 // existing site person, just update props
 
-                // TOOD: copy properties
                 dbSitePerson.FirstName = sitePerson.FirstName;
                 dbSitePerson.LastName = sitePerson.LastName;
                 dbSitePerson.Title = sitePerson.Title;
