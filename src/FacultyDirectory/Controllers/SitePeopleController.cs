@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FacultyDirectory.Core.Data;
 using FacultyDirectory.Core.Domain;
 using FacultyDirectory.Core.Services;
+using FacultyDirectory.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -58,16 +59,15 @@ namespace FacultyDirectory.Controllers
             } else {
 
                 // existing site person, just update props
-
-                dbSitePerson.FirstName = sitePerson.FirstName;
-                dbSitePerson.LastName = sitePerson.LastName;
-                dbSitePerson.Title = sitePerson.Title;
-                dbSitePerson.Bio = sitePerson.Bio;
-                dbSitePerson.Emails = sitePerson.Emails;
-                dbSitePerson.Phones = sitePerson.Phones;
-                dbSitePerson.Departments = sitePerson.Departments;
-                dbSitePerson.Websites = sitePerson.Websites;
-                dbSitePerson.Tags = sitePerson.Tags;
+                dbSitePerson.FirstName = sitePerson.FirstName.NullIfEmpty();
+                dbSitePerson.LastName = sitePerson.LastName.NullIfEmpty();
+                dbSitePerson.Title = sitePerson.Title.NullIfEmpty();
+                dbSitePerson.Bio = sitePerson.Bio.NullIfEmpty();
+                dbSitePerson.Emails = sitePerson.Emails.NullIfEmpty();
+                dbSitePerson.Phones = sitePerson.Phones.NullIfEmpty();
+                dbSitePerson.Departments = sitePerson.Departments.NullIfEmpty();
+                dbSitePerson.Websites = sitePerson.Websites.NullIfEmpty();
+                dbSitePerson.Tags = sitePerson.Tags.NullIfEmpty();
             }
 
             dbSitePerson.PersonId = personId;
