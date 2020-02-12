@@ -25,7 +25,7 @@ export const Person = () => {
     fetchPerson();
   }, [id]);
 
-  const onSubmit = async (e: any) => {
+  const onSubmit = async (e: any, shouldSync: boolean) => {
     e.preventDefault();
     console.log('submitting', sitePerson);
 
@@ -33,7 +33,9 @@ export const Person = () => {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     };
-    const body = JSON.stringify(sitePerson);
+
+    const body = JSON.stringify({...sitePerson, shouldSync });
+
     await fetch('api/sitepeople/' + id, { method: 'POST', headers, body }).then(r => r.json());
 
     // saved, redirect back to people home
@@ -65,7 +67,12 @@ export const Person = () => {
       <h1>
         {bio.firstName} {bio.lastName}
       </h1>
-      <p>Last Synced on {sitePerson.lastSync ? new Date(sitePerson.lastSync).toLocaleString() : 'never'}</p>
+      <p>
+        Last Synced on{' '}
+        {sitePerson.lastSync
+          ? new Date(sitePerson.lastSync).toLocaleString()
+          : 'never'}
+      </p>
       <p className='sourceIDs'>
         {sources.map((source: any) => (
           <span key={source.source}>
@@ -73,7 +80,7 @@ export const Person = () => {
           </span>
         ))}
       </p>
-      <form className="dark-form" onSubmit={onSubmit}>
+      <form className='dark-form'>
         <div className='form-group'>
           <label>First Name</label>
           <input
@@ -109,15 +116,27 @@ export const Person = () => {
         </div>
         <div className='form-group'>
           <label>Email</label>
-          <InputArray data={bio.emails} name="emails" onChange={changeHandler}></InputArray>
+          <InputArray
+            data={bio.emails}
+            name='emails'
+            onChange={changeHandler}
+          ></InputArray>
         </div>
         <div className='form-group'>
           <label>Phone</label>
-          <InputArray data={bio.phones} name="phones" onChange={changeHandler}></InputArray>
+          <InputArray
+            data={bio.phones}
+            name='phones'
+            onChange={changeHandler}
+          ></InputArray>
         </div>
         <div className='form-group'>
           <label>Departments</label>
-          <InputArray data={bio.departments} name="departments" onChange={changeHandler}></InputArray>
+          <InputArray
+            data={bio.departments}
+            name='departments'
+            onChange={changeHandler}
+          ></InputArray>
         </div>
         <div className='form-group'>
           <label>Websites (TODO)</label>
@@ -135,18 +154,26 @@ export const Person = () => {
         </div>
         <div className='form-group'>
           <label>Tags</label>
-          <InputArray data={bio.tags} name="tags" onChange={changeHandler}></InputArray>
+          <InputArray
+            data={bio.tags}
+            name='tags'
+            onChange={changeHandler}
+          ></InputArray>
         </div>
-        {hasSitePerson && (
-          <button type='submit' className='btn btn-primary'>
-            Save Changes
-          </button>
-        )}
-        {!hasSitePerson && (
-          <button type='submit' className='btn btn-primary'>
-            Save and Sync
-          </button>
-        )}
+        <button
+          type='submit'
+          onClick={e => onSubmit(e, true)}
+          className='btn btn-primary'
+        >
+          Save and Sync
+        </button>
+        <button
+          type='submit'
+          onClick={e => onSubmit(e, false)}
+          className='btn btn-warning'
+        >
+          Hold without Sync
+        </button>
       </form>
       <div></div>
     </div>
