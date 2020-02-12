@@ -62,6 +62,12 @@ namespace FacultyDirectory.Controllers
                 dbSitePerson.FirstName = sitePerson.FirstName;
                 dbSitePerson.LastName = sitePerson.LastName;
                 dbSitePerson.Title = sitePerson.Title;
+                dbSitePerson.Bio = sitePerson.Bio;
+                dbSitePerson.Emails = sitePerson.Emails;
+                dbSitePerson.Phones = sitePerson.Phones;
+                dbSitePerson.Departments = sitePerson.Departments;
+                dbSitePerson.Websites = sitePerson.Websites;
+                dbSitePerson.Tags = sitePerson.Tags;
             }
 
             dbSitePerson.PersonId = personId;
