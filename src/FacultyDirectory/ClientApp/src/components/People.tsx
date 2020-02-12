@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ReactTable } from './ReactTable';
 import { IPerson } from '../models/IPerson';
 import { ISitePerson } from '../models/ISitePerson';
-import { Cell, UseTableColumnOptions } from 'react-table';
+import { Cell, UseTableColumnOptions, TableState } from 'react-table';
 
 interface IPersonRecord {
   person: IPerson;
@@ -51,8 +51,15 @@ export const People = () => {
     { Header: '', id: 'detail', Cell: navLink },
     { Header: 'First', accessor: 'person.firstName' },
     { Header: 'Last', accessor: 'person.lastName' },
-    { Header: 'Decision', accessor: decision }
+    { Header: 'Decision', id: 'decision', accessor: decision,  }
   ];
 
-  return <ReactTable columns={columns} data={orderedPeople} />;
+  // provide default column for sorting
+  const initialState: Partial<TableState<any>> = {
+    sortBy: [
+      { id: 'decision' }
+    ]
+  };
+
+  return <ReactTable columns={columns} data={orderedPeople} initialState={initialState}/>;
 };

@@ -1,7 +1,7 @@
 import React from 'react';
-import { useTable, useFilters, useGlobalFilter } from 'react-table';
+import { useTable, useFilters, useGlobalFilter, useSortBy } from 'react-table';
 
-export const ReactTable = ({ columns, data }: any) => {
+export const ReactTable = ({ columns, data, initialState }: any) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -15,10 +15,12 @@ export const ReactTable = ({ columns, data }: any) => {
   } = useTable(
     {
       columns,
-      data
+      data,
+      initialState
     },
     useFilters, // useFilters!
-    useGlobalFilter // useGlobalFilter!
+    useGlobalFilter, // useGlobalFilter!
+    useSortBy
   );
 
   return (
@@ -41,7 +43,16 @@ export const ReactTable = ({ columns, data }: any) => {
         {headerGroups.map(headerGroup => (
           <tr {...headerGroup.getHeaderGroupProps()}>
             {headerGroup.headers.map(column => (
-              <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+              <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                {column.render('Header')}
+                <span>
+                  {column.isSorted
+                    ? column.isSortedDesc
+                      ? ' 🔽'
+                      : ' 🔼'
+                    : ''}
+                </span>
+              </th>
             ))}
           </tr>
         ))}
