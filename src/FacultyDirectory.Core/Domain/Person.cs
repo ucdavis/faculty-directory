@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace FacultyDirectory.Core.Domain {
     public class Person {
@@ -39,5 +40,9 @@ namespace FacultyDirectory.Core.Domain {
         public string Classification { get; set; }
 
         public List<PersonSource> Sources { get; set; }
+
+        [JsonIgnore]
+        // all site specific instances of this person
+        public List<SitePerson> SitePeople { get; set; }
     }
 }

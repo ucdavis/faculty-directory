@@ -106,6 +106,31 @@ namespace FacultyDirectory.Controllers
         }
 
         [HttpGet]
+        public async Task<ActionResult> CreateSitePeople(int id)
+        {
+            var validSite = await this.dbContext.Sites.AnyAsync(s => s.Id == id);
+
+            if (!validSite) {
+                return NotFound();
+            }
+
+            // go find everyone who doesn't already have a matching site person, and make them one
+            var peopleWithoutSitePeopleIds = await this.dbContext.People.Where(p => !p.SitePeople.Any(sp => sp.SiteId == id)).Select(p => p.Id).ToListAsync();
+        
+            foreach (var personId in peopleWithoutSitePeopleIds)
+            {
+                var sitePerson = new SitePerson { PersonId = personId, SiteId = id, ShouldSync = false };
+
+                this.dbContext.Add(sitePerson);
+            }
+
+            await this.dbContext.SaveChangesAsync();
+
+            return Json(peopleWithoutSitePeopleIds);
+        }
+
+
+        [HttpGet]
         public async Task<ActionResult> CreatePerson()
         {
             var site = new Site { Name = "Playground", Url = "https://playground.sf.ucdavis.edu" };
