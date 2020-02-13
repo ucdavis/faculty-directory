@@ -50,7 +50,16 @@ namespace FacultyDirectory.Jobs.SyncSites
 
             foreach (var sitePerson in sitePeople)
             {
-                await siteFarmService.PublishPerson(sitePerson);
+                try
+                {
+                    _log.Information("Processing {name} ({id})", sitePerson.Person.FullName, sitePerson.Person.Id);
+
+                    await siteFarmService.PublishPerson(sitePerson);
+                }
+                catch
+                {
+                    _log.Warning("Could not process user {id}", sitePerson.Person.Id);
+                }
             }
         }
 
