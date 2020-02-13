@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ReactTable, SelectColumnFilter } from './ReactTable';
+import { ReactTable } from './ReactTable/ReactTable';
 import { IPerson } from '../models/IPerson';
 import { ISitePerson } from '../models/ISitePerson';
 import { Cell, TableState, Column } from 'react-table';
+import { SelectColumnFilter } from './ReactTable/Filtering';
 
 interface IPersonRecord {
   person: IPerson;
