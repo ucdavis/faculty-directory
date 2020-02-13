@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ReactTable, SelectColumnFilter } from './ReactTable';
 import { IPerson } from '../models/IPerson';
 import { ISitePerson } from '../models/ISitePerson';
-import { Cell, UseTableColumnOptions, TableState } from 'react-table';
+import { Cell, TableState, Column } from 'react-table';
 
 interface IPersonRecord {
   person: IPerson;
@@ -47,7 +47,7 @@ export const People = () => {
     }
   };
 
-  const columns: UseTableColumnOptions<IPersonRecord>[] = [
+  const columns: Column<IPersonRecord>[] = [
     { Header: '', id: 'detail', Cell: navLink },
     { Header: 'First', accessor: 'person.firstName' },
     { Header: 'Last', accessor: 'person.lastName' },
@@ -65,5 +65,11 @@ export const People = () => {
     sortBy: [{ id: 'decision' }]
   };
 
-  return <ReactTable columns={columns} data={orderedPeople} initialState={initialState}/>;
+  return (
+    <ReactTable
+      columns={columns}
+      data={orderedPeople}
+      initialState={initialState}
+    />
+  );
 };
