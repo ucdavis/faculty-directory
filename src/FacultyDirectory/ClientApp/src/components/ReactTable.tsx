@@ -55,15 +55,28 @@ export const ReactTable = ({ columns, data, initialState }: any) => {
                 <span>
                   {column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}
                 </span>
-                <div>
-                  {column.canFilter && !!column.Filter
-                    ? column.render('Filter')
-                    : null}
-                </div>
               </th>
             ))}
           </tr>
         ))}
+        {headerGroups.map(headerGroup => {
+          return (
+            !!headerGroup.headers.some(header => !!header.Filter) && (
+              <tr {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map(column => (
+                  <th {...column.getHeaderProps()}>
+                    {/* Render the columns filter UI */}
+                    <div>
+                      {column.canFilter && !!column.Filter
+                        ? column.render('Filter')
+                        : null}
+                    </div>
+                  </th>
+                ))}
+              </tr>
+            )
+          );
+        })}
       </thead>
       <tbody {...getTableBodyProps()}>
         {rows.map((row, i) => {
