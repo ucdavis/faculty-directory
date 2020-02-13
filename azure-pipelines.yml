@@ -70,6 +70,33 @@ stages:
             projects: './src/FacultyDirectory/FacultyDirectory.csproj'
             arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)/build'
 
+        - task: DotNetCoreCLI@2
+          displayName: 'Assemble FacultyDirectory.Jobs.ImportFaculty'
+          inputs:
+            command: 'publish'
+            publishWebProjects: false
+            zipAfterPublish: false
+            projects: './src/FacultyDirectory.Jobs.ImportFaculty/FacultyDirectory.Jobs.ImportFaculty.csproj'
+            arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/build/app_data/jobs/triggered'
+
+        - task: DotNetCoreCLI@2
+          displayName: 'Assemble FacultyDirectory.Jobs.ProcessSources'
+          inputs:
+            command: 'publish'
+            publishWebProjects: false
+            zipAfterPublish: false
+            projects: './src/FacultyDirectory.Jobs.ProcessSources/FacultyDirectory.Jobs.ProcessSources.csproj'
+            arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/build/app_data/jobs/triggered'
+
+        - task: DotNetCoreCLI@2
+          displayName: 'Assemble FacultyDirectory.Jobs.SyncSites'
+          inputs:
+            command: 'publish'
+            publishWebProjects: false
+            zipAfterPublish: false
+            projects: './src/FacultyDirectory.Jobs.SyncSites/FacultyDirectory.Jobs.SyncSites.csproj'
+            arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/build/app_data/jobs/triggered'
+
         - task: PublishBuildArtifacts@1
           displayName: 'Publish Artifact'
           inputs:

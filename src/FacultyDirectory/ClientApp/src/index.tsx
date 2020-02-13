@@ -3,7 +3,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
-import registerServiceWorker from './registerServiceWorker';
+// import registerServiceWorker from './registerServiceWorker';
+import { unregister } from './registerServiceWorker';
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faArrowLeft, faTimes, faPlus, fas } from '@fortawesome/free-solid-svg-icons';
@@ -19,5 +20,5 @@ ReactDOM.render(
   </BrowserRouter>,
   rootElement);
 
-registerServiceWorker();
-
+// registerServiceWorker();
+unregister(); // remove service workers

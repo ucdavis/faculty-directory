@@ -22,7 +22,7 @@ export const Person = () => {
 
   useEffect(() => {
     const fetchPerson = async () => {
-      const result = await fetch('SitePeople/' + id).then(r => r.json());
+      const result = await fetch('api/sitepeople/' + id).then(r => r.json());
 
       setBio(result.bio);
       setSitePerson(result.sitePerson || {});
@@ -32,7 +32,7 @@ export const Person = () => {
     fetchPerson();
   }, [id]);
 
-  const onSubmit = async (e: any) => {
+  const onSubmit = async (e: any, shouldSync: boolean) => {
     e.preventDefault();
     console.log('submitting', sitePerson);
 
@@ -40,10 +40,14 @@ export const Person = () => {
       Accept: 'application/json',
       'Content-Type': 'application/json'
     };
-    const body = JSON.stringify(sitePerson);
-    await fetch('SitePeople/' + id, { method: 'POST', headers, body }).then(r =>
-      r.json()
-    );
+
+    const body = JSON.stringify({ ...sitePerson, shouldSync });
+
+    await fetch('api/sitepeople/' + id, {
+      method: 'POST',
+      headers,
+      body
+    }).then(r => r.json());
 
     // saved, redirect back to people home
     history.push('/people');
@@ -71,125 +75,129 @@ export const Person = () => {
 
   return (
     <>
-    <div className='content-wrapper'>
-      <h1>
-        {bio.firstName} {bio.lastName}
-      </h1>
-      <p>
-        Last Synced on{' '}
-        {sitePerson.lastSync
-          ? new Date(sitePerson.lastSync).toLocaleString()
-          : 'never'}
-      </p>
-      <p className='sourceIDs'>
-        {sources.map((source: any) => (
-          <span key={source.source}>
-            {source.source} - {source.sourceKey || 'not found'}
-          </span>
-        ))}
-      </p>
-      <form className='dark-form active-coloring' onSubmit={onSubmit}>
-        <div className='form-group'>
-          <label>First Name</label>
-          <div className='active-color-wrapper'>
-            <ActiveIndicator hasValue={!!sitePerson.firstName} />
-            <input
-              type='text'
+      <div className='content-wrapper'>
+        <h1>
+          {bio.firstName} {bio.lastName}
+        </h1>
+        <p>
+          Last Synced on{' '}
+          {sitePerson.lastSync
+            ? new Date(sitePerson.lastSync).toLocaleString()
+            : 'never'}
+        </p>
+        <p className='sourceIDs'>
+          {sources.map((source: any) => (
+            <span key={source.source}>
+              {source.source} - {source.sourceKey || 'not found'}
+            </span>
+          ))}
+        </p>
+        <form className='dark-form active-coloring'>
+          <div className='form-group'>
+            <label>First Name</label>
+            <div className='active-color-wrapper'>
+              <ActiveIndicator hasValue={!!sitePerson.firstName} />
+              <input
+                type='text'
+                className='form-control'
+                name='firstName'
+                placeholder={person.firstName}
+                value={sitePerson.firstName || ''}
+                onChange={changeHandler}
+              />
+            </div>
+          </div>
+          <div className='form-group'>
+            <label>Last Name</label>
+            <div className='active-color-wrapper'>
+              <ActiveIndicator hasValue={!!sitePerson.lastName} />
+              <input
+                type='text'
+                className='form-control'
+                name='lastName'
+                placeholder={person.lastName}
+                value={sitePerson.lastName || ''}
+                onChange={changeHandler}
+              />
+            </div>
+          </div>
+          <div className='form-group'>
+            <label>Title</label>
+            <div className='active-color-wrapper'>
+              <ActiveIndicator hasValue={!!sitePerson.title} />
+              <input
+                type='text'
+                className='form-control'
+                name='title'
+                placeholder={person.title}
+                value={sitePerson.title || ''}
+                onChange={changeHandler}
+              />
+            </div>
+          </div>
+          <div className='form-group'>
+            <label>Email</label>
+            <InputArray
+              data={bio.emails}
+              name='emails'
+              onChange={changeHandler}
+            ></InputArray>
+          </div>
+          <div className='form-group'>
+            <label>Phone</label>
+            <InputArray
+              data={bio.phones}
+              name='phones'
+              onChange={changeHandler}
+            ></InputArray>
+          </div>
+          <div className='form-group'>
+            <label>Departments</label>
+            <InputArray
+              data={bio.departments}
+              name='departments'
+              onChange={changeHandler}
+            ></InputArray>
+          </div>
+          <div className='form-group'>
+            <label>Websites (TODO)</label>
+          </div>
+          <div className='form-group'>
+            <label>Bio</label>
+            <textarea
+              rows={5}
               className='form-control'
-              name='firstName'
-              placeholder={person.firstName}
-              value={sitePerson.firstName || ''}
+              name='bio'
+              placeholder={bio.bio}
+              value={sitePerson.bio || ''}
               onChange={changeHandler}
             />
           </div>
-        </div>
-        <div className='form-group'>
-          <label>Last Name</label>
-          <div className='active-color-wrapper'>
-          <ActiveIndicator hasValue={!!sitePerson.lastName} />
-            <input
-              type='text'
-              className='form-control'
-              name='lastName'
-              placeholder={person.lastName}
-              value={sitePerson.lastName || ''}
+          <div className='form-group'>
+            <label>Tags</label>
+            <InputArray
+              data={bio.tags}
+              name='tags'
               onChange={changeHandler}
-            />
+            ></InputArray>
           </div>
-        </div>
-        <div className='form-group'>
-          <label>Title</label>
-          <div className='active-color-wrapper'>
-          <ActiveIndicator hasValue={!!sitePerson.title} />
-            <input
-              type='text'
-              className='form-control'
-              name='title'
-              placeholder={person.title}
-              value={sitePerson.title || ''}
-              onChange={changeHandler}
-            />
-          </div>
-        </div>
-        <div className='form-group'>
-          <label>Email</label>
-          <InputArray
-            data={bio.emails}
-            name='emails'
-            onChange={changeHandler}
-          ></InputArray>
-        </div>
-        <div className='form-group'>
-          <label>Phone</label>
-          <InputArray
-            data={bio.phones}
-            name='phones'
-            onChange={changeHandler}
-          ></InputArray>
-        </div>
-        <div className='form-group'>
-          <label>Departments</label>
-          <InputArray
-            data={bio.departments}
-            name='departments'
-            onChange={changeHandler}
-          ></InputArray>
-        </div>
-        <div className='form-group'>
-          <label>Websites (TODO)</label>
-        </div>
-        <div className='form-group'>
-          <label>Bio</label>
-          <textarea
-            rows={5}
-            className='form-control'
-            name='bio'
-            placeholder={bio.bio}
-            value={sitePerson.bio || ''}
-            onChange={changeHandler}
-          />
-        </div>
-        <div className='form-group'>
-          <label>Tags</label>
-          <InputArray
-            data={bio.tags}
-            name='tags'
-            onChange={changeHandler}
-          ></InputArray>
-        </div>
-      </form>
-    </div>
-    <div className="form-submit-wrapper">
-        {hasSitePerson && (
-          <button type='submit' className='btn btn-success'>
-            Save Changes
-          </button>
-        )}
-        {!hasSitePerson && (
-          <button type='submit' className='btn btn-success'>
-            Save and Sync
-          </button>
-        )}
+        </form>
+      </div>
+      <div className='form-submit-wrapper'>
+        <button
+          type='submit'
+          className='btn btn-success'
+          onClick={e => onSubmit(e, true)}
+        >
+          Save and Sync
+        </button>
+        <button
+          type='submit'
+          className='btn btn-outline-warning'
+          onClick={e => onSubmit(e, true)}
+        >
+          Hold without Sync
+        </button>
         <button type='reset' className='btn btn-outline-danger'>
           Do Not Sync
         </button>

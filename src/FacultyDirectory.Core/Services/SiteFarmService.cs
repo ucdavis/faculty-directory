@@ -173,7 +173,7 @@ namespace FacultyDirectory.Core.Services
 
             var serialized = JsonSerializer.Serialize(personData);
 
-            Console.WriteLine(serialized);
+            // Console.WriteLine(serialized);
 
             var request = new HttpRequestMessage(method, resourceUrl);
 
@@ -182,7 +182,7 @@ namespace FacultyDirectory.Core.Services
             var response = await this.httpClient.SendAsync(request);
             var content = await response.Content.ReadAsStringAsync();
 
-            Console.WriteLine(content);
+            // Console.WriteLine(content);
 
             // TODO: make models and deserialze properly
             dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(content);

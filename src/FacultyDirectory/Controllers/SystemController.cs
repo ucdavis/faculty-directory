@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using FacultyDirectory.Core.Data;
 using FacultyDirectory.Core.Domain;
 using FacultyDirectory.Core.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace FacultyDirectory.Controllers
 {
+    [Authorize(Policy = "Admin")]
     public class SystemController : Controller
     {
         private readonly ApplicationDbContext dbContext;
@@ -102,6 +104,31 @@ namespace FacultyDirectory.Controllers
 
             return Json(result);
         }
+
+        [HttpGet]
+        public async Task<ActionResult> CreateSitePeople(int id)
+        {
+            var validSite = await this.dbContext.Sites.AnyAsync(s => s.Id == id);
+
+            if (!validSite) {
+                return NotFound();
+            }
+
+            // go find everyone who doesn't already have a matching site person, and make them one
+            var peopleWithoutSitePeopleIds = await this.dbContext.People.Where(p => !p.SitePeople.Any(sp => sp.SiteId == id)).Select(p => p.Id).ToListAsync();
+        
+            foreach (var personId in peopleWithoutSitePeopleIds)
+            {
+                var sitePerson = new SitePerson { PersonId = personId, SiteId = id, ShouldSync = false };
+
+                this.dbContext.Add(sitePerson);
+            }
+
+            await this.dbContext.SaveChangesAsync();
+
+            return Json(peopleWithoutSitePeopleIds);
+        }
+
 
         [HttpGet]
         public async Task<ActionResult> CreatePerson()

@@ -4,14 +4,16 @@ using System.Threading.Tasks;
 using FacultyDirectory.Core.Data;
 using FacultyDirectory.Core.Domain;
 using FacultyDirectory.Core.Services;
+using FacultyDirectory.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FacultyDirectory.Controllers
 {
-    // TODO: authorize
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
+    [Authorize(Policy = "Admin")]
     public class SitePeopleController : ControllerBase
     {
         const int SiteId = 1; // TODO: support more sites
@@ -51,17 +53,24 @@ namespace FacultyDirectory.Controllers
 
             if (dbSitePerson == null) {
                 dbSitePerson = sitePerson; // TODO: copy properties
+                dbSitePerson.Person = null; // don't overwrite person info
 
                 this.dbContext.SitePeople.Add(dbSitePerson);
             } else {
+
                 // existing site person, just update props
-
-                // TOOD: copy properties
-                dbSitePerson.FirstName = sitePerson.FirstName;
-                dbSitePerson.LastName = sitePerson.LastName;
-                dbSitePerson.Title = sitePerson.Title;
+                dbSitePerson.FirstName = sitePerson.FirstName.NullIfEmpty();
+                dbSitePerson.LastName = sitePerson.LastName.NullIfEmpty();
+                dbSitePerson.Title = sitePerson.Title.NullIfEmpty();
+                dbSitePerson.Bio = sitePerson.Bio.NullIfEmpty();
+                dbSitePerson.Emails = sitePerson.Emails.NullIfEmpty();
+                dbSitePerson.Phones = sitePerson.Phones.NullIfEmpty();
+                dbSitePerson.Departments = sitePerson.Departments.NullIfEmpty();
+                dbSitePerson.Websites = sitePerson.Websites.NullIfEmpty();
+                dbSitePerson.Tags = sitePerson.Tags.NullIfEmpty();
+                dbSitePerson.ShouldSync = sitePerson.ShouldSync;
             }
-
+            
             dbSitePerson.PersonId = personId;
             dbSitePerson.SiteId = SiteId;
             dbSitePerson.LastUpdate = DateTime.UtcNow;
