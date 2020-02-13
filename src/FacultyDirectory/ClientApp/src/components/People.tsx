@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ReactTable } from './ReactTable';
+import { ReactTable, SelectColumnFilter } from './ReactTable';
 import { IPerson } from '../models/IPerson';
 import { ISitePerson } from '../models/ISitePerson';
 import { Cell, UseTableColumnOptions, TableState } from 'react-table';
@@ -51,14 +51,18 @@ export const People = () => {
     { Header: '', id: 'detail', Cell: navLink },
     { Header: 'First', accessor: 'person.firstName' },
     { Header: 'Last', accessor: 'person.lastName' },
-    { Header: 'Decision', id: 'decision', accessor: decision,  }
+    {
+      Header: 'Decision',
+      id: 'decision',
+      accessor: decision,
+      Filter: SelectColumnFilter,
+      filter: 'includes'
+    }
   ];
 
   // provide default column for sorting
   const initialState: Partial<TableState<any>> = {
-    sortBy: [
-      { id: 'decision' }
-    ]
+    sortBy: [{ id: 'decision' }]
   };
 
   return <ReactTable columns={columns} data={orderedPeople} initialState={initialState}/>;
