@@ -39,3 +39,20 @@ footer {
   flex-direction: column;
   align-items: center;
 }
+
+.form-submit-wrapper {
+  display: flex;
+  margin-top: 1rem;
+  .btn {
+    padding: 1rem 2rem;
+    font-size: 1.6rem;
+    border-radius: 0;
+    border-width: 3px;
+    &:not(:first-child) {
+      margin-left: 1rem;
+    }
+    &:not(:last-child) {
+      margin-right: 1rem;
+    }
+  }
+}

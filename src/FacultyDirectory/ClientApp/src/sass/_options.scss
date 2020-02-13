@@ -34,6 +34,107 @@ form {
         background-color: $bg-color-form-disabled;
         border: 1px dotted $borders;
       }
+      &::before {
+        content: ' ';
+        margin-right: 20px;
+      }
+      &:placeholder-shown {
+        &::before {
+          color: $placeholder-text;
+        }
+      }
     }
   }
+
+  .btn {
+    font-size: 1.6rem;
+  }
+}
+
+.active-color-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.active-color-indicator {
+  display: none;
+  width: 1rem;
+  height: 2rem;
+  background-color: $people-placeholder-color;
+  margin-right: 1rem;
+  margin-top: auto;
+  margin-bottom: auto;
+
+  &.active {
+    background-color: $people-active-color;
+  }
+}
+
+form.active-coloring {
+  input, textarea {
+    color: $people-active-color;
+    &::placeholder {
+      color: $people-placeholder-color;
+    }
+    &:focus {
+      border-color: $people-active-color;
+      color: $people-active-color;
+    }
+    border-left-width: 5px !important;
+    border-left-style: solid !important;
+    
+    &:placeholder-shown {
+      border-left-color: $people-placeholder-color;
+    }
+  }
+  .active-color-indicator {
+    display: block;
+  }
+}
+
+
+
+
+.input-array {
+  button.pop {
+    background-color: $bg-color-form;
+    color: $primary-font;
+  }
+
+  button.push {
+    background-color: transparent;
+    color: $primary-font;
+    font-size: 1.6rem;
+    .fa-plus {
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+.btn-success, .btn-outline-success:hover {
+  background-color: $sunny-grass !important;
+}
+
+.btn-warning, .btn-outline-warning:hover {
+  background-color: $golden-lupine !important;
+}
+
+.btn-danger, .btn-outline-danger:hover {
+  background-color: $unitrans-red !important;
+}
+
+.btn-outline-danger, .btn-outline-success, .btn-outline-warning {
+  color: $primary-font !important;
+}
+
+.btn-outline-danger, .btn-danger {
+  border-color: $unitrans-red !important;
+}
+
+.btn-outline-success, .btn-success {
+  border-color: $sunny-grass !important;
+}
+
+.btn-outline-warning, .btn-warning {
+  border-color: $golden-lupine !important;
 }
