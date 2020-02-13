@@ -29,11 +29,6 @@ export const People = () => {
     return <span>loading...</span>;
   }
 
-  // TOOD: start paging when record get large
-  const orderedPeople = people.sort((a, b) =>
-    a.person.lastName.localeCompare(b.person.lastName)
-  );
-
   const navLink = ({ row }: Cell<IPersonRecord>) => {
     const { person } = row.original; // get the original data back for this row
     return <Link to={'/People/' + person.id}>View Record</Link>;
@@ -51,7 +46,7 @@ export const People = () => {
   const columns: Column<IPersonRecord>[] = [
     { Header: '', id: 'detail', Cell: navLink },
     { Header: 'First', accessor: 'person.firstName' },
-    { Header: 'Last', accessor: 'person.lastName' },
+    { Header: 'Last', id: 'lastName', accessor: 'person.lastName' },
     {
       Header: 'Decision',
       id: 'decision',
@@ -63,14 +58,10 @@ export const People = () => {
 
   // provide default column for sorting
   const initialState: Partial<TableState<any>> = {
-    sortBy: [{ id: 'decision' }]
+    sortBy: [{ id: 'decision' }, { id: 'lastName' }]
   };
 
   return (
-    <ReactTable
-      columns={columns}
-      data={orderedPeople}
-      initialState={initialState}
-    />
+    <ReactTable columns={columns} data={people} initialState={initialState} />
   );
 };
