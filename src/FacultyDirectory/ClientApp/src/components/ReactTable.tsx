@@ -1,5 +1,11 @@
 import React from 'react';
-import { useTable, useFilters, useGlobalFilter, useSortBy } from 'react-table';
+import {
+  useTable,
+  useFilters,
+  useGlobalFilter,
+  useSortBy,
+  Row
+} from 'react-table';
 
 export const ReactTable = ({ columns, data, initialState }: any) => {
   const {
@@ -45,13 +51,15 @@ export const ReactTable = ({ columns, data, initialState }: any) => {
             {headerGroup.headers.map(column => (
               <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                 {column.render('Header')}
+                {/* Render the columns filter UI */}
                 <span>
-                  {column.isSorted
-                    ? column.isSortedDesc
-                      ? ' 🔽'
-                      : ' 🔼'
-                    : ''}
+                  {column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}
                 </span>
+                <div>
+                  {column.canFilter && !!column.Filter
+                    ? column.render('Filter')
+                    : null}
+                </div>
               </th>
             ))}
           </tr>
@@ -77,9 +85,9 @@ export const ReactTable = ({ columns, data, initialState }: any) => {
 function GlobalFilter({
   preGlobalFilteredRows,
   globalFilter,
-  setGlobalFilter,
+  setGlobalFilter
 }: any) {
-  const count = preGlobalFilteredRows.length
+  const count = preGlobalFilteredRows.length;
 
   return (
     <span>
@@ -87,10 +95,44 @@ function GlobalFilter({
       <input
         value={globalFilter || ''}
         onChange={e => {
-          setGlobalFilter(e.target.value || undefined) // Set undefined to remove the filter entirely
+          setGlobalFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
         }}
         placeholder={`${count} records...`}
       />
     </span>
-  )
+  );
+}
+
+// This is a custom filter UI for selecting
+// a unique option from a list
+export function SelectColumnFilter({
+  column: { filterValue, setFilter, preFilteredRows, id }
+}: any) {
+  console.log('FILTER');
+  // Calculate the options for filtering
+  // using the preFilteredRows
+  const options = React.useMemo(() => {
+    const options = new Set<any>();
+    preFilteredRows.forEach((row: Row<object>) => {
+      options.add(row.values[id]);
+    });
+    return Array.from(options);
+  }, [id, preFilteredRows]);
+
+  // Render a multi-select box
+  return (
+    <select
+      value={filterValue}
+      onChange={e => {
+        setFilter(e.target.value || undefined);
+      }}
+    >
+      <option value=''>All</option>
+      {options.map((option: any, i: number) => (
+        <option key={i} value={option}>
+          {option}
+        </option>
+      ))}
+    </select>
+  );
 }
