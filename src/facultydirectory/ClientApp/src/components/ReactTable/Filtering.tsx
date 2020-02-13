@@ -56,9 +56,10 @@ export const SelectColumnFilter = ({
   );
 };
 
-export const ColumnFilterHeaders = (headerGroups: HeaderGroup<object>[]) => {
-  headerGroups.map(headerGroup => {
-    return (
+export const ColumnFilterHeaders = ({ headerGroups }: any) => {
+  debugger;
+  return headerGroups.map(
+    (headerGroup: HeaderGroup) =>
       !!headerGroup.headers.some(header => !!header.Filter) && (
         <tr {...headerGroup.getHeaderGroupProps()}>
           {headerGroup.headers.map(column => (
@@ -73,6 +74,5 @@ export const ColumnFilterHeaders = (headerGroups: HeaderGroup<object>[]) => {
           ))}
         </tr>
       )
-    );
-  });
+  );
 };
