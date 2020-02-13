@@ -34,7 +34,8 @@ namespace FacultyDirectory.Core.Services
 
             var bio = string.IsNullOrWhiteSpace(sitePerson.Bio) ? GetBiography(sources) : sitePerson.Bio;
 
-            var websites = new DrupalWebsite[] { new DrupalWebsite { Uri = "https://ucdavis.edu", Title = "UC Davis" } };
+            var websites = new DrupalWebsite[0]; // TODO: allow website sync
+            // var websites = new DrupalWebsite[] { new DrupalWebsite { Uri = "https://ucdavis.edu", Title = "UC Davis" } };
 
             var person = new DrupalPerson
             {
