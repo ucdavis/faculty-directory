@@ -19,7 +19,7 @@ export function useIndicator(initialValue: string) {
     const [value, setValue] = useState<string>(initialValue);
 
     return [ActiveIndicator({hasValue: value !== ''}), (event: any) => setValue(event.target.value)];
-    
+
 }
 
 export const InputArray = (props: any) => {
@@ -40,7 +40,7 @@ export const InputArray = (props: any) => {
     };
 
     const onChange = (idx: number, e: any) => {
-        // given the changed index and 
+        // given the changed index and
         const newValues = values.map((val, valIdx) => {
             return idx === valIdx ? e.target.value : val;
         });
@@ -58,16 +58,16 @@ export const InputArray = (props: any) => {
 
     return (
         <div className="input-array">
-            {values.map((val, idx) => 
+            {values.map((val, idx) =>
                 (<div className="input-group" key={idx}>
                     <ActiveIndicator hasValue={!!val} />
                     <input type="text" className='form-control' value={val} onChange={e => onChange(idx, e)}></input>
                     <div className="input-group-append">
                         <button type="button" className="btn pop" onClick={_ => onRemove(idx)}>
-                            <FontAwesomeIcon icon='times' size='2x' />
+                            <FontAwesomeIcon icon='times' />
                         </button>
                     </div>
-                </div>)  
+                </div>)
             )}
             <button
                 type="button"

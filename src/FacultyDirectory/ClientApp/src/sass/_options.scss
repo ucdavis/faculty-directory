@@ -19,6 +19,9 @@ form {
         box-shadow: none;
         color: $default-form-text;
       }
+      label {
+        margin-left:22px;
+      }
     }
     input, textarea {
       &::placeholder {
