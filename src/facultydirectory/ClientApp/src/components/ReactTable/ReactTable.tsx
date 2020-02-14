@@ -136,7 +136,7 @@ export const ReactTable = ({ columns, data, initialState }: any) => {
                   Show {pageSize}
                 </option>
               ))}
-            </select>
+            </select>{' '}
           </PaginationLink>
         </PaginationItem>
         <PaginationItem onClick={() => nextPage()} disabled={!canNextPage}>
