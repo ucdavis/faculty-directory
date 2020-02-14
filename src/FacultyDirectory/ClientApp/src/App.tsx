@@ -3,7 +3,7 @@ import { Route } from 'react-router';
 import { Layout } from './components/Layout';
 import { People } from './components/People';
 
-import './custom.scss'
+import './sass/custom.scss'
 import { Person } from './components/Person';
 
 export default class App extends Component {

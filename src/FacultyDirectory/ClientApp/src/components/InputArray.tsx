@@ -1,4 +1,26 @@
 import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+interface IActiveIndicatorProps {
+    hasValue: boolean
+}
+
+export function ActiveIndicator(props: IActiveIndicatorProps) {
+    let classNames = "active-color-indicator"
+    if(props.hasValue) {
+        classNames += " active"
+    }
+    return (
+        <div className={classNames} />
+    )
+}
+
+export function useIndicator(initialValue: string) {
+    const [value, setValue] = useState<string>(initialValue);
+
+    return [ActiveIndicator({hasValue: value !== ''}), (event: any) => setValue(event.target.value)];
+    
+}
 
 export const InputArray = (props: any) => {
     const [values, setValues] = useState<string[]>([]);
@@ -35,20 +57,24 @@ export const InputArray = (props: any) => {
     }
 
     return (
-        <div>
+        <div className="input-array">
             {values.map((val, idx) => 
                 (<div className="input-group" key={idx}>
+                    <ActiveIndicator hasValue={!!val} />
                     <input type="text" className='form-control' value={val} onChange={e => onChange(idx, e)}></input>
                     <div className="input-group-append">
-                        <button className="btn btn-danger" type="button" onClick={_ => onRemove(idx)}>X</button>
+                        <button type="button" className="btn pop" onClick={_ => onRemove(idx)}>
+                            <FontAwesomeIcon icon='times' size='2x' />
+                        </button>
                     </div>
                 </div>)  
             )}
             <button
                 type="button"
                 onClick={onAdd}
-                className="btn btn-primary">
-                Add +
+                className="btn push">
+                <FontAwesomeIcon icon='plus' size='sm' />
+                Add Another Department
             </button>
         </div>
     )

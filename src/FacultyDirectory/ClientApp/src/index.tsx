@@ -6,6 +6,11 @@ import App from './App';
 // import registerServiceWorker from './registerServiceWorker';
 import { unregister } from './registerServiceWorker';
 
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faArrowLeft, faTimes, faPlus, fas } from '@fortawesome/free-solid-svg-icons';
+
+library.add(faArrowLeft, faTimes, faPlus, fas)
+
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href') || undefined;
 const rootElement = document.getElementById('root');
 
