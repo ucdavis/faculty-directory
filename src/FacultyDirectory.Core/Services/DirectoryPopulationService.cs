@@ -163,9 +163,6 @@ namespace FacultyDirectory.Core.Services
                 // lookup this person's valid dept names
                 var departments = personAssociations.Select(pa => Departments.Names.GetValueOrDefault(pa.deptCode)).Where(name => !string.IsNullOrWhiteSpace(name)).Distinct();
 
-                // lookup the display name value of their first association from title code
-                var title = Titles.Names.GetValueOrDefault(firstAssociation?.titleCode) ?? null;
-
                 // default to faculty classification unless they have an emeriti or leadership title code
                 var classification = "faculty";
 
@@ -177,6 +174,10 @@ namespace FacultyDirectory.Core.Services
                 {
                     classification = "emeriti";
                 }
+
+                // lookup the display name value of their first association from title code
+                // if we can't find any title (should not happen), then default to their classification
+                var title = GetBestTitle(personAssociations) ?? classification;
 
                 validCandidates.Add(new Person
                 {
@@ -194,6 +195,24 @@ namespace FacultyDirectory.Core.Services
             }
 
             return validCandidates.ToArray();
+        }
+
+        // Search through title codes in order, trying to get a friendly name for each
+        // Return the first one found, otherwise return null
+        private string GetBestTitle(IEnumerable<PPSAssociationsResult> associations)
+        {
+            var titleCodes = associations.Select(a => a.titleCode);
+
+            foreach (var titleCode in titleCodes)
+            {
+                var title = Titles.Names.GetValueOrDefault(titleCode);
+
+                if (!string.IsNullOrWhiteSpace(title)) {
+                    return title;
+                }
+            }
+
+            return null;
         }
     }
 }
