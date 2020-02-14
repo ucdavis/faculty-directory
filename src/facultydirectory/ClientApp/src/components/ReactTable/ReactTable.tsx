@@ -7,6 +7,7 @@ import {
   usePagination
 } from 'react-table';
 import { ColumnFilterHeaders, GlobalFilter } from './Filtering';
+import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 
 export const ReactTable = ({ columns, data, initialState }: any) => {
   const {
@@ -94,50 +95,60 @@ export const ReactTable = ({ columns, data, initialState }: any) => {
           })}
         </tbody>
       </table>
-      <div className='pagination'>
-        <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-          {'<<'}
-        </button>{' '}
-        <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-          {'<'}
-        </button>{' '}
-        <button onClick={() => nextPage()} disabled={!canNextPage}>
-          {'>'}
-        </button>{' '}
-        <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-          {'>>'}
-        </button>{' '}
-        <span>
-          Page{' '}
-          <strong>
-            {pageIndex + 1} of {pageOptions.length}
-          </strong>{' '}
-        </span>
-        <span>
-          | Go to page:{' '}
-          <input
-            type='number'
-            defaultValue={pageIndex + 1}
-            onChange={e => {
-              const page = e.target.value ? Number(e.target.value) - 1 : 0;
-              gotoPage(page);
-            }}
-            style={{ width: '100px' }}
-          />
-        </span>{' '}
-        <select
-          value={pageSize}
-          onChange={e => {
-            setPageSize(Number(e.target.value));
-          }}
+      <Pagination className='pagination'>
+        <PaginationItem onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+          <PaginationLink first />
+        </PaginationItem>
+        <PaginationItem
+          onClick={() => previousPage()}
+          disabled={!canPreviousPage}
         >
-          {[10, 20, 30, 40, 50].map(pageSize => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize}
-            </option>
-          ))}
-        </select>
-      </div>
+          <PaginationLink previous />
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationLink>
+            <span>
+              Page{' '}
+              <strong>
+                {pageIndex + 1} of {pageOptions.length}
+              </strong>{' '}
+            </span>
+            <span>
+              | Go to page:{' '}
+              <input
+                type='number'
+                defaultValue={pageIndex + 1}
+                onChange={e => {
+                  const page = e.target.value ? Number(e.target.value) - 1 : 0;
+                  gotoPage(page);
+                }}
+                style={{ width: '100px' }}
+              />
+            </span>{' '}
+            <select
+              value={pageSize}
+              onChange={e => {
+                setPageSize(Number(e.target.value));
+              }}
+            >
+              {[10, 20, 30, 40, 50].map(pageSize => (
+                <option key={pageSize} value={pageSize}>
+                  Show {pageSize}
+                </option>
+              ))}
+            </select>
+          </PaginationLink>
+        </PaginationItem>
+        <PaginationItem onClick={() => nextPage()} disabled={!canNextPage}>
+          <PaginationLink next />
+        </PaginationItem>
+        <PaginationItem
+          onClick={() => gotoPage(pageCount - 1)}
+          disabled={!canNextPage}
+        >
+          <PaginationLink last />
+        </PaginationItem>
+      </Pagination>
     </>
   );
 };
