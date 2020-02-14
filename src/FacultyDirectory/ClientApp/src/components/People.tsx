@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ReactTable } from './ReactTable';
+import { ReactTable } from './ReactTable/ReactTable';
 import { IPerson } from '../models/IPerson';
 import { ISitePerson } from '../models/ISitePerson';
-import { Cell, UseTableColumnOptions } from 'react-table';
+import { Cell, TableState, Column } from 'react-table';
+import { SelectColumnFilter } from './ReactTable/Filtering';
 
 interface IPersonRecord {
   person: IPerson;
@@ -28,11 +29,6 @@ export const People = () => {
     return <span>loading...</span>;
   }
 
-  // TOOD: start paging when record get large
-  const orderedPeople = people.sort((a, b) =>
-    a.person.lastName.localeCompare(b.person.lastName)
-  );
-
   const navLink = ({ row }: Cell<IPersonRecord>) => {
     const { person } = row.original; // get the original data back for this row
     return <Link to={'/People/' + person.id}>View Record</Link>;
@@ -47,12 +43,25 @@ export const People = () => {
     }
   };
 
-  const columns: UseTableColumnOptions<IPersonRecord>[] = [
+  const columns: Column<IPersonRecord>[] = [
     { Header: '', id: 'detail', Cell: navLink },
     { Header: 'First', accessor: 'person.firstName' },
-    { Header: 'Last', accessor: 'person.lastName' },
-    { Header: 'Decision', accessor: decision }
+    { Header: 'Last', id: 'lastName', accessor: 'person.lastName' },
+    {
+      Header: 'Decision',
+      id: 'decision',
+      accessor: decision,
+      Filter: SelectColumnFilter,
+      filter: 'includes'
+    }
   ];
 
-  return <ReactTable columns={columns} data={orderedPeople} />;
+  // provide default column for sorting
+  const initialState: Partial<TableState<any>> = {
+    sortBy: [{ id: 'decision' }, { id: 'lastName' }]
+  };
+
+  return (
+    <ReactTable columns={columns} data={people} initialState={initialState} />
+  );
 };
