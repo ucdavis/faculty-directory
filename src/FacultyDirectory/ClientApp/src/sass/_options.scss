@@ -80,9 +80,6 @@ form.active-coloring {
       border-color: $people-active-color;
       color: $people-active-color;
     }
-    border-left-width: 5px !important;
-    border-left-style: solid !important;
-    
     &:placeholder-shown {
       border-left-color: $people-placeholder-color;
     }
