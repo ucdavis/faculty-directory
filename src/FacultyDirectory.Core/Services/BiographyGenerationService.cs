@@ -34,8 +34,6 @@ namespace FacultyDirectory.Core.Services
 
             var bio = string.IsNullOrWhiteSpace(sitePerson.Bio) ? GetBiography(sources) : sitePerson.Bio;
 
-            var websites = GetWebsites(sitePerson, sources);
-
             var person = new DrupalPerson
             {
                 FirstName = sitePerson.FirstName ?? sitePerson.Person.FirstName,
@@ -45,7 +43,7 @@ namespace FacultyDirectory.Core.Services
                 Phones = GetPhones(sitePerson, sources),
                 Departments = departmentValues?.Split("|").ToArray(), // TODO: should it be null or empty array if we don't have any?
                 Tags = tags,
-                Websites = websites,
+                Websites = GetWebsites(sitePerson, sources),
                 Bio = bio
             };
 
@@ -85,7 +83,7 @@ namespace FacultyDirectory.Core.Services
         private string[] GetEmails(SitePerson sitePerson, PersonSource[] sources) {
             if (!string.IsNullOrWhiteSpace(sitePerson.Emails)) {
                 // site person entry overrides all
-                return new[] { sitePerson.Emails };
+                return sitePerson.Emails.Split('|');
             } else if (!string.IsNullOrWhiteSpace(sitePerson.Person.Email)) {
                 return new[] { sitePerson.Person.Email };
             }
@@ -99,7 +97,7 @@ namespace FacultyDirectory.Core.Services
             if (!string.IsNullOrWhiteSpace(sitePerson.Phones))
             {
                 // site person entry overrides all
-                return new[] { sitePerson.Phones };
+                return sitePerson.Phones.Split('|');
             }
             else if (!string.IsNullOrWhiteSpace(sitePerson.Person.Phone))
             {
@@ -108,6 +106,15 @@ namespace FacultyDirectory.Core.Services
 
             // TODO: pull from sources
             return new string[0];
+        }
+
+        private string[] GetTags(SitePerson sitePerson, PersonSource[] sources) {
+            if (!string.IsNullOrWhiteSpace(sitePerson.Tags)) {
+                // site person entry overrides all
+                return sitePerson.Tags.Split('|');
+            }
+
+            return GetSourceTags(sources);
         }
 
         private string[] GetSourceTags(PersonSource[] sources)
