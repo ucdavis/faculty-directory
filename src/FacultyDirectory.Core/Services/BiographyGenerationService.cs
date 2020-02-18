@@ -105,11 +105,20 @@ namespace FacultyDirectory.Core.Services
                 // Once we get more sources, we need to determine a ranking in case there are multiple tags
                 if (data.Tags != null && data.Tags.Any())
                 {
-                    return data.Tags.Select(t => t.ToLower()).ToArray();
+                    return data.Tags.Select(t => SanitizeTag(t)).ToArray();
                 }
             }
 
             return new string[0];
+        }
+
+        private string SanitizeTag(string tag) {
+            // string out invalid characters and lowercase result
+            if (string.IsNullOrWhiteSpace(tag)) {
+                return tag;
+            }
+
+            return tag.Replace("&", "and").ToLower();
         }
 
         // TODO: maybe instead of deserializing multiple times we just do once up-front and call these methods with that data?
