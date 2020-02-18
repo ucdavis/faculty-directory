@@ -4,6 +4,7 @@ import { ISource } from '../models/ISource';
 import { IBio } from '../models/IBio';
 import { ISitePerson } from '../models/ISitePerson';
 import { InputArray, ActiveIndicator } from './InputArray';
+import { LinksInputArray } from './LinksInputArray';
 
 export const Person = () => {
   let { id } = useParams();
@@ -152,6 +153,11 @@ export const Person = () => {
           </div>
           <div className='form-group'>
             <label>Websites (TODO)</label>
+            <LinksInputArray
+              data={bio.websites}
+              name='websites'
+              onChange={changeHandler}
+            ></LinksInputArray>
           </div>
           <div className='form-group'>
             <label>Bio</label>
