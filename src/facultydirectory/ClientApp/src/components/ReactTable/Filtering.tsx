@@ -57,7 +57,6 @@ export const SelectColumnFilter = ({
 };
 
 export const ColumnFilterHeaders = ({ headerGroups }: any) => {
-  debugger;
   return headerGroups.map(
     (headerGroup: HeaderGroup) =>
       !!headerGroup.headers.some(header => !!header.Filter) && (
