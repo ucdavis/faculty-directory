@@ -5,13 +5,6 @@ import { IBio } from '../models/IBio';
 import { ISitePerson } from '../models/ISitePerson';
 import { InputArray, ActiveIndicator } from './InputArray';
 
-function doBoth(fna: any, fnb: any) {
-  return function(...args: any[]) {
-    fna(...args);
-    fnb(...args);
-  };
-}
-
 export const Person = () => {
   let { id } = useParams();
   let history = useHistory();
@@ -68,8 +61,6 @@ export const Person = () => {
   }
 
   console.log('site person', sitePerson);
-
-  const hasSitePerson = !!sitePerson.id;
 
   const { person } = sitePerson;
 
