@@ -74,7 +74,7 @@ export const InputArray = (props: any) => {
                 onClick={onAdd}
                 className="btn push">
                 <FontAwesomeIcon icon='plus' size='sm' />
-                Add Another Department
+                Add Another Item
             </button>
         </div>
     )
