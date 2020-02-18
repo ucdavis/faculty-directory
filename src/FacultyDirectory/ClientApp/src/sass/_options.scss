@@ -19,9 +19,12 @@ form {
         box-shadow: none;
         color: $default-form-text;
       }
-      label {
-        margin-left:22px;
-      }
+    }
+    label {
+      margin-left:22px;
+    }
+    .input-array button.push{
+      margin-left:14px;
     }
     input, textarea {
       &::placeholder {
