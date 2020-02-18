@@ -34,9 +34,6 @@ namespace FacultyDirectory.Core.Services
 
             var bio = string.IsNullOrWhiteSpace(sitePerson.Bio) ? GetBiography(sources) : sitePerson.Bio;
 
-            var websites = new DrupalWebsite[0]; // TODO: allow website sync
-            // var websites = new DrupalWebsite[] { new DrupalWebsite { Uri = "https://ucdavis.edu", Title = "UC Davis" } };
-
             var person = new DrupalPerson
             {
                 FirstName = sitePerson.FirstName ?? sitePerson.Person.FirstName,
@@ -46,7 +43,7 @@ namespace FacultyDirectory.Core.Services
                 Phones = GetPhones(sitePerson, sources),
                 Departments = departmentValues?.Split("|").ToArray(), // TODO: should it be null or empty array if we don't have any?
                 Tags = tags,
-                Websites = websites,
+                Websites = GetWebsites(sitePerson, sources),
                 Bio = bio
             };
 
@@ -62,10 +59,31 @@ namespace FacultyDirectory.Core.Services
             return Generate(sitePerson, sources);
         }
 
+        private DrupalWebsite[] GetWebsites(SitePerson sitePerson, PersonSource[] sources) {
+            if (!string.IsNullOrWhiteSpace(sitePerson.Websites))
+            {
+                // site person entry overrides all
+                var websites = sitePerson.Websites.Split('|');
+
+                var websiteList = new List<DrupalWebsite>();
+
+                for (int i = 0; i < websites.Length; i += 2)
+                {
+                    websiteList.Add(new DrupalWebsite { Uri = websites[i], Title = websites[i+1]});
+                }
+                
+                return websiteList.ToArray();
+            }
+
+            // TODO: once we have websites from a person source, check and return here
+            
+            return new DrupalWebsite[0];
+        }
+
         private string[] GetEmails(SitePerson sitePerson, PersonSource[] sources) {
             if (!string.IsNullOrWhiteSpace(sitePerson.Emails)) {
                 // site person entry overrides all
-                return new[] { sitePerson.Emails };
+                return sitePerson.Emails.Split('|');
             } else if (!string.IsNullOrWhiteSpace(sitePerson.Person.Email)) {
                 return new[] { sitePerson.Person.Email };
             }
@@ -79,7 +97,7 @@ namespace FacultyDirectory.Core.Services
             if (!string.IsNullOrWhiteSpace(sitePerson.Phones))
             {
                 // site person entry overrides all
-                return new[] { sitePerson.Phones };
+                return sitePerson.Phones.Split('|');
             }
             else if (!string.IsNullOrWhiteSpace(sitePerson.Person.Phone))
             {
@@ -88,6 +106,15 @@ namespace FacultyDirectory.Core.Services
 
             // TODO: pull from sources
             return new string[0];
+        }
+
+        private string[] GetTags(SitePerson sitePerson, PersonSource[] sources) {
+            if (!string.IsNullOrWhiteSpace(sitePerson.Tags)) {
+                // site person entry overrides all
+                return sitePerson.Tags.Split('|');
+            }
+
+            return GetSourceTags(sources);
         }
 
         private string[] GetSourceTags(PersonSource[] sources)

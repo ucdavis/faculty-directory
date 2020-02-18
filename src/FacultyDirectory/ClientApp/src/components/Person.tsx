@@ -4,13 +4,7 @@ import { ISource } from '../models/ISource';
 import { IBio } from '../models/IBio';
 import { ISitePerson } from '../models/ISitePerson';
 import { InputArray, ActiveIndicator } from './InputArray';
-
-function doBoth(fna: any, fnb: any) {
-  return function(...args: any[]) {
-    fna(...args);
-    fnb(...args);
-  };
-}
+import { LinksInputArray } from './LinksInputArray';
 
 export const Person = () => {
   let { id } = useParams();
@@ -68,8 +62,6 @@ export const Person = () => {
   }
 
   console.log('site person', sitePerson);
-
-  const hasSitePerson = !!sitePerson.id;
 
   const { person } = sitePerson;
 
@@ -161,6 +153,11 @@ export const Person = () => {
           </div>
           <div className='form-group'>
             <label>Websites (TODO)</label>
+            <LinksInputArray
+              data={bio.websites}
+              name='websites'
+              onChange={changeHandler}
+            ></LinksInputArray>
           </div>
           <div className='form-group'>
             <label>Bio</label>
@@ -180,6 +177,23 @@ export const Person = () => {
               name='tags'
               onChange={changeHandler}
             ></InputArray>
+          </div>
+          <div className='form-group'>
+            <label>SiteFarm UID</label>
+            <div className='active-color-wrapper'>
+              <ActiveIndicator hasValue={!!sitePerson.pageUid} />
+              <input
+                type='text'
+                className='form-control'
+                name='pageUid'
+                placeholder={sitePerson.pageUid}
+                value={sitePerson.pageUid || ''}
+                onChange={changeHandler}
+              />
+            </div>
+            <small className='form-text text-muted'>
+              Only change if you want to overwrite an existing person entry
+            </small>
           </div>
         </form>
       </div>
