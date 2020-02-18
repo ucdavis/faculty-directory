@@ -181,6 +181,23 @@ export const Person = () => {
               onChange={changeHandler}
             ></InputArray>
           </div>
+          <div className='form-group'>
+            <label>SiteFarm UID</label>
+            <div className='active-color-wrapper'>
+              <ActiveIndicator hasValue={!!sitePerson.pageUid} />
+              <input
+                type='text'
+                className='form-control'
+                name='firstName'
+                placeholder={sitePerson.pageUid}
+                value={sitePerson.pageUid || ''}
+                onChange={changeHandler}
+              />
+            </div>
+            <small className='form-text text-muted'>
+              Only change if you want to overwrite an existing person entry
+            </small>
+          </div>
         </form>
       </div>
       <div className='form-submit-wrapper'>
