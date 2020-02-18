@@ -170,7 +170,9 @@ namespace FacultyDirectory.Core.Services
 
                     foreach (var pub in data.Publications.Take(5))
                     {
+                        sb.Append("<strong>");
                         sb.Append(pub.Title);
+                        sb.Append("</strong>");
                         sb.Append("<br/>");
                         sb.Append(pub.Authors);
                         sb.Append("<br/>");
