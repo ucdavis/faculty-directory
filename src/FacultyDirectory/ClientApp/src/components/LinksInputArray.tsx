@@ -12,7 +12,8 @@ export const LinksInputArray = (props: any) => {
 
   useEffect(() => {
     // update our value array each time the input data changes
-    setValues(props.data);
+    var flatData = props.data.flatMap((d: any) => [d.uri,d.title]);
+    setValues(flatData);
   }, [props.data]);
 
   const setValuesAndNotifyProps = (values: string[]) => {

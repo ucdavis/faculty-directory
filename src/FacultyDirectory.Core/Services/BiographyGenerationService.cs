@@ -34,8 +34,7 @@ namespace FacultyDirectory.Core.Services
 
             var bio = string.IsNullOrWhiteSpace(sitePerson.Bio) ? GetBiography(sources) : sitePerson.Bio;
 
-            var websites = new DrupalWebsite[0]; // TODO: allow website sync
-            // var websites = new DrupalWebsite[] { new DrupalWebsite { Uri = "https://ucdavis.edu", Title = "UC Davis" } };
+            var websites = GetWebsites(sitePerson, sources);
 
             var person = new DrupalPerson
             {
@@ -60,6 +59,27 @@ namespace FacultyDirectory.Core.Services
             var sources = await this.dbContext.PeopleSources.Where(s => s.PersonId == sitePerson.PersonId).AsNoTracking().ToArrayAsync();
 
             return Generate(sitePerson, sources);
+        }
+
+        private DrupalWebsite[] GetWebsites(SitePerson sitePerson, PersonSource[] sources) {
+            if (!string.IsNullOrWhiteSpace(sitePerson.Websites))
+            {
+                // site person entry overrides all
+                var websites = sitePerson.Websites.Split('|');
+
+                var websiteList = new List<DrupalWebsite>();
+
+                for (int i = 0; i < websites.Length; i += 2)
+                {
+                    websiteList.Add(new DrupalWebsite { Uri = websites[i], Title = websites[i+1]});
+                }
+                
+                return websiteList.ToArray();
+            }
+
+            // TODO: once we have websites from a person source, check and return here
+            
+            return new DrupalWebsite[0];
         }
 
         private string[] GetEmails(SitePerson sitePerson, PersonSource[] sources) {
