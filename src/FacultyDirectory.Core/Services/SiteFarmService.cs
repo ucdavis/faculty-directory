@@ -118,17 +118,43 @@ namespace FacultyDirectory.Core.Services
                 data = tagNodes
             };
 
-            // Step 2: form POST/PATCH depending on prior existance of user page
-            var resourceUrl = "https://playground.sf.ucdavis.edu/jsonapi/node/sf_person";
-            var method = HttpMethod.Post;
-
-            if (sitePerson.PageUid.HasValue)
+            // pull in person type
+            var field_sf_person_type = new
             {
-                resourceUrl = resourceUrl + "/" + sitePerson.PageUid.Value;
-                method = System.Net.Http.HttpMethod.Patch;
-            }
+                data = new
+                {
+                    type = "taxonomy_term--sf_person_type",
+                    id = personTypes[sitePerson.Person.Classification]
+                }
+            };
 
-            // Step 3: Compile and generate user page info
+            // relationships are different if the person is newly created or existing
+            dynamic relationships;
+
+            if (sitePerson.PageUid.HasValue) {
+                // existing users get to keep their images
+                relationships = new
+                {
+                    field_sf_person_type,
+                    field_sf_tags
+                };
+            } else {
+                // set to default image for people without an existing page
+                relationships = new
+                {
+                    field_sf_person_type,
+                    field_sf_primary_image = new {
+                        data = new
+                        {
+                            type = "file--file",
+                            id = "5fe49c04-d0a0-498d-8605-ef318c0282e3" // TODO: get from site settings
+                        }
+                    },
+                    field_sf_tags
+                };
+            }
+    
+            // Step 2: Compile and generate user page info
             var personData = new
             {
                 data = new
@@ -137,7 +163,7 @@ namespace FacultyDirectory.Core.Services
                     id = sitePerson.PageUid,
                     attributes = new
                     {
-                        title = drupalPerson.Title,  // what goes here?
+                        title = drupalPerson.Title,
                         field_sf_first_name = drupalPerson.FirstName,
                         field_sf_last_name = drupalPerson.LastName,
                         field_sf_position_title = drupalPerson.Title,
@@ -148,7 +174,7 @@ namespace FacultyDirectory.Core.Services
                         {
                             uri = w.Uri,
                             title = w.Title
-                        }), // TODO: collect websites
+                        }),
                         body = new
                         {
                             value = drupalPerson.Bio,
@@ -156,24 +182,23 @@ namespace FacultyDirectory.Core.Services
                             summary = "" // TODO: do we need summary?
                         }
                     },
-                    relationships = new
-                    {
-                        field_sf_person_type = new
-                        {
-                            data = new
-                            {
-                                type = "taxonomy_term--sf_person_type",
-                                id = personTypes[sitePerson.Person.Classification]
-                            }
-                        },
-                        field_sf_tags
-                    }
+                    relationships
                 },
             };
 
             var serialized = JsonSerializer.Serialize(personData);
 
             // Console.WriteLine(serialized);
+
+            // Step 3: form POST/PATCH depending on prior existance of user page
+            var resourceUrl = "https://playground.sf.ucdavis.edu/jsonapi/node/sf_person";
+            var method = HttpMethod.Post;
+
+            if (sitePerson.PageUid.HasValue)
+            {
+                resourceUrl = resourceUrl + "/" + sitePerson.PageUid.Value;
+                method = System.Net.Http.HttpMethod.Patch;
+            }
 
             var request = new HttpRequestMessage(method, resourceUrl);
 
