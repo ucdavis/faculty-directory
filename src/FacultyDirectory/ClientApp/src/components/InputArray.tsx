@@ -1,80 +1,63 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-interface IActiveIndicatorProps {
-    hasValue: boolean
-}
-
-export function ActiveIndicator(props: IActiveIndicatorProps) {
-    let classNames = "active-color-indicator"
-    if(props.hasValue) {
-        classNames += " active"
-    }
-    return (
-        <div className={classNames} />
-    )
-}
-
-export function useIndicator(initialValue: string) {
-    const [value, setValue] = useState<string>(initialValue);
-
-    return [ActiveIndicator({hasValue: value !== ''}), (event: any) => setValue(event.target.value)];
-
-}
-
 export const InputArray = (props: any) => {
-    const [values, setValues] = useState<string[]>([]);
+  const [values, setValues] = useState<string[]>([]);
 
-    useEffect(() => {
-        // update our value array each time the input data changes
-        setValues(props.data);
-    }, [props.data]);
+  useEffect(() => {
+    // update our value array each time the input data changes
+    setValues(props.data);
+  }, [props.data]);
 
-    const setValuesAndNotifyProps = (values: string[]) => {
-        setValues(values);
+  const setValuesAndNotifyProps = (values: string[]) => {
+    setValues(values);
 
-        const response = { target: { name: props.name, value: values.filter(v => !!v).join('|') } };
-
-        // tell the parent about the new values
-        props.onChange && props.onChange(response);
+    const response = {
+      target: { name: props.name, value: values.filter(v => !!v).join('|') }
     };
 
-    const onChange = (idx: number, e: any) => {
-        // given the changed index and
-        const newValues = values.map((val, valIdx) => {
-            return idx === valIdx ? e.target.value : val;
-        });
+    // tell the parent about the new values
+    props.onChange && props.onChange(response);
+  };
 
-        setValuesAndNotifyProps(newValues);
-    };
+  const onChange = (idx: number, e: any) => {
+    // given the changed index and
+    const newValues = values.map((val, valIdx) => {
+      return idx === valIdx ? e.target.value : val;
+    });
 
-    const onRemove = (idx: number) => {
-        setValuesAndNotifyProps(values.filter((_, valIdx) => idx !== valIdx));
-    }
+    setValuesAndNotifyProps(newValues);
+  };
 
-    const onAdd = () => {
-        setValuesAndNotifyProps([...values, '']);
-    }
+  const onRemove = (idx: number) => {
+    setValuesAndNotifyProps(values.filter((_, valIdx) => idx !== valIdx));
+  };
 
-    return (
-        <div className="input-array">
-            {values.map((val, idx) =>
-                (<div className="input-group" key={idx}>
-                    <input type="text" className='form-control' value={val} onChange={e => onChange(idx, e)}></input>
-                    <div className="input-group-append">
-                        <button type="button" className="btn" onClick={_ => onRemove(idx)}>
-                            <FontAwesomeIcon icon='times' />
-                        </button>
-                    </div>
-                </div>)
-            )}
-            <button
-                type="button"
-                onClick={onAdd}
-                className="btn addmore-btn">
-                <FontAwesomeIcon icon='plus' size='sm' />
-                Add Another Item
+  const onAdd = () => {
+    setValuesAndNotifyProps([...values, '']);
+  };
+
+  return (
+    <div className='input-array'>
+      {values.map((val, idx) => (
+        <div className='input-group' key={idx}>
+          <input
+            type='text'
+            className='form-control'
+            value={val}
+            onChange={e => onChange(idx, e)}
+          ></input>
+          <div className='input-group-append'>
+            <button type='button' className='btn' onClick={_ => onRemove(idx)}>
+              <FontAwesomeIcon icon='times' />
             </button>
+          </div>
         </div>
-    )
-}
+      ))}
+      <button type='button' onClick={onAdd} className='btn addmore-btn'>
+        <FontAwesomeIcon icon='plus' size='sm' />
+        Add Another Item
+      </button>
+    </div>
+  );
+};

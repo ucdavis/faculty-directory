@@ -3,7 +3,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import { ISource } from '../models/ISource';
 import { IBio } from '../models/IBio';
 import { ISitePerson } from '../models/ISitePerson';
-import { InputArray, ActiveIndicator } from './InputArray';
+import { InputArray } from './InputArray';
 import { LinksInputArray } from './LinksInputArray';
 
 export const Person = () => {
@@ -57,6 +57,12 @@ export const Person = () => {
     });
   };
 
+  const customContentClass = (overwritten: boolean) => {
+    if (overwritten) {
+      return 'custom-active-wrapper';
+    }
+  };
+
   if (!bio || !sitePerson.person) {
     return <div>loading</div>;
   }
@@ -68,12 +74,12 @@ export const Person = () => {
   return (
     <>
       <div className='content-wrapper'>
-        <div className="personheader d-flex justify-content-between">
-          <div className="leftside">
+        <div className='personheader d-flex justify-content-between'>
+          <div className='leftside'>
             <h2>
               {bio.firstName} {bio.lastName}
             </h2>
-            <p className="mb-0">
+            <p className='mb-0'>
               Last Synced to CAES on{' '}
               {sitePerson.lastSync
                 ? new Date(sitePerson.lastSync).toLocaleString()
@@ -81,22 +87,19 @@ export const Person = () => {
             </p>
             <p className='sourceIDs'>
               {sources.map((source: any) => (
-                <span className="sources" key={source.source}>
+                <span className='sources' key={source.source}>
                   {source.source} - {source.sourceKey || 'not found'}
                 </span>
               ))}
             </p>
-            <p className="legend">represents user created data</p>
-
+            <p className='legend'>represents user created data</p>
           </div>
         </div>
 
-
-
         <form>
-          <div className='form-group custom-active-wrapper'>
-            <label>First Name</label>
-              <ActiveIndicator hasValue={!!sitePerson.firstName} />
+          <div className='form-group'>
+            <div className={customContentClass(!!sitePerson.firstName)}>
+              <label>First Name</label>
               <input
                 type='text'
                 className='form-control'
@@ -105,11 +108,11 @@ export const Person = () => {
                 value={sitePerson.firstName || ''}
                 onChange={changeHandler}
               />
+            </div>
           </div>
           <div className='form-group'>
-            <label>Last Name</label>
-
-
+            <div className={customContentClass(!!sitePerson.lastName)}>
+              <label>Last Name</label>
               <input
                 type='text'
                 className='form-control'
@@ -118,12 +121,11 @@ export const Person = () => {
                 value={sitePerson.lastName || ''}
                 onChange={changeHandler}
               />
-
+            </div>
           </div>
           <div className='form-group'>
-            <label>Title</label>
-
-
+            <div className={customContentClass(!!sitePerson.title)}>
+              <label>Title</label>
               <input
                 type='text'
                 className='form-control'
@@ -132,7 +134,7 @@ export const Person = () => {
                 value={sitePerson.title || ''}
                 onChange={changeHandler}
               />
-
+            </div>
           </div>
           <div className='form-group'>
             <label>Email</label>
@@ -159,7 +161,7 @@ export const Person = () => {
             ></InputArray>
           </div>
           <div className='form-group'>
-            <label>Websites (TODO)</label>
+            <label>Websites</label>
             <LinksInputArray
               data={bio.websites}
               name='websites'
@@ -167,16 +169,17 @@ export const Person = () => {
             ></LinksInputArray>
           </div>
           <div className='form-group'>
-            <label>Bio</label>
-
-            <textarea
-              rows={5}
-              className='form-control'
-              name='bio'
-              placeholder={bio.bio}
-              value={sitePerson.bio || ''}
-              onChange={changeHandler}
-            />
+            <div className={customContentClass(!!sitePerson.bio)}>
+              <label>Bio</label>
+              <textarea
+                rows={5}
+                className='form-control'
+                name='bio'
+                placeholder={bio.bio}
+                value={sitePerson.bio || ''}
+                onChange={changeHandler}
+              />
+            </div>
           </div>
           <div className='form-group'>
             <label>Tags</label>
@@ -188,16 +191,14 @@ export const Person = () => {
           </div>
           <div className='form-group'>
             <label>SiteFarm UID</label>
-
-              <input
-                type='text'
-                className='form-control'
-                name='pageUid'
-                placeholder={sitePerson.pageUid}
-                value={sitePerson.pageUid || ''}
-                onChange={changeHandler}
-              />
-
+            <input
+              type='text'
+              className='form-control'
+              name='pageUid'
+              placeholder={sitePerson.pageUid}
+              value={sitePerson.pageUid || ''}
+              onChange={changeHandler}
+            />
             <small className='form-text text-muted'>
               Only change if you want to overwrite an existing person entry
             </small>
@@ -220,7 +221,6 @@ export const Person = () => {
           </button>
         </div>
       </div>
-
     </>
   );
 };
