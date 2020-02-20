@@ -37,9 +37,9 @@ export const People = () => {
   const decision = ({ sitePerson }: { sitePerson: ISitePerson }) => {
     // todo: decide what info we want to show for person sync status
     if (sitePerson) {
-      return sitePerson.shouldSync ? 'sync' : 'hold';
+      return sitePerson.shouldSync ? 'sync' : 'exclude';
     } else {
-      return 'none';
+      return 'pending';
     }
   };
 
@@ -48,7 +48,7 @@ export const People = () => {
     { Header: 'First', accessor: 'person.firstName' },
     { Header: 'Last', id: 'lastName', accessor: 'person.lastName' },
     {
-      Header: 'Decision',
+      Header: 'Status',
       id: 'decision',
       accessor: decision,
       Filter: SelectColumnFilter,

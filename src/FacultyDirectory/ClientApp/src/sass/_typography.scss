@@ -12,13 +12,12 @@ body {
     color:$primary-font;
 }
 a {
-  color:$a-link;
+  color:$secondary-color;
   &:hover {
     text-decoration: none;
-    color:lighten($a-link, 10);
+    color:lighten($secondary-color, 10);
   }
   p & {
-    font-family:$sans-bold;
     text-decoration: none;
     &:hover {
       text-decoration: underline;
@@ -64,10 +63,13 @@ h6 {
     // margin: 1.6rem 0rem 1rem 0rem;
 }
 h1 {
-  font-size:3.2rem;
+  font-size:3.6rem;
+}
+h2 {
+  font-size:2.4rem;
 }
 label {
-  font-family: $sans-reg;
+  font-family: $sans-bold;
   font-size:1.8rem;
 }
 select {
@@ -88,4 +90,10 @@ h3 {
 }
 i {
   font-size:1.6rem;
+}
+p.lede {
+  text-transform: uppercase;
+  font-size:1.4rem;
+  margin:0;
+  color:$secondary-font;
 }
