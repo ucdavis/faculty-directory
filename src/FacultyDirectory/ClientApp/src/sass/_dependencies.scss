@@ -22,7 +22,7 @@ $sans-italic:   "proxima-nova-i",sans-serif;
 $sans-bold:     "proxima-nova-b",sans-serif;
 $sans-reg:      "proxima-nova-r",sans-serif;
 
-$primary-color:     #71CC98;
+$primary-color:     #00C7B1;
 $secondary-color:   #004987;
 
 $a-link:            #DAAA00;
@@ -106,7 +106,7 @@ $shingle-brown: #4f2c1d;
 .container {
   padding: 0;
   width: 80%;
-  max-width:760px;
+  max-width:1440px;
   @include breakpoint (sm) {
     width: 95%;
   }
@@ -117,6 +117,7 @@ $shingle-brown: #4f2c1d;
     width: 85%;
   }
 }
+
 
 @mixin fader {
   -o-transition:.25s;

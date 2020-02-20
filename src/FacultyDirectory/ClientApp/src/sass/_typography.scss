@@ -12,13 +12,12 @@ body {
     color:$primary-font;
 }
 a {
-  color:$a-link;
+  color:$secondary-color;
   &:hover {
     text-decoration: none;
-    color:lighten($a-link, 10);
+    color:lighten($secondary-color, 10);
   }
   p & {
-    font-family:$sans-bold;
     text-decoration: none;
     &:hover {
       text-decoration: underline;

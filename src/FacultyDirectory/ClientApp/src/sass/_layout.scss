@@ -8,9 +8,17 @@ header {
   h1 {
     margin-bottom: 1rem;
   }
+  max-width: 700px;
+  margin:0 auto;
 }
 .content-wrapper {
+  margin:0 auto;
   margin-bottom:40px;
+  margin-top:20px;
+  padding-top:20px;
+  border-top:1px solid $borders;
+  max-width: 700px;
+
 }
 footer {
   flex-shrink: 0;
@@ -18,15 +26,24 @@ footer {
 }
 .table {
   a {
-    color: $tertiary-font;
+    color: $secondary-color;
   }
-}
-.table-dark {
-  color: $primary-font;
 }
 .logo-container {
   margin: 5rem auto;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+p.legend {
+  color:$secondary-font;
+  &:before {
+    content:"\A";
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background: $custom-data;
+    display:inline-block;
+    margin:0 10px;
+  }
 }

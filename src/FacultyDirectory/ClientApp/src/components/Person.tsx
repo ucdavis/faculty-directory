@@ -68,23 +68,32 @@ export const Person = () => {
   return (
     <>
       <div className='content-wrapper'>
-        <h2>
-          {bio.firstName} {bio.lastName}
-        </h2>
-        <p>
-          Last Synced on{' '}
-          {sitePerson.lastSync
-            ? new Date(sitePerson.lastSync).toLocaleString()
-            : 'never'}
-        </p>
-        <p className='sourceIDs'>
-          {sources.map((source: any) => (
-            <span key={source.source}>
-              {source.source} - {source.sourceKey || 'not found'}
-            </span>
-          ))}
-        </p>
-        <form className='active-coloring'>
+        <div className="personheader d-flex justify-content-between">
+          <div className="leftside">
+            <h2>
+              {bio.firstName} {bio.lastName}
+            </h2>
+            <p className="mb-0">
+              Last Synced to CAES on{' '}
+              {sitePerson.lastSync
+                ? new Date(sitePerson.lastSync).toLocaleString()
+                : 'never'}
+            </p>
+            <p className='sourceIDs'>
+              {sources.map((source: any) => (
+                <span className="sources" key={source.source}>
+                  {source.source} - <a href="https://scholar.google.com/citations?user={source.sourceKey || 'not found'}=en">{source.sourceKey || 'not found'}</a>
+                </span>
+              ))}
+            </p>
+            <p className="legend">represents user created data</p>
+
+          </div>
+        </div>
+
+
+
+        <form>
           <div className='form-group custom-active-wrapper'>
             <label>First Name</label>
               <ActiveIndicator hasValue={!!sitePerson.firstName} />

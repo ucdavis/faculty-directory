@@ -10,15 +10,15 @@ function NavBar() {
   let location = useLocation();
 
   return (
-    <div className='d-flex justify-content-between mb-3'>
+    <div className="text-center">
       {location.pathname != '/' && (
-        <Link className="back-link" to='/'>
+        <p className="mb-2"><Link className="back-link" to='/'>
           <FontAwesomeIcon icon='arrow-left' size='xs' /> Back to Faculty List
-        </Link>
+        </Link></p>
       )}
-      <span className='discreet ml-auto'>
+      <p className='mb-1 discreet ml-auto'>
         <span>Calvin Doval | CAES</span> • Sign out
-      </span>
+      </p>
     </div>
   );
 }
@@ -43,7 +43,8 @@ export class NavMenu extends Component<any, State> {
 
   render() {
     return (
-      <header className='container'>
+      <header>
+
         <div className="logo-container text-center">
           <img src='/media/sheep.svg' />
           <h1 className="mt-4">FLEECE</h1>
@@ -51,6 +52,7 @@ export class NavMenu extends Component<any, State> {
         </div>
 
         <NavBar />
+
       </header>
     );
   }
