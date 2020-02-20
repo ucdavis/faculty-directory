@@ -91,8 +91,8 @@ namespace FacultyDirectory.Core.Services
             // TODO: get from site settings or query dynamically from site settings?
             var personTypes = new Dictionary<string, string> {
                 { "faculty", "8338d79c-1105-4845-ae56-1919c8738249" },
-                { "emeriti", "dc92d966-f3fc-48bf-b187-bcb3184eae3d" },
-                { "leadership", "b2736747-a96c-4ce1-8572-9b2b818d53b0" } 
+                { "emeriti", "14f01b6f-09af-422a-9b57-739a4b306d17" },
+                { "leadership", "eca6b30c-6c72-442b-af9a-dce57a0c8358" } 
             };
 
             // TODO: determine which site values to use for each property
