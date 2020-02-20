@@ -211,14 +211,11 @@ export const Person = () => {
           >
             Save and Sync
           </button>
-          {/* <button
+          <button
             type='submit'
-            className='btn btn-outline-warning'
-            onClick={e => onSubmit(e, true)}
+            className='inverse-btn'
+            onClick={e => onSubmit(e, false)}
           >
-            Hold without Sync
-          </button> */}
-          <button type='reset' className='inverse-btn'>
             Do Not Sync
           </button>
         </div>
