@@ -34,8 +34,9 @@ namespace FacultyDirectory.Jobs.SyncSites
             var dbContext = provider.GetService<ApplicationDbContext>();
             var siteFarmService = provider.GetService<ISiteFarmService>();
 
+            // TODO: turn back on once ready to sync
             // Process the sync
-            ProcessSitePeople(dbContext, siteFarmService).GetAwaiter().GetResult();
+            // ProcessSitePeople(dbContext, siteFarmService).GetAwaiter().GetResult();
 
             _log.Information("Sync Sites Job Finished");
         }
