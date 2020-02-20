@@ -60,10 +60,9 @@ export const InputArray = (props: any) => {
         <div className="input-array">
             {values.map((val, idx) =>
                 (<div className="input-group" key={idx}>
-                    <ActiveIndicator hasValue={!!val} />
                     <input type="text" className='form-control' value={val} onChange={e => onChange(idx, e)}></input>
                     <div className="input-group-append">
-                        <button type="button" className="btn pop" onClick={_ => onRemove(idx)}>
+                        <button type="button" className="btn" onClick={_ => onRemove(idx)}>
                             <FontAwesomeIcon icon='times' />
                         </button>
                     </div>
@@ -72,7 +71,7 @@ export const InputArray = (props: any) => {
             <button
                 type="button"
                 onClick={onAdd}
-                className="btn push">
+                className="btn addmore-btn">
                 <FontAwesomeIcon icon='plus' size='sm' />
                 Add Another Item
             </button>

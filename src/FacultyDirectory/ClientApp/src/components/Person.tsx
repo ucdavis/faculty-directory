@@ -68,9 +68,9 @@ export const Person = () => {
   return (
     <>
       <div className='content-wrapper'>
-        <h1>
+        <h2>
           {bio.firstName} {bio.lastName}
-        </h1>
+        </h2>
         <p>
           Last Synced on{' '}
           {sitePerson.lastSync
@@ -84,10 +84,9 @@ export const Person = () => {
             </span>
           ))}
         </p>
-        <form className='dark-form active-coloring'>
-          <div className='form-group'>
+        <form className='active-coloring'>
+          <div className='form-group custom-active-wrapper'>
             <label>First Name</label>
-            <div className='active-color-wrapper'>
               <ActiveIndicator hasValue={!!sitePerson.firstName} />
               <input
                 type='text'
@@ -97,12 +96,11 @@ export const Person = () => {
                 value={sitePerson.firstName || ''}
                 onChange={changeHandler}
               />
-            </div>
           </div>
           <div className='form-group'>
             <label>Last Name</label>
-            <div className='active-color-wrapper'>
-              <ActiveIndicator hasValue={!!sitePerson.lastName} />
+
+
               <input
                 type='text'
                 className='form-control'
@@ -111,12 +109,12 @@ export const Person = () => {
                 value={sitePerson.lastName || ''}
                 onChange={changeHandler}
               />
-            </div>
+
           </div>
           <div className='form-group'>
             <label>Title</label>
-            <div className='active-color-wrapper'>
-              <ActiveIndicator hasValue={!!sitePerson.title} />
+
+
               <input
                 type='text'
                 className='form-control'
@@ -125,7 +123,7 @@ export const Person = () => {
                 value={sitePerson.title || ''}
                 onChange={changeHandler}
               />
-            </div>
+
           </div>
           <div className='form-group'>
             <label>Email</label>
@@ -161,6 +159,7 @@ export const Person = () => {
           </div>
           <div className='form-group'>
             <label>Bio</label>
+
             <textarea
               rows={5}
               className='form-control'
@@ -180,8 +179,7 @@ export const Person = () => {
           </div>
           <div className='form-group'>
             <label>SiteFarm UID</label>
-            <div className='active-color-wrapper'>
-              <ActiveIndicator hasValue={!!sitePerson.pageUid} />
+
               <input
                 type='text'
                 className='form-control'
@@ -190,32 +188,33 @@ export const Person = () => {
                 value={sitePerson.pageUid || ''}
                 onChange={changeHandler}
               />
-            </div>
+
             <small className='form-text text-muted'>
               Only change if you want to overwrite an existing person entry
             </small>
           </div>
         </form>
+        <div className='row justify-content-center'>
+          <button
+            type='submit'
+            className='main-btn'
+            onClick={e => onSubmit(e, true)}
+          >
+            Save and Sync
+          </button>
+          {/* <button
+            type='submit'
+            className='btn btn-outline-warning'
+            onClick={e => onSubmit(e, true)}
+          >
+            Hold without Sync
+          </button> */}
+          <button type='reset' className='inverse-btn'>
+            Do Not Sync
+          </button>
+        </div>
       </div>
-      <div className='form-submit-wrapper'>
-        <button
-          type='submit'
-          className='btn btn-success'
-          onClick={e => onSubmit(e, true)}
-        >
-          Save and Sync
-        </button>
-        <button
-          type='submit'
-          className='btn btn-outline-warning'
-          onClick={e => onSubmit(e, true)}
-        >
-          Hold without Sync
-        </button>
-        <button type='reset' className='btn btn-outline-danger'>
-          Do Not Sync
-        </button>
-      </div>
+
     </>
   );
 };

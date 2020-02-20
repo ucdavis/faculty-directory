@@ -45,7 +45,7 @@ export const ReactTable = ({ columns, data, initialState }: any) => {
 
   return (
     <>
-      <table className='table table-striped table-dark' {...getTableProps()}>
+      <table className='table table-striped' {...getTableProps()}>
         <thead>
           <tr>
             <th

@@ -22,25 +22,24 @@ $sans-italic:   "proxima-nova-i",sans-serif;
 $sans-bold:     "proxima-nova-b",sans-serif;
 $sans-reg:      "proxima-nova-r",sans-serif;
 
-$primary-color:     #1D3B5C;
+$primary-color:     #71CC98;
 $secondary-color:   #004987;
 
 $a-link:            #DAAA00;
 
+$primary-font: rgba(28, 33, 38, 0.99); //
+$secondary-font: rgba(28, 33, 38, 0.66); //
+$tertiary-font: rgba(28, 33, 38, 0.4); //
 
-$primary-font: #C7C8CC; //
-$secondary-font: #8F9091; //
-$tertiary-font: #ffffff; //
-
-$bg-color: #202124; // background
-$bg-color-secondary: #35363A;
+$bg-color: rgba(221,217,168,0.07); // background
+$bg-color-secondary: #fff;
 
 
 $placeholder-text: darken($secondary-font, 10%);
 $default-form-text: $primary-font;
 
-$people-active-color: #43B02A;
-$people-placeholder-color: #0078FF;
+$custom-data:  $primary-color;
+$default-data: $primary-font;
 
 // $bg-color-form: #3d454d;
 $bg-color-form: $bg-color;
@@ -107,7 +106,7 @@ $shingle-brown: #4f2c1d;
 .container {
   padding: 0;
   width: 80%;
-  max-width:1280px;
+  max-width:760px;
   @include breakpoint (sm) {
     width: 95%;
   }
@@ -127,12 +126,13 @@ $shingle-brown: #4f2c1d;
   /* ...and now for the proper property */
   transition:.25s;
 }
-@mixin main-btn {
+.main-btn {
   white-space: nowrap;
   display: inline-block;
   box-shadow: 0 -3px 0 rgba(0, 0, 0, 0.15) inset, 0 1px 3px rgba(0,0,0,.08);
   background: $primary-color;
-  border-radius: 2px;
+  border-radius: 4px;
+  padding:1rem 2rem;
   letter-spacing: 0.025em;
   color: #fff !important;
   text-decoration: none;
@@ -141,29 +141,30 @@ $shingle-brown: #4f2c1d;
   font-family: $sans-bold;
   &:active,
   &:focus {
-    background-color: darken($primary-color, 5);
+    background-color: darken($primary-color, 3);
   }
   &:hover {
     color: #fff !important;
     transform: translateY(-1px);
     box-shadow: 0 -3px 0 rgba(0, 0, 0, 0.15) inset, 0 3px 6px rgba(0,0,0,.08);
-    background-color: lighten($primary-color, 5);
+    background-color: lighten($primary-color, 3);
   }
 }
 
-@mixin inverse-btn {
+.inverse-btn {
   white-space: nowrap;
   display: inline-block;
-  background: #fff;
+  background: none;
   letter-spacing: 0.025em;
-  color: $primary-color;
+  color: $primary-font;
+  padding:1rem 2rem;
   text-decoration: none;
   transition: all 0.15s ease;
   border: none;
   font-family: $sans-bold;
-  box-shadow: $box-shadow;
   &:hover {
     transform: translateY(-1px);
     text-decoration: none;
+    color:$primary-color;
   }
 }

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { ActiveIndicator } from './InputArray';
 
 interface IProps {
     data: string;
@@ -57,7 +56,6 @@ export const LinksInputArray = (props: any) => {
     <div className='input-array'>
       {[...Array(numGroups)].map((_, i) => (
         <div className='input-group' key={`group-${i}`}>
-          <ActiveIndicator hasValue={!!values[i * 2]} />
           <input
             type='text'
             className='form-control'
@@ -75,15 +73,15 @@ export const LinksInputArray = (props: any) => {
           <div className='input-group-append'>
             <button
               type='button'
-              className='btn pop'
+              className='btn'
               onClick={_ => onRemove(i)}
             >
-              <FontAwesomeIcon icon='times' size='2x' />
+              <FontAwesomeIcon icon='times' />
             </button>
           </div>
         </div>
       ))}
-      <button type='button' onClick={onAdd} className='btn push'>
+      <button type='button' onClick={onAdd} className='btn addmore-btn'>
         <FontAwesomeIcon icon='plus' size='sm' />
         Add Another Website
       </button>

@@ -44,11 +44,12 @@ export class NavMenu extends Component<any, State> {
   render() {
     return (
       <header className='container'>
-        <div className="logo-container">
-          <img src='/media/fleece.svg' />
-          <h3 className="mt-5 text-center">Faculty list encompassing everyone current &amp; Emeriti</h3>
+        <div className="logo-container text-center">
+          <img src='/media/sheep.svg' />
+          <h1 className="mt-4">FLEECE</h1>
+          <p className="lede">Faculty List Encompassing Everyone Current and Emeriti</p>
         </div>
-        
+
         <NavBar />
       </header>
     );

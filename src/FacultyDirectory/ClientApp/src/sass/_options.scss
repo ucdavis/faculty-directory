@@ -1,40 +1,32 @@
 a.back-link {
   color: $primary-font;
   .fa-arrow-left {
-    color: $unitrans-red;
+    color: $secondary-color;
   }
   &:hover {
-    color: $ucd-gold;
+    color: $secondary-color;
   }
 }
 
 form {
-  &.dark-form {
     select, option, input, textarea {
-      background-color: $bg-color-form;
       border: none;
       color: $default-form-text;
       &:focus {
-        background-color: $bg-color-form;
-        box-shadow: none;
         color: $default-form-text;
       }
     }
     label {
-      margin-left:22px;
-    }
-    .input-array button.push{
-      margin-left:14px;
     }
     input, textarea {
       &::placeholder {
-        color: $placeholder-text;
+        color: $default-data;
       }
       &:focus {
-        border: 1px solid $borders;
-        &:not(:read-only):not(:disabled)::placeholder {
-          color: transparent;
-        }
+        // border: 1px solid $borders;
+        // &:not(:read-only):not(:disabled)::placeholder {
+        //   color: transparent;
+        // }
       }
       &:disabled, &:read-only {
         background-color: $bg-color-form-disabled;
@@ -42,7 +34,6 @@ form {
       }
       &::before {
         content: ' ';
-        margin-right: 20px;
       }
       &:placeholder-shown {
         &::before {
@@ -50,53 +41,49 @@ form {
         }
       }
     }
-  }
-
   .btn {
     font-size: 1.6rem;
   }
-}
-
-.active-color-wrapper {
-  display: flex;
-  align-items: center;
-}
-
-.active-color-indicator {
-  display: none;
-  width: 1rem;
-  height: 2rem;
-  background-color: $people-placeholder-color;
-  margin-right: 1rem;
-  margin-top: auto;
-  margin-bottom: auto;
-
-  &.active {
-    background-color: $people-active-color;
+  .btn:focus, .btn.focus {
+    box-shadow:none;
+  }
+  .addmore-btn {
+    color:$secondary-font;
+    svg {
+      margin-right:0.6rem;
+    }
+    &:hover {
+      color:$primary-color;
+    }
+  }
+  .input-group-append {
+    background:none;
+    svg {
+      color:$secondary-font;
+    }
   }
 }
 
-form.active-coloring {
+.custom-active-wrapper {
+    label:after {
+      content:"\A";
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background: $custom-data;
+      display:inline-block;
+      margin:0 10px;
+  }
   input, textarea {
-    color: $people-active-color;
     &::placeholder {
-      color: $people-placeholder-color;
-    }
-    &:focus {
-      border-color: $people-active-color;
-      color: $people-active-color;
-    }
-    &:placeholder-shown {
-      border-left-color: $people-placeholder-color;
+      color: $custom-data;
     }
   }
-  .active-color-indicator {
-    display: block;
+  .form-control:focus {
+    box-shadow: 0 0 0 0.1rem transparentize($custom-data,0.50);
+    border-color:$custom-data;
   }
 }
-
-
-
 
 .input-array {
   button.pop {
@@ -106,38 +93,10 @@ form.active-coloring {
 
   button.push {
     background-color: transparent;
-    color: $primary-font;
+    color: $secondary-font;
     font-size: 1.6rem;
     .fa-plus {
       margin-right: 0.5rem;
     }
   }
-}
-
-.btn-success, .btn-outline-success:hover {
-  background-color: $sunny-grass !important;
-}
-
-.btn-warning, .btn-outline-warning:hover {
-  background-color: $golden-lupine !important;
-}
-
-.btn-danger, .btn-outline-danger:hover {
-  background-color: $unitrans-red !important;
-}
-
-.btn-outline-danger, .btn-outline-success, .btn-outline-warning {
-  color: $primary-font !important;
-}
-
-.btn-outline-danger, .btn-danger {
-  border-color: $unitrans-red !important;
-}
-
-.btn-outline-success, .btn-success {
-  border-color: $sunny-grass !important;
-}
-
-.btn-outline-warning, .btn-warning {
-  border-color: $golden-lupine !important;
 }
