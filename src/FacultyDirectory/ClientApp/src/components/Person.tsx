@@ -82,7 +82,7 @@ export const Person = () => {
             <p className='sourceIDs'>
               {sources.map((source: any) => (
                 <span className="sources" key={source.source}>
-                  {source.source} - <a href="https://scholar.google.com/citations?user={source.sourceKey || 'not found'}=en">{source.sourceKey || 'not found'}</a>
+                  {source.source} - {source.sourceKey || 'not found'}
                 </span>
               ))}
             </p>
