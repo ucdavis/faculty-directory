@@ -10,11 +10,13 @@ function NavBar() {
   let location = useLocation();
 
   return (
-    <div className="text-center">
+    <div className='text-center'>
       {location.pathname != '/' && (
-        <p className="mb-2"><Link className="back-link" to='/'>
-          <FontAwesomeIcon icon='arrow-left' size='xs' /> Back to Faculty List
-        </Link></p>
+        <p className='mb-2'>
+          <Link className='back-link' to='/'>
+            <FontAwesomeIcon icon='arrow-left' size='xs' /> Back to Faculty List
+          </Link>
+        </p>
       )}
       <p className='mb-1 discreet ml-auto'>
         <span>Calvin Doval | CAES</span> • Sign out
@@ -44,15 +46,17 @@ export class NavMenu extends Component<any, State> {
   render() {
     return (
       <header>
-
-        <div className="logo-container text-center">
-          <img src='/media/sheep.svg' />
-          <h1 className="mt-4">FLEECE</h1>
-          <p className="lede">Faculty List Encompassing Everyone Current and Emeriti</p>
+        <div className='logo-container text-center'>
+          <Link to='/fleece'>
+            <img src='/media/sheep.svg' />
+          </Link>
+          <h1 className='mt-4'>FLEECE</h1>
+          <p className='lede'>
+            Faculty List Encompassing Everyone Current and Emeriti
+          </p>
         </div>
 
         <NavBar />
-
       </header>
     );
   }
