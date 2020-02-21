@@ -27,7 +27,7 @@ export const People = () => {
   }, []);
 
   if (loading) {
-    return <Loading></Loading>;
+    return <Loading text="LOADING..."></Loading>;
   }
 
   const navLink = ({ row }: Cell<IPersonRecord>) => {

@@ -60,7 +60,7 @@ export const Person = () => {
   };
 
   if (!bio || !sitePerson.person) {
-    return <Loading></Loading>;
+    return <Loading text="LOADING..."></Loading>;
   }
 
   console.log('site person', sitePerson);
