@@ -68,6 +68,7 @@ namespace FacultyDirectory.Controllers
                 dbSitePerson.Departments = sitePerson.Departments.NullIfEmpty();
                 dbSitePerson.Websites = sitePerson.Websites.NullIfEmpty();
                 dbSitePerson.Tags = sitePerson.Tags.NullIfEmpty();
+                dbSitePerson.PageUid = sitePerson.PageUid;
                 dbSitePerson.ShouldSync = sitePerson.ShouldSync;
             }
             
