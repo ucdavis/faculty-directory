@@ -3,8 +3,9 @@ import { useParams, useHistory } from 'react-router-dom';
 import { ISource } from '../models/ISource';
 import { IBio } from '../models/IBio';
 import { ISitePerson } from '../models/ISitePerson';
-import { InputArray, ActiveIndicator } from './InputArray';
+import { InputArray } from './InputArray';
 import { LinksInputArray } from './LinksInputArray';
+import { ActivityWrapper } from './ActivityWrapper';
 
 export const Person = () => {
   let { id } = useParams();
@@ -57,6 +58,12 @@ export const Person = () => {
     });
   };
 
+  const customContentClass = (overwritten: boolean) => {
+    if (overwritten) {
+      return 'custom-active-wrapper';
+    }
+  };
+
   if (!bio || !sitePerson.person) {
     return <div>loading</div>;
   }
@@ -68,12 +75,12 @@ export const Person = () => {
   return (
     <>
       <div className='content-wrapper'>
-        <div className="personheader d-flex justify-content-between">
-          <div className="leftside">
+        <div className='personheader d-flex justify-content-between'>
+          <div className='leftside'>
             <h2>
               {bio.firstName} {bio.lastName}
             </h2>
-            <p className="mb-0">
+            <p className='mb-0'>
               Last Synced to CAES on{' '}
               {sitePerson.lastSync
                 ? new Date(sitePerson.lastSync).toLocaleString()
@@ -81,22 +88,19 @@ export const Person = () => {
             </p>
             <p className='sourceIDs'>
               {sources.map((source: any) => (
-                <span className="sources" key={source.source}>
+                <span className='sources' key={source.source}>
                   {source.source} - {source.sourceKey || 'not found'}
                 </span>
               ))}
             </p>
-            <p className="legend">represents user created data</p>
-
+            <p className='legend'>represents user created data</p>
           </div>
         </div>
 
-
-
         <form>
-          <div className='form-group custom-active-wrapper'>
-            <label>First Name</label>
-              <ActiveIndicator hasValue={!!sitePerson.firstName} />
+          <div className='form-group'>
+            <ActivityWrapper hasActivity={!!sitePerson.firstName}>
+              <label>First Name</label>
               <input
                 type='text'
                 className='form-control'
@@ -105,11 +109,11 @@ export const Person = () => {
                 value={sitePerson.firstName || ''}
                 onChange={changeHandler}
               />
+            </ActivityWrapper>
           </div>
           <div className='form-group'>
-            <label>Last Name</label>
-
-
+            <ActivityWrapper hasActivity={!!sitePerson.lastName}>
+              <label>Last Name</label>
               <input
                 type='text'
                 className='form-control'
@@ -118,12 +122,11 @@ export const Person = () => {
                 value={sitePerson.lastName || ''}
                 onChange={changeHandler}
               />
-
+            </ActivityWrapper>
           </div>
           <div className='form-group'>
-            <label>Title</label>
-
-
+            <ActivityWrapper hasActivity={!!sitePerson.title}>
+              <label>Title</label>
               <input
                 type='text'
                 className='form-control'
@@ -132,72 +135,81 @@ export const Person = () => {
                 value={sitePerson.title || ''}
                 onChange={changeHandler}
               />
-
+            </ActivityWrapper>
           </div>
           <div className='form-group'>
-            <label>Email</label>
-            <InputArray
-              data={bio.emails}
-              name='emails'
-              onChange={changeHandler}
-            ></InputArray>
+            <ActivityWrapper hasActivity={!!sitePerson.emails}>
+              <label>Email</label>
+              <InputArray
+                data={bio.emails}
+                name='emails'
+                onChange={changeHandler}
+              ></InputArray>
+            </ActivityWrapper>
           </div>
           <div className='form-group'>
-            <label>Phone</label>
-            <InputArray
-              data={bio.phones}
-              name='phones'
-              onChange={changeHandler}
-            ></InputArray>
+            <ActivityWrapper hasActivity={!!sitePerson.phones}>
+              <label>Phone</label>
+              <InputArray
+                data={bio.phones}
+                name='phones'
+                onChange={changeHandler}
+              ></InputArray>
+            </ActivityWrapper>
           </div>
           <div className='form-group'>
-            <label>Departments</label>
-            <InputArray
-              data={bio.departments}
-              name='departments'
-              onChange={changeHandler}
-            ></InputArray>
+            <ActivityWrapper hasActivity={!!sitePerson.departments}>
+              <label>Departments</label>
+              <InputArray
+                data={bio.departments}
+                name='departments'
+                onChange={changeHandler}
+              ></InputArray>
+            </ActivityWrapper>
           </div>
           <div className='form-group'>
-            <label>Websites (TODO)</label>
-            <LinksInputArray
-              data={bio.websites}
-              name='websites'
-              onChange={changeHandler}
-            ></LinksInputArray>
+            <ActivityWrapper hasActivity={!!sitePerson.websites}>
+              <label>Websites</label>
+              <LinksInputArray
+                data={bio.websites}
+                name='websites'
+                onChange={changeHandler}
+              ></LinksInputArray>
+            </ActivityWrapper>
           </div>
           <div className='form-group'>
-            <label>Bio</label>
-
-            <textarea
-              rows={5}
-              className='form-control'
-              name='bio'
-              placeholder={bio.bio}
-              value={sitePerson.bio || ''}
-              onChange={changeHandler}
-            />
+            <ActivityWrapper hasActivity={!!sitePerson.bio}>
+              <label>Bio</label>
+              <textarea
+                rows={5}
+                className='form-control'
+                name='bio'
+                placeholder={bio.bio}
+                value={sitePerson.bio || ''}
+                onChange={changeHandler}
+              />
+            </ActivityWrapper>
           </div>
           <div className='form-group'>
-            <label>Tags</label>
-            <InputArray
-              data={bio.tags}
-              name='tags'
-              onChange={changeHandler}
-            ></InputArray>
+            <ActivityWrapper hasActivity={!!sitePerson.tags}>
+              <label>Tags</label>
+              <InputArray
+                data={bio.tags}
+                name='tags'
+                onChange={changeHandler}
+              ></InputArray>
+            </ActivityWrapper>
           </div>
           <div className='form-group'>
             <label>SiteFarm UID</label>
-
-              <input
-                type='text'
-                className='form-control'
-                name='pageUid'
-                placeholder={sitePerson.pageUid}
-                value={sitePerson.pageUid || ''}
-                onChange={changeHandler}
-              />
-
+            <input
+              type='text'
+              className='form-control'
+              name='pageUid'
+              placeholder={sitePerson.pageUid}
+              value={sitePerson.pageUid || ''}
+              onChange={changeHandler}
+            />
             <small className='form-text text-muted'>
               Only change if you want to overwrite an existing person entry
             </small>
@@ -211,19 +223,15 @@ export const Person = () => {
           >
             Save and Sync
           </button>
-          {/* <button
+          <button
             type='submit'
-            className='btn btn-outline-warning'
-            onClick={e => onSubmit(e, true)}
+            className='inverse-btn'
+            onClick={e => onSubmit(e, false)}
           >
-            Hold without Sync
-          </button> */}
-          <button type='reset' className='inverse-btn'>
             Do Not Sync
           </button>
         </div>
       </div>
-
     </>
   );
 };
