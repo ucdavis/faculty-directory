@@ -5,6 +5,7 @@ import { IBio } from '../models/IBio';
 import { ISitePerson } from '../models/ISitePerson';
 import { InputArray } from './InputArray';
 import { LinksInputArray } from './LinksInputArray';
+import { ActivityWrapper } from './ActivityWrapper';
 
 export const Person = () => {
   let { id } = useParams();
@@ -98,7 +99,7 @@ export const Person = () => {
 
         <form>
           <div className='form-group'>
-            <div className={customContentClass(!!sitePerson.firstName)}>
+            <ActivityWrapper hasActivity={!!sitePerson.firstName}>
               <label>First Name</label>
               <input
                 type='text'
@@ -108,10 +109,10 @@ export const Person = () => {
                 value={sitePerson.firstName || ''}
                 onChange={changeHandler}
               />
-            </div>
+            </ActivityWrapper>
           </div>
           <div className='form-group'>
-            <div className={customContentClass(!!sitePerson.lastName)}>
+            <ActivityWrapper hasActivity={!!sitePerson.lastName}>
               <label>Last Name</label>
               <input
                 type='text'
@@ -121,10 +122,10 @@ export const Person = () => {
                 value={sitePerson.lastName || ''}
                 onChange={changeHandler}
               />
-            </div>
+            </ActivityWrapper>
           </div>
           <div className='form-group'>
-            <div className={customContentClass(!!sitePerson.title)}>
+            <ActivityWrapper hasActivity={!!sitePerson.title}>
               <label>Title</label>
               <input
                 type='text'
@@ -134,7 +135,7 @@ export const Person = () => {
                 value={sitePerson.title || ''}
                 onChange={changeHandler}
               />
-            </div>
+            </ActivityWrapper>
           </div>
           <div className='form-group'>
             <label>Email</label>
@@ -169,7 +170,7 @@ export const Person = () => {
             ></LinksInputArray>
           </div>
           <div className='form-group'>
-            <div className={customContentClass(!!sitePerson.bio)}>
+            <ActivityWrapper hasActivity={!!sitePerson.bio}>
               <label>Bio</label>
               <textarea
                 rows={5}
@@ -179,7 +180,7 @@ export const Person = () => {
                 value={sitePerson.bio || ''}
                 onChange={changeHandler}
               />
-            </div>
+            </ActivityWrapper>
           </div>
           <div className='form-group'>
             <label>Tags</label>
