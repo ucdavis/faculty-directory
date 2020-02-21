@@ -5,6 +5,7 @@ import { IPerson } from '../models/IPerson';
 import { ISitePerson } from '../models/ISitePerson';
 import { Cell, TableState, Column } from 'react-table';
 import { SelectColumnFilter } from './ReactTable/Filtering';
+import { Loading } from './Loading';
 
 interface IPersonRecord {
   person: IPerson;
@@ -26,7 +27,7 @@ export const People = () => {
   }, []);
 
   if (loading) {
-    return <span>loading...</span>;
+    return <Loading></Loading>;
   }
 
   const navLink = ({ row }: Cell<IPersonRecord>) => {

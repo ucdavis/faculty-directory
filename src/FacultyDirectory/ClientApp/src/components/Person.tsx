@@ -6,6 +6,7 @@ import { ISitePerson } from '../models/ISitePerson';
 import { InputArray } from './InputArray';
 import { LinksInputArray } from './LinksInputArray';
 import { ActivityWrapper } from './ActivityWrapper';
+import { Loading } from './Loading';
 
 export const Person = () => {
   let { id } = useParams();
@@ -58,14 +59,8 @@ export const Person = () => {
     });
   };
 
-  const customContentClass = (overwritten: boolean) => {
-    if (overwritten) {
-      return 'custom-active-wrapper';
-    }
-  };
-
   if (!bio || !sitePerson.person) {
-    return <div>loading</div>;
+    return <Loading></Loading>;
   }
 
   console.log('site person', sitePerson);
