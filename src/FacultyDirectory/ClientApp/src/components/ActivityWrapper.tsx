@@ -6,11 +6,9 @@ interface IProps {
 }
 
 export const ActivityWrapper = (props: IProps) => {
-  let css = '';
-
-  if (props.hasActivity) {
-    css = 'custom-active-wrapper';
-  }
-
-  return <div className={css}>{props.children}</div>;
+  return (
+    <div className={props.hasActivity ? 'custom-active-wrapper' : ''}>
+      {props.children}
+    </div>
+  );
 };
