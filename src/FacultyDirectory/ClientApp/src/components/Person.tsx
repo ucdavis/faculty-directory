@@ -138,36 +138,44 @@ export const Person = () => {
             </ActivityWrapper>
           </div>
           <div className='form-group'>
-            <label>Email</label>
-            <InputArray
-              data={bio.emails}
-              name='emails'
-              onChange={changeHandler}
-            ></InputArray>
+            <ActivityWrapper hasActivity={!!sitePerson.emails}>
+              <label>Email</label>
+              <InputArray
+                data={bio.emails}
+                name='emails'
+                onChange={changeHandler}
+              ></InputArray>
+            </ActivityWrapper>
           </div>
           <div className='form-group'>
-            <label>Phone</label>
-            <InputArray
-              data={bio.phones}
-              name='phones'
-              onChange={changeHandler}
-            ></InputArray>
+            <ActivityWrapper hasActivity={!!sitePerson.phones}>
+              <label>Phone</label>
+              <InputArray
+                data={bio.phones}
+                name='phones'
+                onChange={changeHandler}
+              ></InputArray>
+            </ActivityWrapper>
           </div>
           <div className='form-group'>
-            <label>Departments</label>
-            <InputArray
-              data={bio.departments}
-              name='departments'
-              onChange={changeHandler}
-            ></InputArray>
+            <ActivityWrapper hasActivity={!!sitePerson.departments}>
+              <label>Departments</label>
+              <InputArray
+                data={bio.departments}
+                name='departments'
+                onChange={changeHandler}
+              ></InputArray>
+            </ActivityWrapper>
           </div>
           <div className='form-group'>
-            <label>Websites</label>
-            <LinksInputArray
-              data={bio.websites}
-              name='websites'
-              onChange={changeHandler}
-            ></LinksInputArray>
+            <ActivityWrapper hasActivity={!!sitePerson.websites}>
+              <label>Websites</label>
+              <LinksInputArray
+                data={bio.websites}
+                name='websites'
+                onChange={changeHandler}
+              ></LinksInputArray>
+            </ActivityWrapper>
           </div>
           <div className='form-group'>
             <ActivityWrapper hasActivity={!!sitePerson.bio}>
@@ -183,12 +191,14 @@ export const Person = () => {
             </ActivityWrapper>
           </div>
           <div className='form-group'>
-            <label>Tags</label>
-            <InputArray
-              data={bio.tags}
-              name='tags'
-              onChange={changeHandler}
-            ></InputArray>
+            <ActivityWrapper hasActivity={!!sitePerson.tags}>
+              <label>Tags</label>
+              <InputArray
+                data={bio.tags}
+                name='tags'
+                onChange={changeHandler}
+              ></InputArray>
+            </ActivityWrapper>
           </div>
           <div className='form-group'>
             <label>SiteFarm UID</label>
