@@ -147,7 +147,10 @@ namespace FacultyDirectory.Core.Services
                         data = new
                         {
                             type = "file--file",
-                            id = "5fe49c04-d0a0-498d-8605-ef318c0282e3" // TODO: get from site settings
+                            id = "5fe49c04-d0a0-498d-8605-ef318c0282e3", // TODO: get from site settings
+                            meta = new {
+                                title = "Profile Image"
+                            }
                         }
                     },
                     field_sf_tags
