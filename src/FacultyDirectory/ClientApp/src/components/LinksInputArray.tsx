@@ -18,10 +18,24 @@ export const LinksInputArray = (props: any) => {
   const setValuesAndNotifyProps = (values: string[]) => {
     setValues(values);
 
+    const valuesArray = values.flatMap((v,i) => {
+      if (i % 2 === 0) {
+        // even indexes are the links.  Always grab the link if it's not empty
+        if (!!v) {
+          // include the text column too even if empty
+          return [v, values[i+1]];
+        }
+      }
+
+      return null;
+    });
+
+    const value = valuesArray.filter(v => v !== null).join('|');
+
     const response = {
       target: {
         name: props.name,
-        value: values.filter(v => !!v).join('|')
+        value
       }
     };
 
