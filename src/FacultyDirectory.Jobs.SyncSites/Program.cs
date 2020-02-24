@@ -34,9 +34,8 @@ namespace FacultyDirectory.Jobs.SyncSites
             var dbContext = provider.GetService<ApplicationDbContext>();
             var siteFarmService = provider.GetService<ISiteFarmService>();
 
-            // TODO: turn back on once ready to sync
             // Process the sync
-            // ProcessSitePeople(dbContext, siteFarmService).GetAwaiter().GetResult();
+            ProcessSitePeople(dbContext, siteFarmService).GetAwaiter().GetResult();
 
             _log.Information("Sync Sites Job Finished");
         }
@@ -45,7 +44,7 @@ namespace FacultyDirectory.Jobs.SyncSites
         {
             // grab N people who haven't been sync'd in a while
             var sitePeople = await dbContext.SitePeople.Where(sp => sp.ShouldSync)
-                .OrderBy(sp => sp.LastSync).Include(sp => sp.Person).Take(25).ToArrayAsync();
+                .OrderBy(sp => sp.LastSync).Include(sp => sp.Person).Take(50).ToArrayAsync();
 
             _log.Information("Syncing {num} people to SiteFarm", sitePeople.Length);
 
