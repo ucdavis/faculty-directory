@@ -41,7 +41,7 @@ namespace FacultyDirectory.Core.Services
 
         public async IAsyncEnumerable<string> SyncTags(string[] tags)
         {
-            var baseUrl = "https://playground.sf.ucdavis.edu/jsonapi/taxonomy_term/sf_tags";
+            var baseUrl = $"{this.config.ApiBase}/taxonomy_term/sf_tags";
 
             // for each tag where we don't have an existing UID, we need to create and save it
             foreach (var tag in tags)
@@ -194,7 +194,7 @@ namespace FacultyDirectory.Core.Services
             // Console.WriteLine(serialized);
 
             // Step 3: form POST/PATCH depending on prior existance of user page
-            var resourceUrl = "https://playground.sf.ucdavis.edu/jsonapi/node/sf_person";
+            var resourceUrl = $"{this.config.ApiBase}/node/sf_person";
             var method = HttpMethod.Post;
 
             if (sitePerson.PageUid.HasValue)
