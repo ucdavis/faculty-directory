@@ -65,6 +65,7 @@ export const Person = () => {
   }
 
   console.log('site person', sitePerson);
+  console.log('sources', sources);
 
   const { person } = sitePerson;
 
@@ -82,7 +83,7 @@ export const Person = () => {
                 ? new Date(sitePerson.lastSync).toLocaleString()
                 : 'never'}
             </p>
-            <Sources sources={sources} onChange={() => {}}></Sources>
+            <Sources sources={sources} onChange={sources => setSources(sources)}></Sources>
             <p className='legend'>represents user created data</p>
           </div>
         </div>
