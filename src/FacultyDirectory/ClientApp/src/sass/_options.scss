@@ -100,3 +100,17 @@ form {
     }
   }
 }
+.form-control-sm {
+  height: calc(1.5em + 0.5rem + 2px) !important;
+  font-size: 1.4rem !important;
+  width:33%;
+}
+.form-small {
+  label {
+    font-size:1.4rem;
+    text-transform: uppercase;
+  }
+}
+.sources {
+  margin-top:8px;
+}

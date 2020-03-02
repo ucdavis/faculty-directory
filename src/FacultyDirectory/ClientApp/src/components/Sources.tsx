@@ -31,13 +31,13 @@ export const Sources = (props: IProps) => {
 
       return (
         <div className='sources' key={sourceType}>
-          <div className='form-group'>
+          <div className='form-group form-small'>
             <label>{sourceType}</label>
             <input
               type='text'
-              className='form-control'
+              className='form-control form-control-sm'
               name={sourceType}
-              placeholder='Source Identifier'
+              placeholder='none found'
               value={sourceForType?.sourceKey || ''}
               onChange={changeHandler}
             />
@@ -48,11 +48,11 @@ export const Sources = (props: IProps) => {
   };
 
   return (
-    <div className='card'>
-      <div className='card-body'>
-        <h3>Sources</h3>
+    <div>
+      <br/>
+        <p className="mb-0"><b>Source information</b></p>
         <div className='sourceIDs'>{renderSources()}</div>
-      </div>
+
     </div>
   );
 };

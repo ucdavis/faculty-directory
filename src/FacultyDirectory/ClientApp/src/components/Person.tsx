@@ -72,8 +72,8 @@ export const Person = () => {
   return (
     <>
       <div className='content-wrapper'>
-        <div className='personheader d-flex justify-content-between'>
-          <div className='leftside'>
+        <div className='personheader'>
+
             <h2>
               {bio.firstName} {bio.lastName}
             </h2>
@@ -84,10 +84,12 @@ export const Person = () => {
                 : 'never'}
             </p>
             <Sources sources={sources} onChange={sources => setSources(sources)}></Sources>
-            <p className='legend'>represents user created data</p>
-          </div>
-        </div>
 
+        </div>
+        <hr />
+        <br />
+        <p className='legend'>represents user created data</p>
+  <br />
         <form>
           <div className='form-group'>
             <ActivityWrapper hasActivity={!!sitePerson.firstName}>
