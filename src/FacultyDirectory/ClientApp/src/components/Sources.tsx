@@ -37,7 +37,7 @@ export const Sources = (props: IProps) => {
               type='text'
               className='form-control form-control-sm'
               name={sourceType}
-              placeholder='Scholyr ID'
+              placeholder='Scholar ID'
               value={sourceForType?.sourceKey || ''}
               onChange={changeHandler}
             />
