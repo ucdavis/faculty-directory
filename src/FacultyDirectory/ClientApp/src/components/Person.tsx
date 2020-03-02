@@ -7,6 +7,7 @@ import { InputArray } from './InputArray';
 import { LinksInputArray } from './LinksInputArray';
 import { ActivityWrapper } from './ActivityWrapper';
 import { Loading } from './Loading';
+import { Sources } from './Sources';
 
 export const Person = () => {
   let { id } = useParams();
@@ -81,13 +82,7 @@ export const Person = () => {
                 ? new Date(sitePerson.lastSync).toLocaleString()
                 : 'never'}
             </p>
-            <p className='sourceIDs'>
-              {sources.map((source: any) => (
-                <span className='sources' key={source.source}>
-                  {source.source} - {source.sourceKey || 'not found'}
-                </span>
-              ))}
-            </p>
+            <Sources sources={sources} onChange={() => {}}></Sources>
             <p className='legend'>represents user created data</p>
           </div>
         </div>
