@@ -79,7 +79,7 @@ namespace FacultyDirectory.Jobs.ProcessSources
             var oldestUpdatedScholarPeopleIds = await dbContext.PeopleSources
                     .Where(s => s.Source == "scholar")
                     .OrderBy(s => s.LastUpdate)
-                    .Select(s => s.PersonId).Take(25).ToArrayAsync();
+                    .Select(s => s.PersonId).Take(20).ToArrayAsync();
 
             _log.Information("Updating scholar information for {num} people ", oldestUpdatedScholarPeopleIds.Length);
 
