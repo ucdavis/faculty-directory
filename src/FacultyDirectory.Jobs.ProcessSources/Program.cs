@@ -68,7 +68,7 @@ namespace FacultyDirectory.Jobs.ProcessSources
                 finally
                 {
                     // wait a little before trying the next one to make sure our data source is happy
-                    await Task.Delay(_random.Next(500, 1500));
+                    await Task.Delay(_random.Next(1500, 3500));
                 }
             }
         }
@@ -98,7 +98,7 @@ namespace FacultyDirectory.Jobs.ProcessSources
                 finally
                 {
                     // wait a little before trying the next one to make sure our data source is happy
-                    await Task.Delay(_random.Next(500, 1500));
+                    await Task.Delay(_random.Next(1500, 3500));
                 }
             }
         }
