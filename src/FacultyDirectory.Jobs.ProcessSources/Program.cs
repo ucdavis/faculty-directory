@@ -41,7 +41,7 @@ namespace FacultyDirectory.Jobs.ProcessSources
             ProcessFirstTimers(dbContext, scholarService).GetAwaiter().GetResult();
 
             // Now look for updates for people who haven't been updated recently
-            // ProcessExisting(dbContext, scholarService).GetAwaiter().GetResult();
+            ProcessExisting(dbContext, scholarService).GetAwaiter().GetResult();
 
             _log.Information("Process Sources Job Finished");
         }
@@ -68,7 +68,7 @@ namespace FacultyDirectory.Jobs.ProcessSources
                 finally
                 {
                     // wait a little before trying the next one to make sure our data source is happy
-                    await Task.Delay(_random.Next(500, 1500));
+                    await Task.Delay(_random.Next(1500, 3500));
                 }
             }
         }
@@ -79,7 +79,7 @@ namespace FacultyDirectory.Jobs.ProcessSources
             var oldestUpdatedScholarPeopleIds = await dbContext.PeopleSources
                     .Where(s => s.Source == "scholar")
                     .OrderBy(s => s.LastUpdate)
-                    .Select(s => s.PersonId).Take(25).ToArrayAsync();
+                    .Select(s => s.PersonId).Take(20).ToArrayAsync();
 
             _log.Information("Updating scholar information for {num} people ", oldestUpdatedScholarPeopleIds.Length);
 
@@ -98,7 +98,7 @@ namespace FacultyDirectory.Jobs.ProcessSources
                 finally
                 {
                     // wait a little before trying the next one to make sure our data source is happy
-                    await Task.Delay(_random.Next(500, 1500));
+                    await Task.Delay(_random.Next(1500, 3500));
                 }
             }
         }

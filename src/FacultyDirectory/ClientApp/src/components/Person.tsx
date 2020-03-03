@@ -7,6 +7,7 @@ import { InputArray } from './InputArray';
 import { LinksInputArray } from './LinksInputArray';
 import { ActivityWrapper } from './ActivityWrapper';
 import { Loading } from './Loading';
+import { Sources } from './Sources';
 
 export const Person = () => {
   let { id } = useParams();
@@ -39,11 +40,18 @@ export const Person = () => {
 
     const body = JSON.stringify({ ...sitePerson, shouldSync });
 
+    // TODO: check for success/OK result
     await fetch('api/sitepeople/' + id, {
       method: 'POST',
       headers,
       body
-    }).then(r => r.json());
+    });
+
+    await fetch('api/peoplesources/' + id, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify([ ...sources ])
+    });
 
     // saved, redirect back to people home
     history.push('/people');
@@ -60,38 +68,36 @@ export const Person = () => {
   };
 
   if (!bio || !sitePerson.person) {
-    return <Loading text="LOADING..."></Loading>;
+    return <Loading text='LOADING...'></Loading>;
   }
 
   console.log('site person', sitePerson);
+  console.log('sources', sources);
 
   const { person } = sitePerson;
 
   return (
     <>
       <div className='content-wrapper'>
-        <div className='personheader d-flex justify-content-between'>
-          <div className='leftside'>
-            <h2>
-              {bio.firstName} {bio.lastName}
-            </h2>
-            <p className='mb-0'>
-              Last Synced to CAES on{' '}
-              {sitePerson.lastSync
-                ? new Date(sitePerson.lastSync).toLocaleString()
-                : 'never'}
-            </p>
-            <p className='sourceIDs'>
-              {sources.map((source: any) => (
-                <span className='sources' key={source.source}>
-                  {source.source} - {source.sourceKey || 'not found'}
-                </span>
-              ))}
-            </p>
-            <p className='legend'>represents user created data</p>
-          </div>
+        <div className='personheader'>
+          <h2>
+            {bio.firstName} {bio.lastName}
+          </h2>
+          <p className='mb-0'>
+            Last Synced to CAES on{' '}
+            {sitePerson.lastSync
+              ? new Date(sitePerson.lastSync).toLocaleString()
+              : 'never'}
+          </p>
+          <Sources
+            sources={sources}
+            onChange={sources => setSources(sources)}
+          ></Sources>
         </div>
-
+        <hr />
+        <br />
+        <p className='legend'>represents user created data</p>
+        <br />
         <form>
           <div className='form-group'>
             <ActivityWrapper hasActivity={!!sitePerson.firstName}>
