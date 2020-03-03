@@ -46,6 +46,18 @@ stages:
       inputs:
         command: 'test'
 
+    - script: npm test -- --ci --reporters=default --reporters=jest-junit
+      displayName: "npm test"
+      env:
+        CI: true
+
+    - task: PublishTestResults@2
+      displayName: "Publish Test Results"
+      inputs:
+        testResultsFiles: junit.xml
+        mergeTestResults: true
+      condition: succeededOrFailed()
+
 - stage: Publish
   condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
   jobs:
