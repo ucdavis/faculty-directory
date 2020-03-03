@@ -40,11 +40,18 @@ export const Person = () => {
 
     const body = JSON.stringify({ ...sitePerson, shouldSync });
 
+    // TODO: check for success/OK result
     await fetch('api/sitepeople/' + id, {
       method: 'POST',
       headers,
       body
-    }).then(r => r.json());
+    });
+
+    await fetch('api/peoplesources/' + id, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify([ ...sources ])
+    });
 
     // saved, redirect back to people home
     history.push('/people');
@@ -61,7 +68,7 @@ export const Person = () => {
   };
 
   if (!bio || !sitePerson.person) {
-    return <Loading text="LOADING..."></Loading>;
+    return <Loading text='LOADING...'></Loading>;
   }
 
   console.log('site person', sitePerson);
@@ -73,23 +80,24 @@ export const Person = () => {
     <>
       <div className='content-wrapper'>
         <div className='personheader'>
-
-            <h2>
-              {bio.firstName} {bio.lastName}
-            </h2>
-            <p className='mb-0'>
-              Last Synced to CAES on{' '}
-              {sitePerson.lastSync
-                ? new Date(sitePerson.lastSync).toLocaleString()
-                : 'never'}
-            </p>
-            <Sources sources={sources} onChange={sources => setSources(sources)}></Sources>
-
+          <h2>
+            {bio.firstName} {bio.lastName}
+          </h2>
+          <p className='mb-0'>
+            Last Synced to CAES on{' '}
+            {sitePerson.lastSync
+              ? new Date(sitePerson.lastSync).toLocaleString()
+              : 'never'}
+          </p>
+          <Sources
+            sources={sources}
+            onChange={sources => setSources(sources)}
+          ></Sources>
         </div>
         <hr />
         <br />
         <p className='legend'>represents user created data</p>
-  <br />
+        <br />
         <form>
           <div className='form-group'>
             <ActivityWrapper hasActivity={!!sitePerson.firstName}>
