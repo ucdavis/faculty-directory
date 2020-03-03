@@ -41,7 +41,7 @@ namespace FacultyDirectory.Jobs.ProcessSources
             ProcessFirstTimers(dbContext, scholarService).GetAwaiter().GetResult();
 
             // Now look for updates for people who haven't been updated recently
-            // ProcessExisting(dbContext, scholarService).GetAwaiter().GetResult();
+            ProcessExisting(dbContext, scholarService).GetAwaiter().GetResult();
 
             _log.Information("Process Sources Job Finished");
         }
