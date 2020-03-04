@@ -42,8 +42,8 @@
   "scripts": {
     "start": "rimraf ./build && react-scripts start",
     "build": "react-scripts build",
-    "test": "cross-env CI=true react-scripts test --env=jsdom",
-    "test:ci": "react-scripts test --env=jsdom --ci --reporters=default --reporters=jest-junit",
+    "test": "react-scripts test --env=jsdom",
+    "test:ci": "cross-env CI=true react-scripts test --env=jsdom --ci --reporters=default --reporters=jest-junit",
     "eject": "react-scripts eject",
     "lint": "eslint ./src/"
   },

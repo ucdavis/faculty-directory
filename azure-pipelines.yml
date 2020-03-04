@@ -57,9 +57,9 @@ stages:
         CI: true
 
     - task: PublishTestResults@2
-      displayName: "Publish Test Results"
+      displayName: 'Publish npm test Results'
       inputs:
-        testResultsFiles: junit.xml
+        testResultsFiles: '**/junit.xml'
         mergeTestResults: true
       condition: succeededOrFailed()
 
