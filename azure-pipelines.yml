@@ -47,7 +47,8 @@ stages:
         command: 'test'
 
     - script: npm test -- --ci --reporters=default --reporters=jest-junit
-      displayName: "npm test"
+      displayName: 'Run npm test'
+      workingDirectory: './src/FacultyDirectory/ClientApp'
       env:
         CI: true
 
