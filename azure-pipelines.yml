@@ -12,6 +12,7 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
+  npm_config_cache: $(Pipeline.Workspace)/.npm
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
@@ -45,6 +46,15 @@ stages:
       displayName: 'Run Server Tests'
       inputs:
         command: 'test'
+
+    - task: Cache@2
+      inputs:
+        key: 'npm | "$(Agent.OS)" | ./src/FacultyDirectory/ClientApp/package-lock.json'
+        restoreKeys: |
+          npm | "$(Agent.OS)"
+          npm
+        path: $(npm_config_cache)
+      displayName: Cache npm packages
 
     - script: npm ci
       displayName: 'Run npm ci (install)'
