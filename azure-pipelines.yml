@@ -46,6 +46,10 @@ stages:
       inputs:
         command: 'test'
 
+    - script: npm ci
+      displayName: 'Run npm ci (install)'
+      workingDirectory: './src/FacultyDirectory/ClientApp'
+
     - script: npm run test:ci
       displayName: 'Run npm test:ci'
       workingDirectory: './src/FacultyDirectory/ClientApp'
