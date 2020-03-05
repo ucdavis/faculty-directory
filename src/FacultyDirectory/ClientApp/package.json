@@ -8,6 +8,7 @@
     "@fortawesome/react-fontawesome": "^0.1.8",
     "bootstrap": "^4.4.1",
     "jquery": "^3.4.1",
+    "logrocket": "^1.0.6",
     "merge": "^1.2.1",
     "node-sass": "^4.13.1",
     "oidc-client": "^1.9.0",
