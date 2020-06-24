@@ -38,9 +38,10 @@ namespace FacultyDirectory.Controllers
         [HttpGet("name")]
         public ActionResult Name() {
             var currentUser = this.User;
-            var firstName = currentUser.FindFirst(ClaimTypes.GivenName).Value;
-            var lastName = currentUser.FindFirst(ClaimTypes.Surname).Value;
+            var firstName = currentUser.FindFirst(ClaimTypes.GivenName)?.Value;
+            var lastName = currentUser.FindFirst(ClaimTypes.Surname)?.Value;
             var userData = new {name = firstName + " " + lastName};
+
             return Json(userData);
         }
 
