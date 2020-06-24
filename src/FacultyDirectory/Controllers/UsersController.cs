@@ -37,6 +37,7 @@ namespace FacultyDirectory.Controllers
 
         [HttpGet("name")]
         public ActionResult Name() {
+            // Returns the user's name
             var currentUser = this.User;
             var firstName = currentUser.FindFirst(ClaimTypes.GivenName)?.Value;
             var lastName = currentUser.FindFirst(ClaimTypes.Surname)?.Value;
@@ -44,6 +45,27 @@ namespace FacultyDirectory.Controllers
 
             return Json(userData);
         }
+
+        [HttpGet("all")]
+        public ActionResult All() {
+            // Returns all users
+            var msg = new {msg = "Returned all Users!"};
+            return Json(msg);
+        }
+
+        [HttpPost("create")]
+        public ActionResult CreateUser() {
+            // Creates a user
+            var msg = new {msg = "Created a User!"};
+            return Json(msg);
+        }
+
+        [HttpDelete("delete")]  
+        public ActionResult DeleteUser() {  
+            // Deletes a user
+            var msg = new {msg = "Deleted a User!"};
+            return Json(msg);
+        }  
 
         // should be POST
         [HttpGet("validate")]
