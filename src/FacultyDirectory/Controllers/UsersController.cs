@@ -9,8 +9,8 @@ using Microsoft.IdentityModel.Tokens;
 namespace FacultyDirectory.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class UsersController : ControllerBase
+    [Route("api/[controller]")]
+    public class UsersController : Controller
     {
         [HttpGet]
         public ActionResult Get()
@@ -33,6 +33,16 @@ namespace FacultyDirectory.Controllers
             var tokenString = tokenHandler.WriteToken(token);
 
             return Ok(tokenString);
+        }
+
+        [HttpGet("name")]
+        public ActionResult Name() {
+            var currentUser = this.User;
+            var firstName = currentUser.FindFirst(ClaimTypes.GivenName)?.Value;
+            var lastName = currentUser.FindFirst(ClaimTypes.Surname)?.Value;
+            var userData = new {name = firstName + " " + lastName};
+
+            return Json(userData);
         }
 
         // should be POST

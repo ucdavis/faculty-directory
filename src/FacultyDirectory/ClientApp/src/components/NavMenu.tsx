@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -8,6 +8,15 @@ interface State {
 
 function NavBar() {
   let location = useLocation();
+  let [name, setName] = useState('');
+
+  useEffect(() => {
+    const getName = async () => {
+      const results = await fetch('api/users/name').then(r => r.json());
+      setName(results.name);
+    };
+    getName();
+  }, []);
 
   return (
     <div className='text-center'>
@@ -19,7 +28,7 @@ function NavBar() {
         </p>
       )}
       <p className='mb-1 discreet ml-auto'>
-        <span>Calvin Doval | CAES</span> • Sign out
+        <span>{name} | CAES</span> • Sign out
       </p>
     </div>
   );
