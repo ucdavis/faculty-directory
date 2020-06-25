@@ -1,9 +1,13 @@
 using System;
+using System.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using FacultyDirectory.Core.Data;
+using FacultyDirectory.Core.Domain;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace FacultyDirectory.Controllers
@@ -12,6 +16,12 @@ namespace FacultyDirectory.Controllers
     [Route("api/[controller]")]
     public class UsersController : Controller
     {
+        private readonly ApplicationDbContext dbContext;
+        public UsersController(ApplicationDbContext dbContext)
+        {
+            this.dbContext = dbContext;
+        }
+
         [HttpGet]
         public ActionResult Get()
         {
@@ -47,17 +57,21 @@ namespace FacultyDirectory.Controllers
         }
 
         [HttpGet("all")]
-        public ActionResult All() {
-            // Returns all users
-            var msg = new {msg = "Returned all Users!"};
-            return Json(msg);
+        public async Task<ActionResult> GetUsers() {
+            return Ok(await dbContext.Users.ToArrayAsync());
         }
 
-        [HttpPost("create")]
-        public ActionResult CreateUser() {
+        [HttpPost]
+        public async Task<ActionResult> AddUser(User userData) {
             // Creates a user
-            var msg = new {msg = "Created a User!"};
-            return Json(msg);
+            var user = new User 
+            { 
+                Username = userData.Username 
+            };
+            dbContext.Users.Add(user);
+            await dbContext.SaveChangesAsync();
+
+            return Json(user);
         }
 
         [HttpDelete("delete")]  
