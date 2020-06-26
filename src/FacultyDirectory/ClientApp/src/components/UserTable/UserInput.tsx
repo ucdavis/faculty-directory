@@ -33,10 +33,8 @@ export const UserInput = (props: IProps) => {
     if (response.status == 400) {
       alert('User already exists');
     } else {
-      const newUser = response.json();
-      newUser.then(result => {
-        props.onChange([...props.users, result]);
-      });
+      const newUser = await response.json();
+      props.onChange([...props.users, newUser]);
     }
 
     setUsername('');
