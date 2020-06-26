@@ -1,42 +1,30 @@
 using System;
-using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
+using FacultyDirectory.Core.Data;
+using FacultyDirectory.Core.Domain;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.EntityFrameworkCore;
 
 namespace FacultyDirectory.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Policy = "Admin")]
     public class UsersController : Controller
     {
-        [HttpGet]
-        public ActionResult Get()
+        private readonly ApplicationDbContext dbContext;
+        public UsersController(ApplicationDbContext dbContext)
         {
-            // Return JWT with user info
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes("secretstringhere-verycoolsecret-thebest");
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, "postit"),
-                    new Claim(ClaimTypes.GivenName, "Scott"),
-                    new Claim(ClaimTypes.Surname, "Kirkland"),
-                }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var tokenString = tokenHandler.WriteToken(token);
-
-            return Ok(tokenString);
+            this.dbContext = dbContext;
         }
 
         [HttpGet("name")]
         public ActionResult Name() {
+            // Returns the user's name
             var currentUser = this.User;
             var firstName = currentUser.FindFirst(ClaimTypes.GivenName)?.Value;
             var lastName = currentUser.FindFirst(ClaimTypes.Surname)?.Value;
@@ -45,50 +33,45 @@ namespace FacultyDirectory.Controllers
             return Json(userData);
         }
 
-        // should be POST
-        [HttpGet("validate")]
-        public ActionResult Validate() {
-            // TODO: get auth header
-            var jwt = "jwt";
+        [HttpGet]
+        public async Task<ActionResult> GetUsers() {
+            return Ok(await dbContext.Users.ToArrayAsync());
+        }
 
-            var key = Encoding.ASCII.GetBytes("secretstringhere-verycoolsecret-thebest");
-            var sharedKey = new SymmetricSecurityKey(key);
+        [HttpPost]
+        public async Task<ActionResult> AddUser(User userData) {
+            // Creates a user
+            var targetUser = await dbContext.Users.SingleOrDefaultAsync(u => u.Username == userData.Username);
 
-            var validationParameters = new TokenValidationParameters
-            {
-                // Clock skew compensates for server time drift.
-                // We recommend 5 minutes or less:
-                ClockSkew = TimeSpan.FromMinutes(5),
-                // Specify the key used to sign the token:
-                IssuerSigningKeys = new [] { sharedKey },
-                RequireSignedTokens = true,
-                // Ensure the token hasn't expired:
-                RequireExpirationTime = true,
-                ValidateLifetime = true,
-                ValidateAudience = false,
-                ValidateIssuer = false
+            if (targetUser != null) {
+                return BadRequest();
+            }
+
+            var user = new User 
+            { 
+                Username = userData.Username 
             };
 
-            try
-            {
-                var claimsPrincipal = new JwtSecurityTokenHandler()
-                    .ValidateToken(jwt, validationParameters, out var rawValidatedToken);
+            dbContext.Users.Add(user);
+            await dbContext.SaveChangesAsync();
 
-                return Ok((JwtSecurityToken)rawValidatedToken);
-            }
-            catch (SecurityTokenValidationException stvex)
-            {
-                // The token failed validation!
-                // TODO: Log it or display an error.
-                throw new Exception($"Token failed validation: {stvex.Message}");
-            }
-            catch (ArgumentException argex)
-            {
-                // The token was not well-formed or was invalid for some other reason.
-                // TODO: Log it or display an error.
-                throw new Exception($"Token was invalid: {argex.Message}");
-            }
-
+            return Json(user);
         }
+
+        [HttpDelete("{id}")]  
+        public async Task<ActionResult> DeleteUser(int id) {  
+            // Deletes a user
+            var user = await dbContext.Users.FindAsync(id);
+
+            if (user == null) {
+                return NotFound();
+            }
+
+            dbContext.Users.Remove(user);
+            await dbContext.SaveChangesAsync();
+            var msg = new {msg = "Deleted a User!"};
+
+            return Json(msg);
+        }  
     }
 }

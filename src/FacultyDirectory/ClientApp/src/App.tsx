@@ -6,6 +6,7 @@ import { People } from './components/People';
 import './sass/custom.scss'
 import { Person } from './components/Person';
 import { Loading } from './components/Loading';
+import { Users } from './components/UserTable/Users';
 
 export default class App extends Component {
   static displayName = App.name;
@@ -17,6 +18,7 @@ export default class App extends Component {
         <Route path='/people/:id' component={Person} />
         <Route exact path='/people' component={People} />
         <Route exact path='/fleece' component={Loading} />
+        <Route exact path='/users' component={Users} />
       </Layout>
     );
   }
