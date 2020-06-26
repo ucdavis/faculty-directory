@@ -4,7 +4,7 @@ import { IUser } from '../../models/IUsers';
 
 interface IProps {
   users: IUser[];
-  onChange: Function;
+  onChange: (users: IUser[]) => void;
 }
 
 export const UserInput = (props: IProps) => {
