@@ -5,6 +5,7 @@ using FacultyDirectory.Core.Data;
 using FacultyDirectory.Core.Domain;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +13,7 @@ namespace FacultyDirectory.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Policy = "Admin")]
     public class UsersController : Controller
     {
         private readonly ApplicationDbContext dbContext;
@@ -39,6 +41,12 @@ namespace FacultyDirectory.Controllers
         [HttpPost]
         public async Task<ActionResult> AddUser(User userData) {
             // Creates a user
+            var targetUser = await dbContext.Users.SingleOrDefaultAsync(u => u.Username == userData.Username);
+
+            if (targetUser != null) {
+                return BadRequest();
+            }
+
             var user = new User 
             { 
                 Username = userData.Username 

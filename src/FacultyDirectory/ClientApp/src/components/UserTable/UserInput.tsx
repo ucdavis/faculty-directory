@@ -1,40 +1,59 @@
 import React, { useState } from 'react';
 import { Button, Input, InputGroup, InputGroupAddon } from 'reactstrap';
+import { IUser } from '../../models/IUsers';
 
-export const UserInput = (props: any) => {
-    const [username, setUsername] = useState("");
+interface IProps {
+  users: IUser[];
+  onChange: Function;
+}
 
-    const handleUsername = (e: any) => {
-        setUsername(e.target.value)
-    }
+export const UserInput = (props: IProps) => {
+  const [username, setUsername] = useState('');
 
-    const onSubmit = async (e: any) => {
-        e.preventDefault();
+  const handleUsername = (e: any) => {
+    setUsername(e.target.value);
+  };
 
-        const headers = {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-        };
+  const onSubmit = async (e: any) => {
+    e.preventDefault();
 
-        const userData = JSON.stringify({ "username": username });
-
-        const response = await fetch('api/users', {
-            method: 'POST',
-            headers,
-            body: userData
-        });
-
-        const newUser = response.json();
-
-        newUser.then((result) => {
-            props.onChange([...props.users, result]);
-        })
+    const headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
     };
 
-    return (
-        <InputGroup>
-            <Input placeholder="Add a user" value={username} onChange={handleUsername} />
-            <InputGroupAddon addonType="append"><Button color="primary" onClick={onSubmit}>Submit</Button></InputGroupAddon>
-        </InputGroup>
-    );
+    const userData = JSON.stringify({ username: username });
+
+    const response = await fetch('api/users', {
+      method: 'POST',
+      headers,
+      body: userData
+    });
+
+    if (response.status == 400) {
+      alert('User already exists');
+    } else {
+      const newUser = response.json();
+      newUser.then(result => {
+        props.onChange([...props.users, result]);
+      });
+    }
+
+    setUsername('');
+  };
+
+  return (
+    <InputGroup>
+      <Input
+        placeholder='Add a user'
+        value={username}
+        onChange={handleUsername}
+      />
+      <InputGroupAddon addonType='append'>
+        <Button color='primary' onClick={onSubmit}>
+          Submit
+        </Button>
+      </InputGroupAddon>
+    </InputGroup>
+  );
 };
