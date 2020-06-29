@@ -2,9 +2,11 @@ using System.Linq;
 using FacultyDirectory.Core.Data;
 using FacultyDirectory.Core.Models;
 using FacultyDirectory.Core.Services;
+using FacultyDirectory.Helpers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
@@ -63,6 +65,13 @@ namespace FacultyDirectory
             services.AddAuthorization(options => {
                 options.AddPolicy("Admin", policy => policy.RequireAssertion(a => allowedUsers.Contains(a.User.Identity.Name)));
             });
+
+            // services.AddAuthorization(options =>
+            // {
+            //     options.AddPolicy("Admin", policy => policy.Requirements.Add( new AdminRequirement(true) ));
+            // });
+
+            // services.AddScoped<IAuthorizationHandler, AuthorizationHandler>();
 
             services.AddControllersWithViews();
 
