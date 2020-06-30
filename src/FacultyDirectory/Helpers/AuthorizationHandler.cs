@@ -20,11 +20,7 @@ namespace FacultyDirectory.Helpers
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context,
                                                        AdminRequirement requirement)
         {
-            // steps
-            // Get current username from the current user with context
-            // check in database if the current username exists
-            // if it does return a success
-            var username = context.User.FindFirst(ClaimTypes.Name)?.Value;
+            var username = context.User.Identity.Name;
             var user = await dbContext.Users.Where(u => u.Username == username).FirstOrDefaultAsync();
 
             if (user != null) {

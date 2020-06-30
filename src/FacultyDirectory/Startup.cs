@@ -62,16 +62,12 @@ namespace FacultyDirectory
             // TODO: get a better auth system, probably using JWTs and a users/sites/roles table
             var allowedUsers = (Configuration["Authentication:AllowedUsers"] ?? "").Split(",");
 
-            services.AddAuthorization(options => {
-                options.AddPolicy("Admin", policy => policy.RequireAssertion(a => allowedUsers.Contains(a.User.Identity.Name)));
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Admin", policy => policy.Requirements.Add( new AdminRequirement() ));
             });
 
-            // services.AddAuthorization(options =>
-            // {
-            //     options.AddPolicy("Admin", policy => policy.Requirements.Add( new AdminRequirement(true) ));
-            // });
-
-            // services.AddScoped<IAuthorizationHandler, AuthorizationHandler>();
+            services.AddScoped<IAuthorizationHandler, AuthorizationHandler>();
 
             services.AddControllersWithViews();
 
