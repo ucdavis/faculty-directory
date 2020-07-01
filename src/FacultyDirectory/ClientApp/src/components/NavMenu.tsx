@@ -1,4 +1,5 @@
 import React, { Component, useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -8,12 +9,20 @@ interface State {
 
 function NavBar() {
   let location = useLocation();
+  let history = useHistory();
   let [name, setName] = useState('');
 
   useEffect(() => {
     const getName = async () => {
-      const results = await fetch('api/users/name').then(r => r.json());
-      setName(results.name);
+      const results = await fetch('api/users/name');
+      const response = await results;
+
+      if (response.status === 403) {
+        history.push('/error403');
+      } else {
+        const userData = await results.json();
+        setName(userData.name);
+      }
     };
     getName();
   }, []);

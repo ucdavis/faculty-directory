@@ -1,10 +1,13 @@
-using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 using FacultyDirectory.Core.Data;
 using FacultyDirectory.Core.Models;
 using FacultyDirectory.Core.Services;
+using FacultyDirectory.Helpers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
@@ -41,7 +44,18 @@ namespace FacultyDirectory
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
             })
-            .AddCookie()
+            .AddCookie(cookies =>
+            {
+                cookies.Events.OnRedirectToAccessDenied = ctx =>
+                {
+                    if (ctx.Request.Path.StartsWithSegments("/api"))
+                    {
+                        ctx.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                        return Task.CompletedTask;
+                    }
+                    return cookies.Events.OnRedirectToAccessDenied(ctx);
+                };
+            })
             .AddOpenIdConnect(oidc => {
                 oidc.ClientId = Configuration["Authentication:ClientId"];
                 oidc.ClientSecret = Configuration["Authentication:ClientSecret"];
@@ -60,9 +74,12 @@ namespace FacultyDirectory
             // TODO: get a better auth system, probably using JWTs and a users/sites/roles table
             var allowedUsers = (Configuration["Authentication:AllowedUsers"] ?? "").Split(",");
 
-            services.AddAuthorization(options => {
-                options.AddPolicy("Admin", policy => policy.RequireAssertion(a => allowedUsers.Contains(a.User.Identity.Name)));
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Admin", policy => policy.Requirements.Add( new AdminRequirement() ));
             });
+
+            services.AddScoped<IAuthorizationHandler, AuthorizationHandler>();
 
             services.AddControllersWithViews();
 

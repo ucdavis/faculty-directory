@@ -3,15 +3,16 @@ import { Route } from 'react-router';
 import { Layout } from './components/Layout';
 import { People } from './components/People';
 
-import './sass/custom.scss'
+import './sass/custom.scss';
 import { Person } from './components/Person';
 import { Loading } from './components/Loading';
 import { Users } from './components/UserTable/Users';
+import { Error403 } from './components/Error403';
 
 export default class App extends Component {
   static displayName = App.name;
 
-  render () {
+  render() {
     return (
       <Layout>
         <Route exact path='/' component={People} />
@@ -19,6 +20,7 @@ export default class App extends Component {
         <Route exact path='/people' component={People} />
         <Route exact path='/fleece' component={Loading} />
         <Route exact path='/users' component={Users} />
+        <Route exact path='/error403' component={Error403} />
       </Layout>
     );
   }
