@@ -23,7 +23,8 @@ namespace FacultyDirectory.Helpers
             var username = context.User.Identity.Name;
             var user = await dbContext.Users.Where(u => u.Username == username).FirstOrDefaultAsync();
 
-            if (user != null) {
+            if (user != null)
+            {
                 context.Succeed(requirement);
                 return;
             }

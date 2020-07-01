@@ -1,4 +1,5 @@
-using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 using FacultyDirectory.Core.Data;
 using FacultyDirectory.Core.Models;
 using FacultyDirectory.Core.Services;
@@ -43,7 +44,18 @@ namespace FacultyDirectory
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
             })
-            .AddCookie()
+            .AddCookie(cookies =>
+            {
+                cookies.Events.OnRedirectToAccessDenied = ctx =>
+                {
+                    if (ctx.Request.Path.StartsWithSegments("/api"))
+                    {
+                        ctx.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                        return Task.CompletedTask;
+                    }
+                    return cookies.Events.OnRedirectToAccessDenied(ctx);
+                };
+            })
             .AddOpenIdConnect(oidc => {
                 oidc.ClientId = Configuration["Authentication:ClientId"];
                 oidc.ClientSecret = Configuration["Authentication:ClientSecret"];
