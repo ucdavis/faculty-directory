@@ -13,7 +13,7 @@ export const Users = () => {
       const results = await fetch('api/users');
       const response = await results;
 
-      if (response.status == 403) {
+      if (response.status === 403) {
         history.push('/error403');
       } else {
         const users = await results.json();

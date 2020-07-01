@@ -17,7 +17,7 @@ function NavBar() {
       const results = await fetch('api/users/name');
       const response = await results;
 
-      if (response.status == 403) {
+      if (response.status === 403) {
         history.push('/error403');
       } else {
         const userData = await results.json();
