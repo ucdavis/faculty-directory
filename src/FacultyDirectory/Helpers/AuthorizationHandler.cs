@@ -21,9 +21,9 @@ namespace FacultyDirectory.Helpers
                                                        AdminRequirement requirement)
         {
             var username = context.User.Identity.Name;
-            var user = await dbContext.Users.AnyAsync(u => u.Username == username);
+            var userExists = await dbContext.Users.AnyAsync(u => u.Username == username);
 
-            if (user)
+            if (userExists)
             {
                 context.Succeed(requirement);
                 return;
