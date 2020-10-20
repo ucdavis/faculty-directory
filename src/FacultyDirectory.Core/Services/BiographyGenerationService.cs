@@ -29,9 +29,6 @@ namespace FacultyDirectory.Core.Services
         public DrupalPerson Generate(SitePerson sitePerson, PersonSource[] sources) {
             var departmentValues = sitePerson.Departments ?? sitePerson.Person.Departments;
 
-            // TODO: add tags to sitePerson and check there too
-            var tags = GetSourceTags(sources);
-
             var bio = string.IsNullOrWhiteSpace(sitePerson.Bio) ? GetBiography(sources) : sitePerson.Bio;
 
             var person = new DrupalPerson
@@ -42,7 +39,7 @@ namespace FacultyDirectory.Core.Services
                 Emails = GetEmails(sitePerson, sources),
                 Phones = GetPhones(sitePerson, sources),
                 Departments = departmentValues?.Split("|").ToArray(), // TODO: should it be null or empty array if we don't have any?
-                Tags = tags,
+                Tags = GetTags(sitePerson, sources),
                 Websites = GetWebsites(sitePerson, sources),
                 Bio = bio
             };
