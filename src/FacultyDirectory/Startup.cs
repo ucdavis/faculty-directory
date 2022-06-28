@@ -142,7 +142,6 @@ namespace FacultyDirectory
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapDefaultControllerRoute();
                 endpoints.MapControllerRoute(
                     name: "api",
                     pattern: "api/{controller}/{action=Index}/{id?}");
