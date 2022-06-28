@@ -44,18 +44,7 @@ namespace FacultyDirectory
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
             })
-            .AddCookie(cookies =>
-            {
-                cookies.Events.OnRedirectToAccessDenied = ctx =>
-                {
-                    if (ctx.Request.Path.StartsWithSegments("/api"))
-                    {
-                        ctx.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                        return Task.CompletedTask;
-                    }
-                    return cookies.Events.OnRedirectToAccessDenied(ctx);
-                };
-            })
+            .AddCookie()
             .AddOpenIdConnect(oidc => {
                 oidc.ClientId = Configuration["Authentication:ClientId"];
                 oidc.ClientSecret = Configuration["Authentication:ClientSecret"];
@@ -70,9 +59,6 @@ namespace FacultyDirectory
                     NameClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
                 };
             });
-
-            // TODO: get a better auth system, probably using JWTs and a users/sites/roles table
-            var allowedUsers = (Configuration["Authentication:AllowedUsers"] ?? "").Split(",");
 
             services.AddAuthorization(options =>
             {
