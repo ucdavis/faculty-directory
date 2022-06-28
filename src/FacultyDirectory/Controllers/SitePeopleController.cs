@@ -13,7 +13,7 @@ namespace FacultyDirectory.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Policy = "Admin")]
+    // [Authorize(Policy = "Admin")]
     public class SitePeopleController : ControllerBase
     {
         const int SiteId = 1; // TODO: support more sites
