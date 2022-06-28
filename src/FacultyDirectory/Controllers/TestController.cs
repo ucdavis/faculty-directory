@@ -5,7 +5,7 @@ namespace FacultyDirectory.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Policy = "Admin")]
+    // [Authorize(Policy = "Admin")]
     public class TestController : ControllerBase
     {
         [HttpGet]
