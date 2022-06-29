@@ -2,6 +2,8 @@
 using System.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Serilog;
+using Serilog.Exceptions;
+using Serilog.Sinks.Elasticsearch;
 
 namespace FacultyDirectory.Jobs.Core
 {
@@ -40,27 +42,29 @@ namespace FacultyDirectory.Jobs.Core
         {
             if (_configuration == null) throw new InvalidOperationException("Call Setup() before requesting a Logger Configuration"); ;
 
+            var loggingSection = _configuration.GetSection("Stackify");
+
             // standard logger
             var logConfig = new LoggerConfiguration()
-                .Enrich.FromLogContext();
-            //.Enrich.WithExceptionDetails();
+                .Enrich.FromLogContext()
+                .Enrich.WithExceptionDetails()
+                .Enrich.WithProperty("Application", loggingSection.GetValue<string>("AppName"))
+                .Enrich.WithProperty("AppEnvironment", loggingSection.GetValue<string>("Environment"));
 
             // various sinks
             logConfig = logConfig
                 .WriteTo.Console();
-                //.WriteToStackifyCustom();
+
+            // add in elastic search sink if the uri is valid
+            if (Uri.TryCreate(loggingSection.GetValue<string>("ElasticUrl"), UriKind.Absolute, out var elasticUri))
+            {
+                logConfig = logConfig.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(elasticUri)
+                {
+                    IndexFormat = "aspnet-facultydirectory-{0:yyyy.MM}"
+                });
+            }
 
             return logConfig;
         }
-
-        //private static LoggerConfiguration WriteToStackifyCustom(this LoggerConfiguration logConfig)
-        //{
-        //    if (!_loggingSetup)
-        //    {
-        //        _configuration.ConfigureStackifyLogging();
-        //    }
-
-        //    return logConfig.WriteTo.Stackify();
-        //}
     }
 }
