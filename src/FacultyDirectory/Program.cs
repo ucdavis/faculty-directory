@@ -1,13 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
+using Serilog.Sinks.Elasticsearch;
 
 namespace FacultyDirectory
 {
@@ -15,14 +12,40 @@ namespace FacultyDirectory
     {
         public static int Main(string[] args)
         {
-            Log.Logger = new LoggerConfiguration()
+            var isDevelopment = string.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"), "development", StringComparison.OrdinalIgnoreCase);
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(System.IO.Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables();
+
+            //only add secrets in development
+            if (isDevelopment)
+            {
+                builder.AddUserSecrets<Program>();
+            }
+            var configuration = builder.Build();
+            var loggingSection = configuration.GetSection("Serilog");
+
+            var loggerConfig = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                 .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
                 .Enrich.FromLogContext()
+                .Enrich.WithProperty("Application", loggingSection.GetValue<string>("AppName"))
+                .Enrich.WithProperty("AppEnvironment", loggingSection.GetValue<string>("Environment"))
                 // .Enrich.WithExceptionDetails()
-                .WriteTo.Console()
-                .CreateLogger();
+                .WriteTo.Console();
+
+                        // add in elastic search sink if the uri is valid
+            if (Uri.TryCreate(loggingSection.GetValue<string>("ElasticUrl"), UriKind.Absolute, out var elasticUri))
+            {
+                loggerConfig.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(elasticUri)
+                {
+                    IndexFormat = "aspnet-facultydirectory-{0:yyyy.MM}"
+                });
+            }
+
+            Log.Logger = loggerConfig.CreateLogger();
 
             try
             {
