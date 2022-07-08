@@ -29,7 +29,9 @@ export const Pronunciation = () => {
 
   return (
     <div>
-      <h1>Pronunciation for {bio.firstName} {bio.lastName}</h1>
+      <h1>
+        Pronunciation for {bio.firstName} {bio.lastName}
+      </h1>
     </div>
   );
 };

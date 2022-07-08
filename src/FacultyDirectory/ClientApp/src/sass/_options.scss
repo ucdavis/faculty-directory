@@ -9,79 +9,86 @@ a.back-link {
 }
 
 form {
-    select, option, input, textarea {
-      border: none;
+  select,
+  option,
+  input,
+  textarea {
+    border: none;
+    color: $default-form-text;
+    &:focus {
       color: $default-form-text;
-      &:focus {
-        color: $default-form-text;
-      }
     }
-    label {
+  }
+  label {
+  }
+  input,
+  textarea {
+    &::placeholder {
+      color: $default-data;
     }
-    input, textarea {
-      &::placeholder {
-        color: $default-data;
-      }
-      &:focus {
-        // border: 1px solid $borders;
-        // &:not(:read-only):not(:disabled)::placeholder {
-        //   color: transparent;
-        // }
-      }
-      &:disabled, &:read-only {
-        background-color: $bg-color-form-disabled;
-        border: 1px dotted $borders;
-      }
+    &:focus {
+      // border: 1px solid $borders;
+      // &:not(:read-only):not(:disabled)::placeholder {
+      //   color: transparent;
+      // }
+    }
+    &:disabled,
+    &:read-only {
+      background-color: $bg-color-form-disabled;
+      border: 1px dotted $borders;
+    }
+    &::before {
+      content: ' ';
+    }
+    &:placeholder-shown {
       &::before {
-        content: ' ';
-      }
-      &:placeholder-shown {
-        &::before {
-          color: $placeholder-text;
-        }
+        color: $placeholder-text;
       }
     }
+  }
   .btn {
     font-size: 1.6rem;
   }
-  .btn:focus, .btn.focus {
-    box-shadow:none;
+  .btn:focus,
+  .btn.focus {
+    box-shadow: none;
   }
   .addmore-btn {
-    color:$secondary-font;
+    color: $secondary-font;
     svg {
-      margin-right:0.6rem;
+      margin-right: 0.6rem;
     }
     &:hover {
-      color:$primary-color;
+      color: $primary-color;
     }
   }
   .input-group-append {
-    background:none;
+    background: none;
     svg {
-      color:$secondary-font;
+      color: $secondary-font;
     }
   }
 }
 
 .custom-active-wrapper {
-    label:after {
-      content:"\A";
-      width:8px;
-      height:8px;
-      border-radius:50%;
-      background: $custom-data;
-      display:inline-block;
-      margin:0 10px;
+  label:after {
+    content: '\A';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: $custom-data;
+    display: inline-block;
+    margin: 0 10px;
   }
-  input, textarea {
+  input,
+  textarea {
     &::placeholder {
       color: $custom-data;
     }
   }
   .form-control:focus {
-    box-shadow: 0 0 0 0.1rem transparentize($custom-data,0.50);
-    border-color:$custom-data;
+    box-shadow: 0 0 0 0.1rem transparentize($custom-data, 0.5);
+    border-color: $custom-data;
   }
 }
 
@@ -103,14 +110,29 @@ form {
 .form-control-sm {
   height: calc(1.5em + 0.5rem + 2px) !important;
   font-size: 1.4rem !important;
-  width:33%;
+  width: 33%;
 }
 .form-small {
   label {
-    font-size:1.4rem;
+    font-size: 1.4rem;
     text-transform: uppercase;
   }
 }
 .sources {
-  margin-top:8px;
+  margin-top: 8px;
+}
+.nodding-sheep {
+  #left_eye,
+  #right_eye,
+  #face,
+  #nose {
+    transform-origin: center;
+    animation: sheep-nod 0.5s ease-in infinite;
+  }
+}
+
+@keyframes sheep-nod {
+  50% {
+    transform: translateY(3%);
+  }
 }
