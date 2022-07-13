@@ -28,17 +28,20 @@ function NavBar() {
   }, []);
 
   return (
-    <div className='text-center'>
-      {location.pathname != '/' && (
-        <p className='mb-2'>
-          <Link className='back-link' to='/'>
-            <FontAwesomeIcon icon='arrow-left' size='xs' /> Back to Faculty List
-          </Link>
+    <div className='header'>
+      <div className='text-center'>
+        {location.pathname != '/' && (
+          <p className='mb-2'>
+            <Link className='back-link' to='/'>
+              <FontAwesomeIcon icon='arrow-left' size='xs' /> Back to Faculty
+              List
+            </Link>
+          </p>
+        )}
+        <p className='mb-1 discreet ml-auto'>
+          <span>{name} | CAES</span> • Sign out
         </p>
-      )}
-      <p className='mb-1 discreet ml-auto'>
-        <span>{name} | CAES</span> • Sign out
-      </p>
+      </div>
     </div>
   );
 }

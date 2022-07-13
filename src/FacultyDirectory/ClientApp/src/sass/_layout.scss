@@ -1,203 +1,213 @@
-html {
-
-}
 body {
-background: rgb(248,249,251);
+  background: rgb(248, 249, 251);
 }
 header {
   h1 {
     margin-bottom: 1rem;
   }
   max-width: 700px;
-  margin:0 auto;
+  margin: 0 auto;
 }
 .content-wrapper {
-  margin:0 auto;
-  margin-bottom:40px;
-  margin-top:20px;
-  padding-top:20px;
-  border-top:1px solid $borders;
+  margin: 0 auto;
+  margin-bottom: 40px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid $borders;
   max-width: 700px;
-
+}
+.caes-wrapper {
+  margin-top: 2rem;
+  margin-right: 2rem;
+  text-align: right;
+}
+.card {
+  padding: 2rem 3rem;
 }
 footer {
   flex-shrink: 0;
   margin-bottom: 2rem;
 }
-.table {
-  a {
-    color: $secondary-color;
-  }
-}
+
 .logo-container {
-  margin: 5rem auto;
+  margin: 3rem auto;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 p.legend {
-  color:$secondary-font;
+  color: $secondary-font;
   &:before {
-    content:"\A";
-    width:8px;
-    height:8px;
-    border-radius:50%;
+    content: '\A';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
     background: $custom-data;
-    display:inline-block;
-    margin:0 10px;
+    display: inline-block;
+    margin: 0 10px;
   }
 }
 
 // loading animation
-@keyframes bob{0%{top:0;}50%{top:0.2em;}}
+@keyframes bob {
+  0% {
+    top: 0;
+  }
+  50% {
+    top: 0.2em;
+  }
+}
 
-.loading-scene{
-  display:inline-block;
-  vertical-align:middle;
+.loading-scene {
+  display: inline-block;
+  vertical-align: middle;
   width: 100%;
   text-align: center;
 }
 
-.loading-text{
+.loading-text {
   color: black;
-  font-size:2em;
-  font-family:helvetica;
-  font-weight:bold;
+  font-size: 2em;
+  font-family: helvetica;
+  font-weight: bold;
 }
 
-.sheep{
-  display:inline-block;
-  position:relative;
-  font-size:1em;
-  $skin:#211e21;
-  *{
-    transition:transform 0.3s;
+.sheep {
+  display: inline-block;
+  position: relative;
+  font-size: 1em;
+  $skin: #211e21;
+  * {
+    transition: transform 0.3s;
   }
-  .sheep-top{
-    position:relative;
-    top:0;
-    animation:bob 1s infinite;
+  .sheep-top {
+    position: relative;
+    top: 0;
+    animation: bob 1s infinite;
   }
-  &:hover{
-      .sheep-head{
-        transform:rotate(0deg);
-        .sheep-eye{
-          width:1.25em;
-          height:1.25em;
-          &:before{
-            right:30%;
-          }
+  &:hover {
+    .sheep-head {
+      transform: rotate(0deg);
+      .sheep-eye {
+        width: 1.25em;
+        height: 1.25em;
+        &:before {
+          right: 30%;
         }
-      }
-      .sheep-top{
-        animation-play-state:paused
       }
     }
-  .sheep-head{
-    display:inline-block;
-    width:5em;
-    height:5em;
-    border-radius:100%;
-    background:$skin;
-    vertical-align:middle;
-    position:relative;
-    top:1em;
-    transform:rotate(30deg);
-    &:before{
-        content:'';
-        display:inline-block;
-        width:80%;
-        height:50%;
-        background:$skin;
-        position:absolute;
-        bottom:0;
-        right:-10%;
-        border-radius:50% 40%;
-      }
-    &:hover{
-          .sheep-ear{
-              &.sheep-one,&.sheep-two{transform:rotate(0deg);}
-          }
-        }
-    .sheep-eye{
-      display:inline-block;
-      width:1em;
-      height:1em;
-      border-radius:100%;
-      background:white;
-      position:absolute;
-      overflow:hidden;
-      &:before{
-          content:'';
-          display:inline-block;
-          background:black;
-          width:50%;
-          height:50%;
-          border-radius:100%;
-          position:absolute;
-          right:10%;
-          bottom:10%;
-          transition:all 0.3s;
-        }
-      &.sheep-one{
-        right:-2%;
-        top:1.7em;
-      }
-      &.sheep-two{
-        right:2.5em;
-        top:1.7em;
-      }
-    }
-    .sheep-ear{
-        background:$skin;
-        width:50%;
-        height:30%;
-        border-radius:100%;
-        position:absolute;
-        &.sheep-one{
-          left:-10%;
-          top:5%;
-          transform:rotate(-30deg);
-        }
-        &.sheep-two{
-          top:2%;
-          right:-5%;
-          transform:rotate(20deg);
-        }
-      }
-  }
-  .sheep-body{
-    display:inline-block;
-    width:7em;
-    height:7em;
-    border-radius:100%;
-    background:white;
-    position:relative;
-    vertical-align:middle;
-    margin-right:-3em;
-  }
-  .sheep-legs{
-    display:inline-block;
-    position:absolute;
-    top:80%;
-    left:10%;
-    z-index:-1;
-    .sheep-leg{
-      display:inline-block;
-      background:darken($skin,5%);
-      width:0.5em;
-      height:2.5em;
-      margin:0.2em;
+    .sheep-top {
+      animation-play-state: paused;
     }
   }
-  &:before{
-      content:'';
-      display:inline-block;
-      position:absolute;
-      top:112%;
-      width:100%;
-      height:10%;
-      border-radius:100%;
-      background:rgba(black,0.4);
+  .sheep-head {
+    display: inline-block;
+    width: 5em;
+    height: 5em;
+    border-radius: 100%;
+    background: $skin;
+    vertical-align: middle;
+    position: relative;
+    top: 1em;
+    transform: rotate(30deg);
+    &:before {
+      content: '';
+      display: inline-block;
+      width: 80%;
+      height: 50%;
+      background: $skin;
+      position: absolute;
+      bottom: 0;
+      right: -10%;
+      border-radius: 50% 40%;
+    }
+    &:hover {
+      .sheep-ear {
+        &.sheep-one,
+        &.sheep-two {
+          transform: rotate(0deg);
+        }
+      }
+    }
+    .sheep-eye {
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      border-radius: 100%;
+      background: white;
+      position: absolute;
+      overflow: hidden;
+      &:before {
+        content: '';
+        display: inline-block;
+        background: black;
+        width: 50%;
+        height: 50%;
+        border-radius: 100%;
+        position: absolute;
+        right: 10%;
+        bottom: 10%;
+        transition: all 0.3s;
+      }
+      &.sheep-one {
+        right: -2%;
+        top: 1.7em;
+      }
+      &.sheep-two {
+        right: 2.5em;
+        top: 1.7em;
+      }
+    }
+    .sheep-ear {
+      background: $skin;
+      width: 50%;
+      height: 30%;
+      border-radius: 100%;
+      position: absolute;
+      &.sheep-one {
+        left: -10%;
+        top: 5%;
+        transform: rotate(-30deg);
+      }
+      &.sheep-two {
+        top: 2%;
+        right: -5%;
+        transform: rotate(20deg);
+      }
+    }
+  }
+  .sheep-body {
+    display: inline-block;
+    width: 7em;
+    height: 7em;
+    border-radius: 100%;
+    background: white;
+    position: relative;
+    vertical-align: middle;
+    margin-right: -3em;
+  }
+  .sheep-legs {
+    display: inline-block;
+    position: absolute;
+    top: 80%;
+    left: 10%;
+    z-index: -1;
+    .sheep-leg {
+      display: inline-block;
+      background: darken($skin, 5%);
+      width: 0.5em;
+      height: 2.5em;
+      margin: 0.2em;
+    }
+  }
+  &:before {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    top: 112%;
+    width: 100%;
+    height: 10%;
+    border-radius: 100%;
+    background: rgba(black, 0.4);
   }
 }
