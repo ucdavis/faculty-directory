@@ -47,6 +47,24 @@ export const Pronunciation = () => {
           </p>
         </div>
       </div>
+      <div className='row mt-5 justify-content-center true-recording'>
+        <div className='col-md-5 card'>
+          <h3>
+            Edit Pronunciation for {bio.firstName} {bio.lastName}
+          </h3>
+
+          <p>Listen to the pronunciation or remove it and re-record it.</p>
+          <br />
+          <p>
+            <a href='#' className='main-btn mr-2'>
+              Listen
+            </a>
+            <a href='#' className='inverse-btn'>
+              Remove Recording
+            </a>
+          </p>
+        </div>
+      </div>
       <div className='text-center mt-5'>
         <svg
           width='104px'
@@ -136,24 +154,6 @@ export const Pronunciation = () => {
             </g>
           </g>
         </svg>
-      </div>
-      <div className='row mt-5 justify-content-center true-recording'>
-        <div className='col-md-5 card'>
-          <h3>
-            Edit Pronunciation for {bio.firstName} {bio.lastName}
-          </h3>
-
-          <p>Listen to the pronunciation or remove it and re-record it.</p>
-          <br />
-          <p>
-            <a href='#' className='main-btn mr-2'>
-              Listen
-            </a>
-            <a href='#' className='inverse-btn'>
-              Remove Recording
-            </a>
-          </p>
-        </div>
       </div>
     </div>
   );
