@@ -1,16 +1,27 @@
 import React, { useEffect, useState } from 'react';
 
 import { useParams } from 'react-router-dom';
-import { IBio } from '../models/IBio';
+import MicRecorder from 'mic-recorder-to-mp3';
 
+import { IBio } from '../models/IBio';
 import { ISitePerson } from '../models/ISitePerson';
 import { Loading } from './Loading';
+
+const Mp3Recorder = new MicRecorder({ bitRate: 128 });
+
+interface AudioFile {
+  buffer: BlobPart[];
+  type: string;
+}
 
 export const Pronunciation = () => {
   const { id } = useParams<{ id: string }>();
 
   const [bio, setBio] = useState<IBio>();
   const [sitePerson, setSitePerson] = useState<ISitePerson>({} as ISitePerson);
+
+  const [isRecording, setIsRecording] = useState(false);
+  const [audioFile, setAudioFile] = useState<AudioFile>();
 
   useEffect(() => {
     const fetchPerson = async () => {
@@ -23,49 +34,100 @@ export const Pronunciation = () => {
     fetchPerson();
   }, [id]);
 
+  const handleRecord = async () => {
+    setIsRecording(true);
+
+    // TODO: handle error, probably because of permissions
+    Mp3Recorder.start();
+  };
+
+  const handleStop = async () => {
+    setIsRecording(false);
+
+    Mp3Recorder.stop()
+      .getMp3()
+      .then(([buffer, blob]: any) => {
+        setAudioFile({ buffer, type: blob.type });
+      })
+      .catch(console.error);
+  };
+
+  const removeRecording = () => {
+    setAudioFile(undefined);
+  };
+
+  const playRecording = () => {
+    if (audioFile) {
+      const file = new File(audioFile.buffer, 'me.mp3', {
+        type: audioFile.type,
+        lastModified: Date.now()
+      });
+
+      const player = new Audio(URL.createObjectURL(file));
+      player.play();
+    }
+  };
+
   if (!bio || !sitePerson.person) {
     return <Loading text='LOADING...'></Loading>;
   }
 
   return (
     <div>
+      <h5>
+        TMP:{' '}
+        {sitePerson.pronunicationUid
+          ? 'your existing audio file is: ' + sitePerson.pronunicationUid
+          : 'you do not have an existing audio file'}
+      </h5>
       <div className='row mt-5 justify-content-center false-recording'>
         <div className='col-md-5 card'>
           <h3>
-            Add Pronunciation for {bio.firstName} {bio.lastName}
+            Pronunciation for {bio.firstName} {bio.lastName}
           </h3>
-
           <p>
             Use the record button below to record a pronunciation, remember to
             speak clearly into your device microphone.
           </p>
           <br />
           <p>
-            <a href='#' className='main-btn display-block'>
-              Record
-            </a>
+            {isRecording === false ? (
+              <button className='main-btn display-block' onClick={handleRecord}>
+                Record
+              </button>
+            ) : (
+              <button className='main-btn display-block' onClick={handleStop}>
+                Stop Recording
+              </button>
+            )}
           </p>
-        </div>
-      </div>
-      <div className='row mt-5 justify-content-center true-recording'>
-        <div className='col-md-5 card'>
-          <h3>
-            Edit Pronunciation for {bio.firstName} {bio.lastName}
-          </h3>
-
           <p>Listen to the pronunciation or remove it and re-record it.</p>
           <br />
+          TMP:{' '}
+          {audioFile
+            ? 'You have an audio file, the buttons below are enabled'
+            : 'You do not have an audio file, the buttons below are disabled'}
           <p>
-            <a href='#' className='main-btn mr-2'>
+            <button
+              className='main-btn mr-2'
+              disabled={audioFile === undefined}
+              onClick={playRecording}
+            >
               Listen
-            </a>
-            <a href='#' className='inverse-btn'>
+            </button>
+            <button
+              className='inverse-btn'
+              disabled={audioFile === undefined}
+              onClick={removeRecording}
+            >
               Remove Recording
-            </a>
+            </button>
           </p>
         </div>
       </div>
-      <div className='text-center mt-5'>
+      <div
+        className={'text-center mt-5' + (isRecording ? ' recording-sheep' : '')}
+      >
         <svg
           width='104px'
           height='104px'

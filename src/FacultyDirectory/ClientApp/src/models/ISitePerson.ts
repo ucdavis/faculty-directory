@@ -10,6 +10,7 @@ export interface ISitePerson extends ICorePersonProperties {
   emails: string;
   phones: string;
   websites: string;
+  pronunicationUid: string;
   tags: string;
   bio: string;
   shouldSync: boolean;
