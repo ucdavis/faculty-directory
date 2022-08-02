@@ -122,7 +122,6 @@ export const Pronunciation = () => {
                 </audio>
                 <button
                   className='inverse-btn'
-                  disabled={audioFile === undefined}
                   onClick={removeRecording}
                 >
                   Remove Recording
