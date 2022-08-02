@@ -38,6 +38,7 @@ export const Pronunciation = () => {
 
   const handleRecord = async () => {
     setIsRecording(true);
+    setAudioFile(undefined);
 
     // TODO: handle error, probably because of permissions
     Mp3Recorder.start();
