@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { useParams } from 'react-router-dom';
 import MicRecorder from 'mic-recorder-to-mp3';
@@ -12,6 +12,7 @@ const Mp3Recorder = new MicRecorder({ bitRate: 128 });
 interface AudioFile {
   buffer: BlobPart[];
   type: string;
+  lastModified: number;
 }
 
 export const Pronunciation = () => {
@@ -36,6 +37,19 @@ export const Pronunciation = () => {
     fetchPerson();
   }, [id]);
 
+  const audioUrl = useMemo(() => {
+    if (audioFile) {
+      return URL.createObjectURL(
+        new File(audioFile.buffer, 'me.mp3', {
+          type: audioFile.type,
+          lastModified: Date.now()
+        })
+      );
+    } else {
+      return '';
+    }
+  }, [audioFile?.lastModified]);
+
   const handleRecord = async () => {
     setIsRecording(true);
     setAudioFile(undefined);
@@ -50,7 +64,7 @@ export const Pronunciation = () => {
     Mp3Recorder.stop()
       .getMp3()
       .then(([buffer, blob]: any) => {
-        setAudioFile({ buffer, type: blob.type });
+        setAudioFile({ buffer, type: blob.type, lastModified: Date.now() });
       })
       .catch(console.error);
   };
@@ -109,22 +123,11 @@ export const Pronunciation = () => {
             {audioFile && (
               <>
                 Listen to the pronunciation or remove it and re-record it.
-                <audio
-                  controls
-                  src={URL.createObjectURL(
-                    new File(audioFile.buffer, 'me.mp3', {
-                      type: audioFile.type,
-                      lastModified: Date.now()
-                    })
-                  )}
-                >
+                <audio controls src={audioUrl}>
                   Your browser does not support the
                   <code>audio</code> element.
                 </audio>
-                <button
-                  className='inverse-btn'
-                  onClick={removeRecording}
-                >
+                <button className='inverse-btn' onClick={removeRecording}>
                   Remove Recording
                 </button>
               </>
