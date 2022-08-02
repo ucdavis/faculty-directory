@@ -38,6 +38,9 @@ namespace FacultyDirectory.Core.Domain
 
         public string Websites { get; set; }
 
+        [StringLength(64)]
+        public Guid? PronunciationUid { get; set; }
+
         [StringLength(256)]
         public string Title { get; set; }
 
