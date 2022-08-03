@@ -73,15 +73,33 @@ export const Pronunciation = () => {
     setAudioFile(undefined);
   };
 
-  const playRecording = () => {
-    if (audioFile) {
-      const file = new File(audioFile.buffer, 'me.mp3', {
-        type: audioFile.type,
-        lastModified: Date.now()
-      });
+  const handleSave = async () => {
+    if (!audioFile) {
+      return;
+    }
 
-      const player = new Audio(URL.createObjectURL(file));
-      player.play();
+    // filename is the bio names + year and month of the recording
+    var fileName = `${bio?.lastName}-${
+      bio?.firstName
+    }-${new Date().toISOString().slice(0, 7)}.mp3`;
+
+    const formData = new FormData();
+    formData.append(
+      'audioFile',
+      new Blob(audioFile.buffer, { type: audioFile.type }),
+      fileName
+    );
+
+    const response = await fetch('api/sitepeople/' + id + '/pronunciation', {
+      method: 'POST',
+      body: formData
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      console.log(result);
+    } else {
+      console.error(response);
     }
   };
 
@@ -121,8 +139,8 @@ export const Pronunciation = () => {
               </button>
             )}
 
-            <button className='btn btn-primary' disabled>
-              Save and Sync
+            <button className='btn btn-primary' onClick={handleSave}>
+              Save and Sync (TESTING ONLY)
             </button>
           </div>
 

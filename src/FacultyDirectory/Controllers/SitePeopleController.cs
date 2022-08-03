@@ -6,6 +6,7 @@ using FacultyDirectory.Core.Domain;
 using FacultyDirectory.Core.Services;
 using FacultyDirectory.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,11 +20,13 @@ namespace FacultyDirectory.Controllers
         const int SiteId = 1; // TODO: support more sites
         private readonly ApplicationDbContext dbContext;
         private readonly IBiographyGenerationService biographyGenerationService;
+        private readonly ISiteFarmService siteFarmService;
 
-        public SitePeopleController(ApplicationDbContext dbContext, IBiographyGenerationService biographyGenerationService)
+        public SitePeopleController(ApplicationDbContext dbContext, IBiographyGenerationService biographyGenerationService, ISiteFarmService siteFarmService)
         {
             this.dbContext = dbContext;
             this.biographyGenerationService = biographyGenerationService;
+            this.siteFarmService = siteFarmService;
         }
 
         [HttpGet]
@@ -80,6 +83,24 @@ namespace FacultyDirectory.Controllers
 
             return CreatedAtAction(nameof(Get), new { sitePersonId = dbSitePerson.Id }, dbSitePerson);
         }
+
+        [HttpPost("{personId}/pronunciation")]
+         public async Task<ActionResult> Post([FromForm] IFormFile audioFile, int personId) {
+            var dbSitePerson = await this.dbContext.SitePeople.Where(sp => sp.PersonId == personId && sp.SiteId == SiteId).SingleOrDefaultAsync();
+            if (dbSitePerson == null) {
+                return NotFound();
+            }
+
+            using var stream = audioFile.OpenReadStream();
+
+            var mediaUid = await this.siteFarmService.PublishAudio(stream, audioFile.FileName);
+
+            dbSitePerson.PronunciationUid = new Guid(mediaUid);
+
+            await this.dbContext.SaveChangesAsync();
+                        
+            return Ok(new { MediaUid = mediaUid });
+         } 
 
         private IQueryable<PersonWithSitePerson> SitePersonJoinQuery()
         {
