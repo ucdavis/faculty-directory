@@ -107,32 +107,39 @@ export const Pronunciation = () => {
             speak clearly into your device microphone.
           </p>
           <br />
-          <p>
+          <div className='row d-flex justify-content-between'>
             {isRecording === false ? (
-              <button className='main-btn display-block' onClick={handleRecord}>
+              <button className='main-btn' onClick={handleRecord}>
                 Record
               </button>
             ) : (
-              <button className='main-btn display-block' onClick={handleStop}>
+              <button
+                className='main-btn recording-button'
+                onClick={handleStop}
+              >
                 Stop Recording
               </button>
             )}
-          </p>
-          <br />
-          <p>
-            {audioFile && (
+
+            <button className='btn btn-primary' disabled>
+              Save and Sync
+            </button>
+          </div>
+
+          {audioFile && (
+            <div className='mt-5'>
               <>
-                Listen to the pronunciation or remove it and re-record it.
                 <audio controls src={audioUrl}>
                   Your browser does not support the
                   <code>audio</code> element.
-                </audio>
+                </audio>{' '}
+                <br />
                 <button className='inverse-btn' onClick={removeRecording}>
                   Remove Recording
                 </button>
               </>
-            )}
-          </p>
+            </div>
+          )}
         </div>
       </div>
       <div
