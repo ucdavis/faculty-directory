@@ -100,7 +100,20 @@ namespace FacultyDirectory.Controllers
             await this.dbContext.SaveChangesAsync();
                         
             return Ok(new { MediaUid = mediaUid });
-         } 
+         }
+         
+         [HttpGet("{personId}/pronunciation")]
+         public async Task<IActionResult> GetPronunciation(int personId) {
+            var dbSitePerson = await this.dbContext.SitePeople.Where(sp => sp.PersonId == personId && sp.SiteId == SiteId).SingleOrDefaultAsync();
+            if (dbSitePerson == null) {
+                return NotFound();
+            }
+            
+            var mediaUid = dbSitePerson.PronunciationUid.ToString();
+            var mediaStream = await this.siteFarmService.GetAudio(mediaUid);
+
+            return File(mediaStream, "audio/mp3");
+         }
 
         private IQueryable<PersonWithSitePerson> SitePersonJoinQuery()
         {

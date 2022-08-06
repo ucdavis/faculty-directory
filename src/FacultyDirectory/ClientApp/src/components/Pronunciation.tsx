@@ -31,6 +31,26 @@ export const Pronunciation = () => {
       setBio(result.bio);
       setSitePerson(result.sitePerson || {});
 
+      console.log('got person', result);
+
+      if (result.sitePerson.pronunciationUid) {
+        console.log('Fetching pronunciation');
+
+        const audioFile = await fetch(
+          `/api/sitepeople/${result.sitePerson.id}/pronunciation`
+        );
+
+        console.log('Got pronunciation', audioFile);
+
+        const blob = await audioFile.blob();
+
+        // setAudioFile({
+        //   buffer: [blob],
+        //   type: audioFile.headers.get('content-type') || 'audio/mp3',
+        //   lastModified: Date.now()
+        // });
+      }
+
       // TODO: if sitePerson.pronunciationUid is set, fetch it and set it here
     };
 

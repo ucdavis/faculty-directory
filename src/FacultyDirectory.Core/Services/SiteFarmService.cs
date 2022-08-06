@@ -20,6 +20,7 @@ namespace FacultyDirectory.Core.Services
         Task<string> PublishPerson(SitePerson person);
         IAsyncEnumerable<string> SyncTags(string[] tags);
         Task<string> PublishAudio(Stream audioContent, string fileName);
+        Task<Stream> GetAudio(string audioId);
     }
 
     public class SiteFarmService : ISiteFarmService
@@ -85,6 +86,24 @@ namespace FacultyDirectory.Core.Services
                     yield return id;
                 }
             }
+        }
+
+        public async Task<Stream> GetAudio(string audioId)
+        {
+            // test id: b7eb8611-36a2-4a97-9961-a2ddacf01705
+            var mediaFileUrl = $"{this.config.ApiBase}/media/sf_audio_media_type/{audioId}/field_media_audio_file";
+
+            dynamic mediaResponse = Newtonsoft.Json.JsonConvert.DeserializeObject(await this.httpClient.GetStringAsync(mediaFileUrl));
+
+            string fileUrl = mediaResponse.data.attributes.uri.url.ToString();
+
+            System.Console.WriteLine(fileUrl);
+
+            // fileUrl is partial, like "/sites/g/files/dgvnsk3421/files/media/audio/Abel-Steffen-2022-08.mp3".  need to get relative to site root
+
+            var fileResponse = await this.httpClient.GetStreamAsync(fileUrl);
+            
+            return fileResponse;
         }
 
         /// <summary>
