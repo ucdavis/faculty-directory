@@ -90,18 +90,17 @@ namespace FacultyDirectory.Core.Services
 
         public async Task<Stream> GetAudio(string audioId)
         {
-            // test id: b7eb8611-36a2-4a97-9961-a2ddacf01705
             var mediaFileUrl = $"{this.config.ApiBase}/media/sf_audio_media_type/{audioId}/field_media_audio_file";
 
             dynamic mediaResponse = Newtonsoft.Json.JsonConvert.DeserializeObject(await this.httpClient.GetStringAsync(mediaFileUrl));
 
-            string fileUrl = mediaResponse.data.attributes.uri.url.ToString();
+            string fileRelativeUrl = mediaResponse.data.attributes.uri.url.ToString();
 
-            System.Console.WriteLine(fileUrl);
+            // uri is a relative url, so we need to prepend the base url
+            var fileUri = new UriBuilder(this.config.ApiBase);
+            fileUri.Path = fileRelativeUrl;
 
-            // fileUrl is partial, like "/sites/g/files/dgvnsk3421/files/media/audio/Abel-Steffen-2022-08.mp3".  need to get relative to site root
-
-            var fileResponse = await this.httpClient.GetStreamAsync(fileUrl);
+            var fileResponse = await this.httpClient.GetStreamAsync(fileUri.Uri);
             
             return fileResponse;
         }

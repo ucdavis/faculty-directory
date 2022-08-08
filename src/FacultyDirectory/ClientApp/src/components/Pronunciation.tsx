@@ -28,30 +28,26 @@ export const Pronunciation = () => {
     const fetchPerson = async () => {
       const result = await fetch('api/sitepeople/' + id).then(r => r.json());
 
-      setBio(result.bio);
-      setSitePerson(result.sitePerson || {});
-
-      console.log('got person', result);
-
       if (result.sitePerson.pronunciationUid) {
         console.log('Fetching pronunciation');
 
         const audioFile = await fetch(
-          `/api/sitepeople/${result.sitePerson.id}/pronunciation`
+          `/api/sitepeople/${id}/pronunciation`
         );
 
         console.log('Got pronunciation', audioFile);
 
         const blob = await audioFile.blob();
 
-        // setAudioFile({
-        //   buffer: [blob],
-        //   type: audioFile.headers.get('content-type') || 'audio/mp3',
-        //   lastModified: Date.now()
-        // });
+        setAudioFile({
+          buffer: [blob],
+          type: audioFile.headers.get('content-type') || 'audio/mp3',
+          lastModified: Date.now()
+        });
       }
 
-      // TODO: if sitePerson.pronunciationUid is set, fetch it and set it here
+      setBio(result.bio);
+      setSitePerson(result.sitePerson || {});
     };
 
     fetchPerson();
@@ -131,8 +127,8 @@ export const Pronunciation = () => {
     <div>
       <h5>
         TMP:{' '}
-        {sitePerson.pronunicationUid
-          ? 'your existing audio file is: ' + sitePerson.pronunicationUid
+        {sitePerson.pronunciationUid
+          ? 'your existing audio file is: ' + sitePerson.pronunciationUid
           : 'you do not have an existing audio file'}
       </h5>
       <div className='row mt-5 justify-content-center false-recording'>
