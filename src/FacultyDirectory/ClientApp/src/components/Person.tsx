@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useHistory, Link } from 'react-router-dom';
 import { ISource } from '../models/ISource';
 import { IBio } from '../models/IBio';
 import { ISitePerson } from '../models/ISitePerson';
@@ -50,7 +50,7 @@ export const Person = () => {
     await fetch('api/peoplesources/' + id, {
       method: 'POST',
       headers,
-      body: JSON.stringify([ ...sources ])
+      body: JSON.stringify([...sources])
     });
 
     // saved, redirect back to people home
@@ -176,6 +176,14 @@ export const Person = () => {
                 name='websites'
                 onChange={changeHandler}
               ></LinksInputArray>
+            </ActivityWrapper>
+          </div>
+          <div className='form-group'>
+            <ActivityWrapper hasActivity={!!sitePerson.pronunciationUid}>
+              <label>Pronunciation</label>
+              <p>
+                <Link to={'/pronunciation/' + id}>Manage Pronunciation -&gt;</Link>
+              </p>
             </ActivityWrapper>
           </div>
           <div className='form-group'>
