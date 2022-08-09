@@ -7,7 +7,7 @@ namespace FacultyDirectory.Core.Models
     {
         public Guid? PageUid { get; set; }
 
-        public string Bio { get; set; }
+        public string Publications { get; set; }
 
         public string FirstName { get; set; }
 
@@ -15,11 +15,20 @@ namespace FacultyDirectory.Core.Models
 
         public string Title { get; set; }
 
+        public string Pronunciation { get; set; }
+
         public string[] Emails { get; set; }
         public string[] Phones { get; set; }
         public string[] Departments { get; set; }
         public string[] Tags { get; set; }
         public DrupalWebsite[] Websites { get; set; }
+
+        public string Bio {
+            get {
+
+                return Pronunciation + Publications;
+            }
+        }
     }
 
     public class DrupalWebsite {

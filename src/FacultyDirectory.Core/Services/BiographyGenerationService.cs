@@ -29,7 +29,7 @@ namespace FacultyDirectory.Core.Services
         public DrupalPerson Generate(SitePerson sitePerson, PersonSource[] sources) {
             var departmentValues = sitePerson.Departments ?? sitePerson.Person.Departments;
 
-            var bio = string.IsNullOrWhiteSpace(sitePerson.Bio) ? GetBiography(sources) : sitePerson.Bio;
+            var publications = string.IsNullOrWhiteSpace(sitePerson.Bio) ? GetPublications(sources) : sitePerson.Bio;
 
             var person = new DrupalPerson
             {
@@ -41,7 +41,8 @@ namespace FacultyDirectory.Core.Services
                 Departments = departmentValues?.Split("|").ToArray(), // TODO: should it be null or empty array if we don't have any?
                 Tags = GetTags(sitePerson, sources),
                 Websites = GetWebsites(sitePerson, sources),
-                Bio = bio
+                Pronunciation = GetPronunciation(sitePerson),
+                Publications = publications
             };
 
             return person;
@@ -54,6 +55,14 @@ namespace FacultyDirectory.Core.Services
             var sources = await this.dbContext.PeopleSources.Where(s => s.PersonId == sitePerson.PersonId).AsNoTracking().ToArrayAsync();
 
             return Generate(sitePerson, sources);
+        }
+
+        private string GetPronunciation(SitePerson sitePerson) {
+            if (sitePerson.PronunciationUid != null) {
+                return $"<drupal-media data-align=\"\" data-entity-type=\"media\" data-entity-uuid=\"{sitePerson.PronunciationUid.ToString()}\"></drupal-media>";
+            }
+
+            return string.Empty;
         }
 
         private DrupalWebsite[] GetWebsites(SitePerson sitePerson, PersonSource[] sources) {
@@ -146,7 +155,7 @@ namespace FacultyDirectory.Core.Services
         }
 
         // TODO: maybe instead of deserializing multiple times we just do once up-front and call these methods with that data?
-        private string GetBiography(PersonSource[] sources)
+        private string GetPublications(PersonSource[] sources)
         {
             foreach (var source in sources)
             {
@@ -163,6 +172,7 @@ namespace FacultyDirectory.Core.Services
                 if (data.Publications != null && data.Publications.Any())
                 {
                     var sb = new StringBuilder();
+
                     sb.Append("<h3>Publications:</h3>");
 
                     foreach (var pub in data.Publications.Take(5))
