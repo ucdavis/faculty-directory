@@ -37,9 +37,9 @@ namespace FacultyDirectory.Helpers
             if (iamId == null)
             {
                 // should never be null, but CAS is unreliable
-                var sitePerson = await dbContext.SitePeople.FirstOrDefaultAsync(sp => sp.Person.IamId == iamId);
+                var isSitePerson = await dbContext.SitePeople.AnyAsync(sp => sp.Person.IamId == iamId);
 
-                if (sitePerson != null)
+                if (isSitePerson)
                 {
                     context.Succeed(requirement);
                     return;
