@@ -20,13 +20,11 @@ namespace FacultyDirectory.Controllers
         const int SiteId = 1; // TODO: support more sites
         private readonly ApplicationDbContext dbContext;
         private readonly IBiographyGenerationService biographyGenerationService;
-        private readonly ISiteFarmService siteFarmService;
 
-        public SitePeopleController(ApplicationDbContext dbContext, IBiographyGenerationService biographyGenerationService, ISiteFarmService siteFarmService)
+        public SitePeopleController(ApplicationDbContext dbContext, IBiographyGenerationService biographyGenerationService)
         {
             this.dbContext = dbContext;
             this.biographyGenerationService = biographyGenerationService;
-            this.siteFarmService = siteFarmService;
         }
 
         [HttpGet]
@@ -36,6 +34,7 @@ namespace FacultyDirectory.Controllers
         }
 
         [HttpGet("{personId}")]
+        [Authorize(Policy = "Self")]
         public async Task<ActionResult> Get(int personId)
         {
             var personQueryResult = await SitePersonJoinQuery().Where(p => p.Person.Id == personId).AsNoTracking().FirstOrDefaultAsync();
@@ -83,37 +82,6 @@ namespace FacultyDirectory.Controllers
 
             return CreatedAtAction(nameof(Get), new { sitePersonId = dbSitePerson.Id }, dbSitePerson);
         }
-
-        [HttpPost("{personId}/pronunciation")]
-         public async Task<ActionResult> Post([FromForm] IFormFile audioFile, int personId) {
-            var dbSitePerson = await this.dbContext.SitePeople.Where(sp => sp.PersonId == personId && sp.SiteId == SiteId).SingleOrDefaultAsync();
-            if (dbSitePerson == null) {
-                return NotFound();
-            }
-
-            using var stream = audioFile.OpenReadStream();
-
-            var mediaUid = await this.siteFarmService.PublishAudio(stream, audioFile.FileName);
-
-            dbSitePerson.PronunciationUid = new Guid(mediaUid);
-
-            await this.dbContext.SaveChangesAsync();
-                        
-            return Ok(new { MediaUid = mediaUid });
-         }
-         
-         [HttpGet("{personId}/pronunciation")]
-         public async Task<IActionResult> GetPronunciation(int personId) {
-            var dbSitePerson = await this.dbContext.SitePeople.Where(sp => sp.PersonId == personId && sp.SiteId == SiteId).SingleOrDefaultAsync();
-            if (dbSitePerson == null) {
-                return NotFound();
-            }
-            
-            var mediaUid = dbSitePerson.PronunciationUid.ToString();
-            var mediaStream = await this.siteFarmService.GetAudio(mediaUid);
-
-            return File(mediaStream, "audio/mp3");
-         }
 
         private IQueryable<PersonWithSitePerson> SitePersonJoinQuery()
         {

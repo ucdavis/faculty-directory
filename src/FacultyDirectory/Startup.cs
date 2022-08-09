@@ -45,7 +45,8 @@ namespace FacultyDirectory
                 options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
             })
             .AddCookie()
-            .AddOpenIdConnect(oidc => {
+            .AddOpenIdConnect(oidc =>
+            {
                 oidc.ClientId = Configuration["Authentication:ClientId"];
                 oidc.ClientSecret = Configuration["Authentication:ClientSecret"];
                 oidc.Authority = Configuration["Authentication:Authority"];
@@ -63,11 +64,12 @@ namespace FacultyDirectory
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("Admin", policy => policy.Requirements.Add( new AdminRequirement() ));
-                options.AddPolicy("AdminOrSelf", policy => policy.Requirements.Add( new AdminOrSelfRequirement() ));
+                options.AddPolicy("Admin", policy => policy.Requirements.Add(new AdminRequirement()));
+                options.AddPolicy("Self", policy => policy.Requirements.Add(new AdminOrSelfRequirement()));
             });
 
             services.AddScoped<IAuthorizationHandler, AuthorizationHandler>();
+            services.AddScoped<IAuthorizationHandler, AdminOrSelfAuthorizationHandler>();
 
             services.AddControllersWithViews();
 

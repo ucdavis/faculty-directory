@@ -24,7 +24,7 @@ namespace FacultyDirectory.Helpers
         {
             var username = context.User.Identity.Name;
             var userExists = await dbContext.Users.AnyAsync(u => u.Username == username);
-
+    
             if (userExists)
             {
                 context.Succeed(requirement);

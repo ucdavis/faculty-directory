@@ -32,7 +32,7 @@ export const Pronunciation = () => {
         console.log('Fetching pronunciation');
 
         const audioFile = await fetch(
-          `/api/sitepeople/${id}/pronunciation`
+          `/api/faculty/${id}/pronunciation`
         );
 
         console.log('Got pronunciation', audioFile);
@@ -106,7 +106,7 @@ export const Pronunciation = () => {
       fileName
     );
 
-    const response = await fetch('api/sitepeople/' + id + '/pronunciation', {
+    const response = await fetch('api/faculty/' + id + '/pronunciation', {
       method: 'POST',
       body: formData
     });
