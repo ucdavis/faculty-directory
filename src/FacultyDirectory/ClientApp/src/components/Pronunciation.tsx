@@ -24,6 +24,8 @@ export const Pronunciation = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [audioFile, setAudioFile] = useState<AudioFile>();
 
+  const [audioIsModified, setAudioIsModified] = useState(false);
+
   useEffect(() => {
     const fetchPerson = async () => {
       const result = await fetch('api/sitepeople/' + id).then(r => r.json());
@@ -81,12 +83,14 @@ export const Pronunciation = () => {
       .getMp3()
       .then(([buffer, blob]: any) => {
         setAudioFile({ buffer, type: blob.type, lastModified: Date.now() });
+        setAudioIsModified(true);
       })
       .catch(console.error);
   };
 
   const removeRecording = () => {
     setAudioFile(undefined);
+    setAudioIsModified(false);
   };
 
   const handleSave = async () => {
@@ -125,12 +129,6 @@ export const Pronunciation = () => {
 
   return (
     <div>
-      <h5>
-        TMP:{' '}
-        {sitePerson.pronunciationUid
-          ? 'your existing audio file is: ' + sitePerson.pronunciationUid
-          : 'you do not have an existing audio file'}
-      </h5>
       <div className='row mt-5 justify-content-center false-recording'>
         <div className='col-md-5 card'>
           <h3>
@@ -155,8 +153,8 @@ export const Pronunciation = () => {
               </button>
             )}
 
-            <button className='btn btn-primary' onClick={handleSave}>
-              Save and Sync (TESTING ONLY)
+            <button className='btn btn-primary' disabled={audioIsModified === false} onClick={handleSave}>
+              Save and Sync
             </button>
           </div>
 
