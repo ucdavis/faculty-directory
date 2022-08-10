@@ -182,7 +182,7 @@ export const Person = () => {
             <ActivityWrapper hasActivity={!!sitePerson.pronunciationUid}>
               <label>Pronunciation</label>
               <p>
-                <Link to={'/pronunciation/' + id}>Manage Pronunciation -&gt;</Link>
+                <Link to={'/pronunciation/' + id}>Manage Pronunciation</Link>
               </p>
             </ActivityWrapper>
           </div>
