@@ -19,16 +19,15 @@ export const Landing = () => {
         'api/faculty/userinfo'
       ).then(r => r.json());
 
-      // TODO: remove, temporary for testing
-      //   results.isAdmin = false;
-      //   results.sitePeople.push({ id: 543 } as ISitePerson);
-
       if (results.isAdmin) {
         setRedirect('/people');
-      } else if (results.sitePeople.length > 0) {
+      } else if (results.sitePeople && results.sitePeople.length > 0) {
         // we do have a siteperson, so redirect to pronunication page for now
         // if we come up with more functions for a site person, we can make a site person landing page
         setRedirect('/pronunciation/' + results.sitePeople[0].id);
+      } else {
+        // if they aren't an admin and don't have a siteperson, redirect to not allowed page
+        setRedirect('/error403');
       }
     };
 
