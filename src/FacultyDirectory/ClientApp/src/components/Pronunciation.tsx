@@ -24,7 +24,9 @@ export const Pronunciation = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [audioFile, setAudioFile] = useState<AudioFile>();
 
-  const [audioIsModified, setAudioIsModified] = useState(false);
+  // sync is enabled if audio is recorded, replaced, or deleted
+  const [syncEnabled, setSyncEnabled] = useState(false);
+  const [statusMessage, setStatusMessage] = useState('');
 
   useEffect(() => {
     const fetchPerson = async () => {
@@ -33,9 +35,7 @@ export const Pronunciation = () => {
       if (result.sitePerson.pronunciationUid) {
         console.log('Fetching pronunciation');
 
-        const audioFile = await fetch(
-          `/api/faculty/${id}/pronunciation`
-        );
+        const audioFile = await fetch(`/api/faculty/${id}/pronunciation`);
 
         console.log('Got pronunciation', audioFile);
 
@@ -83,18 +83,42 @@ export const Pronunciation = () => {
       .getMp3()
       .then(([buffer, blob]: any) => {
         setAudioFile({ buffer, type: blob.type, lastModified: Date.now() });
-        setAudioIsModified(true);
+        // new audio recorded, enable sync
+        setSyncEnabled(true);
       })
       .catch(console.error);
   };
 
   const removeRecording = () => {
     setAudioFile(undefined);
-    setAudioIsModified(false);
+
+    if (sitePerson.pronunciationUid) {
+      // if we removed audio but there is a pronunciation record, enable sync
+      setSyncEnabled(true);
+    } else {
+      setSyncEnabled(false);
+    }
   };
 
   const handleSave = async () => {
+    // don't allow re-click while saving
+    setSyncEnabled(false);
+
     if (!audioFile) {
+      // no audio file, if the user has a pronunciation record, delete it
+      if (sitePerson.pronunciationUid) {
+        const response = await fetch(`/api/faculty/${id}/pronunciation`, {
+          method: 'DELETE'
+        });
+
+        if (response.ok) {
+          setStatusMessage('Pronunciation removed');
+        } else {
+          setStatusMessage('Error removing pronunciation');
+        }
+      }
+
+      // should not be enabled, but return to be safe
       return;
     }
 
@@ -116,10 +140,9 @@ export const Pronunciation = () => {
     });
 
     if (response.ok) {
-      const result = await response.json();
-      console.log(result);
+      setStatusMessage('Pronunciation saved');
     } else {
-      console.error(response);
+      setStatusMessage('Error saving pronunciation');
     }
   };
 
@@ -131,6 +154,12 @@ export const Pronunciation = () => {
     <div>
       <div className='row mt-5 justify-content-center false-recording'>
         <div className='col-md-5 card'>
+          {statusMessage && (
+            <div className='alert alert-primary' role='alert'>
+              {statusMessage}
+            </div>
+          )}
+
           <h3>
             Pronunciation for {bio.firstName} {bio.lastName}
           </h3>
@@ -153,7 +182,11 @@ export const Pronunciation = () => {
               </button>
             )}
 
-            <button className='btn btn-primary' disabled={audioIsModified === false} onClick={handleSave}>
+            <button
+              className='btn btn-primary'
+              disabled={syncEnabled === false}
+              onClick={handleSave}
+            >
               Save and Sync
             </button>
           </div>

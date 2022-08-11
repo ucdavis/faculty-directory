@@ -30,6 +30,7 @@ namespace FacultyDirectory.Controllers
             this.siteFarmService = siteFarmService;
         }
 
+        // TODO: should move this to a separate controller, probably users or auth
         // Return current user info
         [HttpGet("userinfo")]
         [Authorize] // only check they have auth'd
@@ -55,7 +56,7 @@ namespace FacultyDirectory.Controllers
 
         [HttpPost("{personId}/pronunciation")]
         [Authorize(Policy = "Self")]
-        public async Task<ActionResult> Post([FromForm] IFormFile audioFile, int personId)
+        public async Task<ActionResult> SetPronunciation([FromForm] IFormFile audioFile, int personId)
         {
             var dbSitePerson = await this.dbContext.SitePeople.Where(sp => sp.PersonId == personId && sp.SiteId == SiteId).SingleOrDefaultAsync();
             if (dbSitePerson == null)
@@ -72,6 +73,23 @@ namespace FacultyDirectory.Controllers
             await this.dbContext.SaveChangesAsync();
 
             return Ok(new { MediaUid = mediaUid });
+        }
+
+        [HttpDelete("{personId}/pronunciation")]
+        [Authorize(Policy = "Self")]
+        public async Task<ActionResult> DeletePronunciation(int personId)
+        {
+            var dbSitePerson = await this.dbContext.SitePeople.Where(sp => sp.PersonId == personId && sp.SiteId == SiteId).SingleOrDefaultAsync();
+            if (dbSitePerson == null)
+            {
+                return NotFound();
+            }
+
+            dbSitePerson.PronunciationUid = null;
+
+            await this.dbContext.SaveChangesAsync();
+
+            return Ok();
         }
 
         [HttpGet("{personId}/pronunciation")]
