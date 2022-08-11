@@ -9,6 +9,7 @@ import { Loading } from './components/Loading';
 import { Users } from './components/UserTable/Users';
 import { Error403 } from './components/Error403';
 import { Pronunciation } from './components/Pronunciation';
+import { Landing } from './components/Landing';
 
 export default class App extends Component {
   static displayName = App.name;
@@ -16,7 +17,7 @@ export default class App extends Component {
   render() {
     return (
       <Layout>
-        <Route exact path='/' component={People} />
+        <Route exact path='/' component={Landing} />
         <Route path='/people/:id' component={Person} />
         <Route path='/pronunciation/:id' component={Pronunciation} />
         <Route exact path='/people' component={People} />

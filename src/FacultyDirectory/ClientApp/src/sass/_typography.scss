@@ -1,53 +1,53 @@
 // baseline typography
 html {
-    -webkit-font-smoothing: antialiased;
-    font-size:10px;
-    @include breakpoint(sm) {
-      font-size:8px;
-    }
+  -webkit-font-smoothing: antialiased;
+  font-size: 10px;
+  @include breakpoint(sm) {
+    font-size: 8px;
+  }
 }
 body {
-    font-family: $sans-reg;
-    font-size:1.6rem;
-    color:$primary-font;
+  font-family: $sans-reg;
+  font-size: 1.6rem;
+  color: $primary-font;
 }
 a {
-  color:$secondary-color;
+  color: $primary-color;
   &:hover {
     text-decoration: none;
-    color:lighten($secondary-color, 10);
+    color: darken($secondary-color, 10);
   }
   p & {
     text-decoration: none;
-    &:hover {
-      text-decoration: underline;
-    }
   }
 }
-ul, ol {
+ul,
+ol {
   &.no-list-style {
     list-style-type: none;
-    padding-left:0px;
+    padding-left: 0px;
     li {
-      margin:4px 0px;
+      margin: 4px 0px;
       font-family: $sans-reg;
-      color:$primary-font;
+      color: $primary-font;
     }
   }
   &.two-col {
-  columns: 2;
-  -webkit-columns: 2;
-  -moz-columns: 2;
+    columns: 2;
+    -webkit-columns: 2;
+    -moz-columns: 2;
   }
   font-family: $sans-reg;
   li {
-    font-size:1.6rem;
+    font-size: 1.6rem;
   }
 }
 
-p, span, div {
+p,
+span,
+div {
   font-family: $sans-reg;
-  color:$primary-font;
+  color: $primary-font;
 }
 h1,
 h2,
@@ -55,42 +55,42 @@ h3,
 h4,
 h5,
 h6 {
-    color: $primary-font;
-    font-family:$sans-bold;
-    // margin: 1.6rem 0rem 1rem 0rem;
+  color: $primary-font;
+  font-family: $sans-bold;
+  // margin: 1.6rem 0rem 1rem 0rem;
 }
 h1 {
-  font-size:3.6rem;
+  font-size: 3.6rem;
 }
 h2 {
-  font-size:2.4rem;
+  font-size: 2.4rem;
 }
 label {
   font-family: $sans-bold;
-  font-size:1.8rem;
+  font-size: 1.8rem;
 }
 select {
-  padding-left:50px;
+  padding-left: 50px;
 }
 .form-group {
-  margin-bottom:3.6rem;
+  margin-bottom: 3.6rem;
 }
 .form-control {
-  font-size:1.6rem;
-  height:5rem;
+  font-size: 1.6rem;
+  height: 5rem;
 }
 .input-group {
-  margin-bottom:6px;
+  margin-bottom: 6px;
 }
 h3 {
-  margin-bottom:8px;
+  margin-bottom: 8px;
 }
 i {
-  font-size:1.6rem;
+  font-size: 1.6rem;
 }
 p.lede {
   text-transform: uppercase;
-  font-size:1.4rem;
-  margin:0;
-  color:$secondary-font;
+  font-size: 1.4rem;
+  margin: 0;
+  color: $secondary-font;
 }

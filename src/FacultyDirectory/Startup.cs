@@ -45,7 +45,8 @@ namespace FacultyDirectory
                 options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
             })
             .AddCookie()
-            .AddOpenIdConnect(oidc => {
+            .AddOpenIdConnect(oidc =>
+            {
                 oidc.ClientId = Configuration["Authentication:ClientId"];
                 oidc.ClientSecret = Configuration["Authentication:ClientSecret"];
                 oidc.Authority = Configuration["Authentication:Authority"];
@@ -54,6 +55,7 @@ namespace FacultyDirectory
                 oidc.Scope.Add("profile");
                 oidc.Scope.Add("email");
                 oidc.Scope.Add("ucdProfile");
+                oidc.Scope.Add("eduPerson");
                 oidc.TokenValidationParameters = new TokenValidationParameters
                 {
                     NameClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
@@ -62,10 +64,12 @@ namespace FacultyDirectory
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("Admin", policy => policy.Requirements.Add( new AdminRequirement() ));
+                options.AddPolicy("Admin", policy => policy.Requirements.Add(new AdminRequirement()));
+                options.AddPolicy("Self", policy => policy.Requirements.Add(new AdminOrSelfRequirement()));
             });
 
             services.AddScoped<IAuthorizationHandler, AuthorizationHandler>();
+            services.AddScoped<IAuthorizationHandler, AdminOrSelfAuthorizationHandler>();
 
             services.AddControllersWithViews();
 
@@ -74,6 +78,8 @@ namespace FacultyDirectory
             {
                 configuration.RootPath = "ClientApp/build";
             });
+
+            services.AddHttpContextAccessor();
 
             services.Configure<DirectoryConfiguration>(Configuration.GetSection("Directory"));
             services.Configure<SiteFarmConfiguration>(Configuration.GetSection("SiteFarm"));

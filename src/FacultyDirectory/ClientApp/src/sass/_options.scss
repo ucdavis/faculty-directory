@@ -7,81 +7,114 @@ a.back-link {
     color: $secondary-color;
   }
 }
-
-form {
-    select, option, input, textarea {
-      border: none;
-      color: $default-form-text;
-      &:focus {
-        color: $default-form-text;
-      }
-    }
-    label {
-    }
-    input, textarea {
-      &::placeholder {
-        color: $default-data;
-      }
-      &:focus {
-        // border: 1px solid $borders;
-        // &:not(:read-only):not(:disabled)::placeholder {
-        //   color: transparent;
-        // }
-      }
-      &:disabled, &:read-only {
-        background-color: $bg-color-form-disabled;
-        border: 1px dotted $borders;
-      }
-      &::before {
-        content: ' ';
-      }
-      &:placeholder-shown {
-        &::before {
-          color: $placeholder-text;
-        }
-      }
-    }
-  .btn {
-    font-size: 1.6rem;
+.btn-link {
+  font-size: 1.6rem;
+}
+.btn-primary {
+  white-space: nowrap;
+  display: inline-block;
+  box-shadow: 0 -3px 0 rgba(0, 0, 0, 0.15) inset, 0 1px 3px rgba(0, 0, 0, 0.08);
+  background: $primary-color !important;
+  border-radius: 4px;
+  padding: 1rem 2rem;
+  font-size: 1.6rem;
+  letter-spacing: 0.025em;
+  color: #fff !important;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  border: none;
+  font-family: $sans-bold;
+  &:active,
+  &:focus {
+    background-color: darken($primary-color, 3);
   }
-  .btn:focus, .btn.focus {
-    box-shadow:none;
+  &:hover {
+    color: #fff !important;
+    // transform: translateY(-1px);
+    box-shadow: 0 -3px 0 rgba(0, 0, 0, 0.15) inset,
+      0 3px 6px rgba(0, 0, 0, 0.08);
+    background-color: lighten($primary-color, 3);
+  }
+}
+form {
+  select,
+  option,
+  input,
+  textarea {
+    border: none;
+    color: $default-form-text;
+    &:focus {
+      color: $default-form-text;
+    }
+  }
+  label {
+  }
+  input,
+  textarea {
+    &::placeholder {
+      color: $default-data;
+    }
+    &:focus {
+      // border: 1px solid $borders;
+      // &:not(:read-only):not(:disabled)::placeholder {
+      //   color: transparent;
+      // }
+    }
+    &:disabled,
+    &:read-only {
+      background-color: $bg-color-form-disabled;
+      border: 1px dotted $borders;
+    }
+    &::before {
+      content: ' ';
+    }
+    &:placeholder-shown {
+      &::before {
+        color: $placeholder-text;
+      }
+    }
+  }
+
+  .btn:focus,
+  .btn.focus {
+    box-shadow: none;
   }
   .addmore-btn {
-    color:$secondary-font;
+    color: $secondary-font;
     svg {
-      margin-right:0.6rem;
+      margin-right: 0.6rem;
     }
     &:hover {
-      color:$primary-color;
+      color: $primary-color;
     }
   }
   .input-group-append {
-    background:none;
+    background: none;
     svg {
-      color:$secondary-font;
+      color: $secondary-font;
     }
   }
 }
 
 .custom-active-wrapper {
-    label:after {
-      content:"\A";
-      width:8px;
-      height:8px;
-      border-radius:50%;
-      background: $custom-data;
-      display:inline-block;
-      margin:0 10px;
+  label:after {
+    content: '\A';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: $custom-data;
+    display: inline-block;
+    margin: 0 10px;
   }
-  input, textarea {
+  input,
+  textarea {
     &::placeholder {
       color: $custom-data;
     }
   }
   .form-control:focus {
-    box-shadow: 0 0 0 0.1rem transparentize($custom-data,0.50);
-    border-color:$custom-data;
+    box-shadow: 0 0 0 0.1rem transparentize($custom-data, 0.5);
+    border-color: $custom-data;
   }
 }
 
@@ -103,14 +136,74 @@ form {
 .form-control-sm {
   height: calc(1.5em + 0.5rem + 2px) !important;
   font-size: 1.4rem !important;
-  width:33%;
+  width: 33%;
 }
 .form-small {
   label {
-    font-size:1.4rem;
+    font-size: 1.4rem;
     text-transform: uppercase;
   }
 }
 .sources {
-  margin-top:8px;
+  margin-top: 8px;
 }
+// sheep
+#left_eye,
+#right_eye {
+  fill: $primary-color;
+}
+#pulse-origin {
+  fill: $primary-color;
+  opacity: 1;
+}
+#pulse-fade {
+  fill: $primary-color;
+  opacity: 0.75;
+}
+
+.recording-sheep {
+  #left_eye,
+  #right_eye,
+  #face,
+  #nose {
+    transform-origin: center;
+    animation: sheep-nod 1s ease-in infinite;
+  }
+  @keyframes sheep-nod {
+    50% {
+      transform: translateY(2%);
+    }
+  }
+}
+
+.recording-sheep {
+  #pulse-fade {
+    transform-origin: center;
+    animation: pulse 1s ease-in infinite;
+  }
+  @keyframes pulse {
+    0% {
+      transform: scale(0.66);
+      opacity: 1;
+    }
+
+    100% {
+      transform: scale(1);
+      opacity: 0;
+    }
+  }
+}
+// .recording-button {
+//   animation: record 1s infinite;
+// }
+// @keyframes record {
+//   0% {
+//     box-shadow: 0 0 0 0 rgba(0, 40, 85, 0.7);
+//   }
+//   70% {
+//     box-shadow: 0 0 0 14px rgba(0, 40, 85, 0);
+//   }
+//   100% {
+//     box-shadow: 0 0 0 0 rgba(0, 40, 85, 0);
+//   }
+// }

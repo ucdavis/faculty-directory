@@ -6,6 +6,7 @@ using FacultyDirectory.Core.Domain;
 using FacultyDirectory.Core.Services;
 using FacultyDirectory.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,6 +34,7 @@ namespace FacultyDirectory.Controllers
         }
 
         [HttpGet("{personId}")]
+        [Authorize(Policy = "Self")]
         public async Task<ActionResult> Get(int personId)
         {
             var personQueryResult = await SitePersonJoinQuery().Where(p => p.Person.Id == personId).AsNoTracking().FirstOrDefaultAsync();

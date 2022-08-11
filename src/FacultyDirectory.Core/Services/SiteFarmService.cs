@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -18,6 +19,8 @@ namespace FacultyDirectory.Core.Services
     {
         Task<string> PublishPerson(SitePerson person);
         IAsyncEnumerable<string> SyncTags(string[] tags);
+        Task<string> PublishAudio(Stream audioContent, string fileName);
+        Task<Stream> GetAudio(string audioId);
     }
 
     public class SiteFarmService : ISiteFarmService
@@ -83,6 +86,89 @@ namespace FacultyDirectory.Core.Services
                     yield return id;
                 }
             }
+        }
+
+        public async Task<Stream> GetAudio(string audioId)
+        {
+            var mediaFileUrl = $"{this.config.ApiBase}/media/sf_audio_media_type/{audioId}/field_media_audio_file";
+
+            dynamic mediaResponse = Newtonsoft.Json.JsonConvert.DeserializeObject(await this.httpClient.GetStringAsync(mediaFileUrl));
+
+            string fileRelativeUrl = mediaResponse.data.attributes.uri.url.ToString();
+
+            // uri is a relative url, so we need to prepend the base url
+            var fileUri = new UriBuilder(this.config.ApiBase);
+            fileUri.Path = fileRelativeUrl;
+
+            var fileResponse = await this.httpClient.GetStreamAsync(fileUri.Uri);
+            
+            return fileResponse;
+        }
+
+        /// <summary>
+        /// Publishes the audio file to site farm.
+        /// First, the blob is uploaded to the file section, a new audio media item is created and associated
+        /// </summary>
+        public async Task<string> PublishAudio(Stream audioContent, string fileName) {
+            var mediaUrl = $"{this.config.ApiBase}/media/sf_audio_media_type/field_media_audio_file";
+
+            var request = new HttpRequestMessage(HttpMethod.Post, mediaUrl);
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.api+json"));
+
+            request.Content = new StreamContent(audioContent);
+            request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+            request.Content.Headers.Add("Content-Disposition", "file; filename=\"" + fileName + "\"");
+
+            var response = await this.httpClient.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception("Error uploading audio file");
+            }
+
+            var content = await response.Content.ReadAsStringAsync();
+            dynamic mediaJson = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
+            var mediaId = mediaJson.data.id.ToString();
+
+            // create the audio media item
+            var audioMediaItemUrl = $"{this.config.ApiBase}/media/sf_audio_media_type";
+
+            var audioMediaItemData = new
+            {
+                data = new
+                {
+                    type = "media--sf_audio_media_type",
+                    attributes = new
+                    {
+                        status = true,
+                        name = fileName
+                    },
+                    relationships = new
+                    {
+                        field_media_audio_file = new
+                        {
+                            data = new
+                            {
+                                type = "file--file",
+                                id = mediaId
+                            }
+                        }
+                    }
+                }
+            };
+
+            var serialized = JsonSerializer.Serialize(audioMediaItemData);
+            var audioMediaItemResponse = await this.httpClient.PostAsync(audioMediaItemUrl, new StringContent(serialized, Encoding.UTF8, "application/vnd.api+json"));
+
+            if (!audioMediaItemResponse.IsSuccessStatusCode)
+            {
+                throw new Exception("Error creating audio media item");
+            }
+
+            var audioMediaItemContent = await audioMediaItemResponse.Content.ReadAsStringAsync();
+            dynamic audioMediaItemJson = Newtonsoft.Json.JsonConvert.DeserializeObject(audioMediaItemContent);
+
+            return audioMediaItemJson.data.id;
         }
 
         // TODO: handle multiple sites?
