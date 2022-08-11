@@ -69,6 +69,7 @@ namespace FacultyDirectory.Controllers
             var mediaUid = await this.siteFarmService.PublishAudio(stream, audioFile.FileName);
 
             dbSitePerson.PronunciationUid = new Guid(mediaUid);
+            dbSitePerson.LastUpdate = DateTime.UtcNow;
 
             await this.dbContext.SaveChangesAsync();
 
@@ -86,6 +87,7 @@ namespace FacultyDirectory.Controllers
             }
 
             dbSitePerson.PronunciationUid = null;
+            dbSitePerson.LastUpdate = DateTime.UtcNow;
 
             await this.dbContext.SaveChangesAsync();
 
