@@ -83,6 +83,8 @@ namespace FacultyDirectory.Controllers
 
             dbSitePerson.PronunciationUid = new Guid(mediaUid);
             dbSitePerson.LastUpdate = DateTime.UtcNow;
+            // sync happens oldest first, so set last sync back a few days to make sure they are updated
+            dbSitePerson.LastSync = DateTime.UtcNow.AddDays(-7);
 
             await this.dbContext.SaveChangesAsync();
 
@@ -101,6 +103,9 @@ namespace FacultyDirectory.Controllers
 
             dbSitePerson.PronunciationUid = null;
             dbSitePerson.LastUpdate = DateTime.UtcNow;
+            // sync happens oldest first, so set last sync back a few days to make sure they are updated
+            dbSitePerson.LastSync = DateTime.UtcNow.AddDays(-7);
+
 
             await this.dbContext.SaveChangesAsync();
 
