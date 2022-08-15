@@ -14,7 +14,6 @@ namespace FacultyDirectory.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Policy = "Admin")]
     public class SitePeopleController : ControllerBase
     {
         const int SiteId = 1; // TODO: support more sites
@@ -28,6 +27,7 @@ namespace FacultyDirectory.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "Admin")]
         public async Task<ActionResult> List()
         {
             return Ok(await SitePersonJoinQuery().ToArrayAsync());
@@ -50,6 +50,7 @@ namespace FacultyDirectory.Controllers
         }
 
         [HttpPost("{personId}")]
+        [Authorize(Policy = "Admin")]
         public async Task<ActionResult> Post(int personId, SitePerson sitePerson) {
             var dbSitePerson = await this.dbContext.SitePeople.Where(sp => sp.PersonId == personId && sp.SiteId == SiteId).SingleOrDefaultAsync();
 

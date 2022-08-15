@@ -24,7 +24,7 @@ export const Landing = () => {
       } else if (results.sitePeople && results.sitePeople.length > 0) {
         // we do have a siteperson, so redirect to pronunication page for now
         // if we come up with more functions for a site person, we can make a site person landing page
-        setRedirect('/pronunciation/' + results.sitePeople[0].id);
+        setRedirect('/pronunciation/' + results.sitePeople[0].personId);
       } else {
         // if they aren't an admin and don't have a siteperson, redirect to not allowed page
         setRedirect('/error403');

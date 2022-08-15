@@ -1,9 +1,8 @@
-using System;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using FacultyDirectory.Core.Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace FacultyDirectory.Helpers
@@ -13,10 +12,12 @@ namespace FacultyDirectory.Helpers
         public static readonly string IamIdClaimType = "ucdPersonIAMID";
 
         private readonly ApplicationDbContext dbContext;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public AdminOrSelfAuthorizationHandler(ApplicationDbContext dbContext)
+        public AdminOrSelfAuthorizationHandler(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor)
         {
             this.dbContext = dbContext;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context,
@@ -34,10 +35,12 @@ namespace FacultyDirectory.Helpers
             // user is not admin, see if they have a sitePeople record
             string iamId = context.User.Claims.SingleOrDefault(c => c.Type == IamIdClaimType)?.Value;
 
-            if (iamId == null)
+            // get personId from the route
+            int.TryParse(httpContextAccessor.HttpContext.Request.RouteValues["personId"] as string, out int personId);
+
+            if (iamId != null || personId != 0)
             {
-                // should never be null, but CAS is unreliable
-                var isSitePerson = await dbContext.SitePeople.AnyAsync(sp => sp.Person.IamId == iamId);
+                var isSitePerson = await dbContext.SitePeople.AnyAsync(sp => sp.Person.IamId == iamId && sp.Person.Id == personId);
 
                 if (isSitePerson)
                 {

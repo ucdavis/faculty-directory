@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using FacultyDirectory.Helpers;
 
 namespace FacultyDirectory.Controllers
 {
@@ -69,6 +72,40 @@ namespace FacultyDirectory.Controllers
             var msg = new {msg = "Deleted a User!"};
 
             return Json(msg);
-        }  
+        }
+
+        [HttpGet("emulate")]
+        public async Task<IActionResult> Emulate(string kerberos, string iamId) {
+            if (string.IsNullOrEmpty(kerberos) || string.IsNullOrEmpty(iamId)) {
+                return BadRequest();
+            }
+
+            // Emulates a user
+            var identity = new ClaimsIdentity(new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, kerberos),
+                new Claim(ClaimTypes.Name, kerberos),
+                new Claim(ClaimTypes.GivenName, "First"),
+                new Claim(ClaimTypes.Surname, "Last"),
+                new Claim("name", "First Last"),
+                new Claim(ClaimTypes.Email, "fLast@email.com"),
+                new Claim(AdminOrSelfAuthorizationHandler.IamIdClaimType, iamId),
+            }, CookieAuthenticationDefaults.AuthenticationScheme);
+            
+            // kill old login
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            // create new login
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+
+            return Ok("Emulated");
+        }
+        
+        [HttpGet("endEmulate")]
+        public async Task<IActionResult> Logout() {
+            // Logs out the user
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return Ok("Logged out");
+        }
     }
 }
