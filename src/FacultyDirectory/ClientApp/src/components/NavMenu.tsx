@@ -14,7 +14,7 @@ function NavBar() {
 
   useEffect(() => {
     const getName = async () => {
-      const results = await fetch('api/users/name');
+      const results = await fetch('api/faculty/name');
       const response = await results;
 
       if (response.status === 403) {

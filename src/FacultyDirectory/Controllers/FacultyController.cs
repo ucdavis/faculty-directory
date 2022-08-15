@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using FacultyDirectory.Core.Data;
 using FacultyDirectory.Core.Domain;
@@ -28,6 +29,18 @@ namespace FacultyDirectory.Controllers
             this.dbContext = dbContext;
             this.contextAccessor = contextAccessor;
             this.siteFarmService = siteFarmService;
+        }
+
+        [HttpGet("name")]
+        [Authorize]
+        public ActionResult Name() {
+            // Returns the user's name
+            var currentUser = this.User;
+            var firstName = currentUser.FindFirst(ClaimTypes.GivenName)?.Value;
+            var lastName = currentUser.FindFirst(ClaimTypes.Surname)?.Value;
+            var userData = new {name = firstName + " " + lastName};
+
+            return Ok(userData);
         }
 
         // TODO: should move this to a separate controller, probably users or auth
