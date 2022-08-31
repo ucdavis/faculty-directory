@@ -59,7 +59,7 @@ namespace FacultyDirectory.Core.Services
 
         private string GetPronunciation(SitePerson sitePerson) {
             if (sitePerson.PronunciationUid != null) {
-                return $"<h3>Name Pronunciation:</h3><drupal-media data-align=\"\" data-entity-type=\"media\" data-entity-uuid=\"{sitePerson.PronunciationUid.ToString()}\"></drupal-media>";
+                return $"<h5>Name Pronunciation:</h5><drupal-media data-align=\"\" data-entity-type=\"media\" data-entity-uuid=\"{sitePerson.PronunciationUid.ToString()}\"></drupal-media>";
             }
 
             return string.Empty;
