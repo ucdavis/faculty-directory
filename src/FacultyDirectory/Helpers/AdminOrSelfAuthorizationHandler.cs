@@ -1,6 +1,8 @@
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using FacultyDirectory.Core.Data;
+using FacultyDirectory.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -13,11 +15,13 @@ namespace FacultyDirectory.Helpers
 
         private readonly ApplicationDbContext dbContext;
         private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly IIdentityService identityService;
 
-        public AdminOrSelfAuthorizationHandler(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor)
+        public AdminOrSelfAuthorizationHandler(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor, IIdentityService identityService)
         {
             this.dbContext = dbContext;
             this.httpContextAccessor = httpContextAccessor;
+            this.identityService = identityService;
         }
 
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context,
@@ -33,7 +37,12 @@ namespace FacultyDirectory.Helpers
             }
 
             // user is not admin, see if they have a sitePeople record
-            string iamId = context.User.Claims.SingleOrDefault(c => c.Type == IamIdClaimType)?.Value;
+            string iamId = context.User.Claims.SingleOrDefault(c => c.Type == IamIdClaimType && !string.IsNullOrWhiteSpace(c.Value))?.Value;
+            if (string.IsNullOrWhiteSpace(iamId))
+            {
+                iamId = await identityService.GetByKerberos(username);
+                context.User.Claims.Append(new Claim(IamIdClaimType, iamId));
+            }
 
             // get personId from the route
             int.TryParse(httpContextAccessor.HttpContext.Request.RouteValues["personId"] as string, out int personId);

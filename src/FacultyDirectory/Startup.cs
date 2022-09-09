@@ -83,12 +83,14 @@ namespace FacultyDirectory
 
             services.Configure<DirectoryConfiguration>(Configuration.GetSection("Directory"));
             services.Configure<SiteFarmConfiguration>(Configuration.GetSection("SiteFarm"));
+            services.Configure<AuthSettings>(Configuration.GetSection("Authentication"));
 
             // TODO: expand into named or typed factories
             // https://docs.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/use-httpclientfactory-to-implement-resilient-http-requests
             services.AddHttpClient<IDirectoryPopulationService, DirectoryPopulationService>();
             services.AddHttpClient<IScholarService, ScholarService>();
             services.AddHttpClient<ISiteFarmService, SiteFarmService>();
+            services.AddScoped<IIdentityService, IdentityService>();
 
             services.AddTransient<IBiographyGenerationService, BiographyGenerationService>();
         }
