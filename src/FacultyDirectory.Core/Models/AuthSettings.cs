@@ -9,6 +9,6 @@ namespace FacultyDirectory.Core.Models
     public class AuthSettings
     {
         public string IamKey { get; set; }
-        public string Authority { get; set; }
+
     }
 }
