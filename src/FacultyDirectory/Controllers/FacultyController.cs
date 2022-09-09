@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace FacultyDirectory.Controllers
 {
@@ -61,6 +62,13 @@ namespace FacultyDirectory.Controllers
             var count = claims.Length;
 
             string iamId = contextAccessor.HttpContext.User.Claims.SingleOrDefault(c => c.Type == AdminOrSelfAuthorizationHandler.IamIdClaimType)?.Value;
+
+            if(String.IsNullOrWhiteSpace(iamId)){
+                Log.Error("No IAM ID found in claims for user {username}", username);
+            }
+            else{
+                Log.Information("IAM ID found in claims for user {username} Iam {iamId}", username, iamId);
+            }
 
             var sitePeople = await dbContext.SitePeople.Where(sp => sp.Person.IamId == iamId).ToArrayAsync();
 
