@@ -63,7 +63,7 @@ namespace FacultyDirectory.Controllers
 
             var count = claims.Length;
 
-            string iamId = contextAccessor.HttpContext.User.Claims.SingleOrDefault(c => c.Type == AdminOrSelfAuthorizationHandler.IamIdClaimType)?.Value;
+            string iamId = contextAccessor.HttpContext.User.Claims.SingleOrDefault(c => c.Type == AdminOrSelfAuthorizationHandler.IamIdClaimType && !string.IsNullOrWhiteSpace(c.Value))?.Value;
 
             if(String.IsNullOrWhiteSpace(iamId)){
                 Log.Error("No IAM ID found in claims for user {username}", username);

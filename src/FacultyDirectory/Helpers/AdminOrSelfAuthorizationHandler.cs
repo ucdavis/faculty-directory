@@ -37,7 +37,7 @@ namespace FacultyDirectory.Helpers
             }
 
             // user is not admin, see if they have a sitePeople record
-            string iamId = context.User.Claims.SingleOrDefault(c => c.Type == IamIdClaimType)?.Value;
+            string iamId = context.User.Claims.SingleOrDefault(c => c.Type == IamIdClaimType && !string.IsNullOrWhiteSpace(c.Value))?.Value;
             if (string.IsNullOrWhiteSpace(iamId))
             {
                 iamId = await identityService.GetByKerberos(username);
