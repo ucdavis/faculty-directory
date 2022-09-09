@@ -24,12 +24,14 @@ namespace FacultyDirectory.Controllers
         private readonly ApplicationDbContext dbContext;
         private readonly IHttpContextAccessor contextAccessor;
         private readonly ISiteFarmService siteFarmService;
+        private readonly IIdentityService identityService;
 
-        public FacultyController(ApplicationDbContext dbContext, IHttpContextAccessor contextAccessor, ISiteFarmService siteFarmService)
+        public FacultyController(ApplicationDbContext dbContext, IHttpContextAccessor contextAccessor, ISiteFarmService siteFarmService, IIdentityService identityService)
         {
             this.dbContext = dbContext;
             this.contextAccessor = contextAccessor;
             this.siteFarmService = siteFarmService;
+            this.identityService = identityService;
         }
 
         [HttpGet("name")]
@@ -65,6 +67,7 @@ namespace FacultyDirectory.Controllers
 
             if(String.IsNullOrWhiteSpace(iamId)){
                 Log.Error("No IAM ID found in claims for user {username}", username);
+                iamId = await identityService.GetByKerberos(username);
             }
             else{
                 Log.Information("IAM ID found in claims for user {username} Iam {iamId}", username, iamId);
