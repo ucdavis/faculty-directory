@@ -60,7 +60,8 @@ namespace FacultyDirectory.Jobs.Core
             {
                 logConfig = logConfig.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(elasticUri)
                 {
-                    IndexFormat = "aspnet-facultydirectory-{0:yyyy.MM}"
+                    IndexFormat = "aspnet-facultydirectory-{0:yyyy.MM}",
+                    TypeName = null
                 });
             }
 
