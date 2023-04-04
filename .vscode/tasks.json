@@ -30,11 +30,10 @@
             "command": "dotnet",
             "type": "process",
             "args": [
-                "watch",
-                "run",
-                "${workspaceFolder}/src/FacultyDirectory/FacultyDirectory.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
+              "watch",
+              "run",
+              "--project",
+              "${workspaceFolder}/src/FacultyDirectory/FacultyDirectory.csproj"
             ],
             "problemMatcher": "$msCompile"
         }
