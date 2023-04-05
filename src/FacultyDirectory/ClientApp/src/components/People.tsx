@@ -46,15 +46,15 @@ export const People = () => {
 
   const columns: Column<IPersonRecord>[] = [
     { Header: '', id: 'detail', Cell: navLink },
-    { Header: 'First', accessor: 'person.firstName' },
-    { Header: 'Last', id: 'lastName', accessor: 'person.lastName' },
+    { Header: 'First', accessor: row => row.person.firstName },
+    { Header: 'Last', id: 'lastName', accessor: row => row.person.lastName },
     {
       Header: 'Status',
       id: 'decision',
       accessor: decision,
       Filter: SelectColumnFilter,
       filter: 'includes'
-    }
+    } as Column<IPersonRecord>
   ];
 
   // provide default column for sorting
