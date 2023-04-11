@@ -16,7 +16,7 @@ export const ReactTable = ({ columns, data, initialState }: any) => {
     headerGroups,
     prepareRow,
     state,
-    flatColumns,
+    allColumns,
     preGlobalFilteredRows,
     setGlobalFilter,
 
@@ -45,11 +45,14 @@ export const ReactTable = ({ columns, data, initialState }: any) => {
 
   return (
     <>
-      <table className='table table-bordered table-striped' {...getTableProps()}>
+      <table
+        className='table table-bordered table-striped'
+        {...getTableProps()}
+      >
         <thead>
           <tr>
             <th
-              colSpan={flatColumns.length}
+              colSpan={allColumns.length}
               style={{
                 textAlign: 'left'
               }}

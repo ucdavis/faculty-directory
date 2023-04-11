@@ -59,9 +59,9 @@ export const SelectColumnFilter = ({
 export const ColumnFilterHeaders = ({ headerGroups }: any) => {
   return headerGroups.map(
     (headerGroup: HeaderGroup) =>
-      !!headerGroup.headers.some(header => !!header.Filter) && (
+      !!headerGroup.headers.some((header: any) => !!header.Filter) && (
         <tr {...headerGroup.getHeaderGroupProps()}>
-          {headerGroup.headers.map(column => (
+          {headerGroup.headers.map((column: any) => (
             <th {...column.getHeaderProps()}>
               {/* Render the columns filter UI */}
               <div>
