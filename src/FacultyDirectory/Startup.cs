@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -43,7 +44,20 @@ namespace FacultyDirectory
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
             })
-            .AddCookie()
+            .AddCookie(options =>
+            {
+                options.LoginPath = new PathString("/Account/Login/");
+                options.Events.OnRedirectToLogin = (ctx) =>
+                {
+                    // API requests shouldn't redirect to login
+                    if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
+                        ctx.Response.StatusCode = 401;
+                    else
+                        ctx.Response.Redirect(ctx.RedirectUri);
+
+                    return Task.CompletedTask;
+                };
+            })
             .AddOpenIdConnect(oidc =>
             {
                 oidc.ClientId = Configuration["Authentication:ClientId"];
@@ -111,19 +125,6 @@ namespace FacultyDirectory
 
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.Use(async (context, next) =>
-            {
-                // TODO: remove isDevelopment and make everyone login
-                if (!context.User.Identity.IsAuthenticated)
-                {
-                    await context.ChallengeAsync(OpenIdConnectDefaults.AuthenticationScheme);
-                }
-                else
-                {
-                    await next();
-                }
-            });
 
             app.UseEndpoints(endpoints =>
             {
