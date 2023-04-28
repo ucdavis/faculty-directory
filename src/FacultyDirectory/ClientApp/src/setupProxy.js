@@ -5,13 +5,27 @@ const target = env.ASPNETCORE_HTTPS_PORT
   ? `https://localhost:${env.ASPNETCORE_HTTPS_PORT}`
   : env.ASPNETCORE_URLS
   ? env.ASPNETCORE_URLS.split(';')[0]
-  : 'http://localhost:18656';
+  : 'http://localhost:5000';
 
-const context = ['/api'];
+const context = [
+  '/api',
+  '/account/login',
+  '/account/info',
+  '/signin-oidc',
+  '/signout-oidc',
+  '/signout-callback-oidc'
+];
+
+const onError = (err, req, resp, target) => {
+  console.error(`${err.message}`);
+};
 
 module.exports = function(app) {
   const appProxy = createProxyMiddleware(context, {
     target: target,
+    // Handle errors to prevent the proxy middleware from crashing when
+    // the ASP NET Core webserver is unavailable
+    onError: onError,
     secure: false,
     headers: {
       Connection: 'Keep-Alive'
