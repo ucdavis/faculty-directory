@@ -1,3 +1,6 @@
+[![Node Version](https://img.shields.io/badge/dynamic/json?color=green&label=node&query=%24.engines.node&url=https%3A%2F%2Fraw.githubusercontent.com%2Fucdavis%2Ffaculty-directory%2Fmaster%2Fsrc%2FFacultyDirectory%2FClientApp%2Fpackage.json)](https://img.shields.io/badge/dynamic/json?color=green&label=node&query=%24.engines.node&url=https%3A%2F%2Fraw.githubusercontent.com%2Fucdavis%2Ffaculty-directory%2Fmaster%2Fsrc%2FFacultyDirectory%2FClientApp%2Fpackage.json)
+[![Build Status](https://dev.azure.com/ucdavis/Faculty%20Directory/_apis/build/status%2Fucdavis.faculty-directory?branchName=master)](https://dev.azure.com/ucdavis/Faculty%20Directory/_apis/build/status%2Fucdavis.faculty-directory?branchName=master)
+
 # faculty-directory
 
 ## Requirements
