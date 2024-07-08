@@ -68,7 +68,8 @@ namespace FacultyDirectory.Core.Services
                 using (var jsonTextReader = new JsonTextReader(sr))
                 {
                     var result = new JsonSerializer().Deserialize<PeopleResults>(jsonTextReader);
-                    return result.ResponseData.Results;
+                    // Ensure we don't return dupicate people reords...
+                    return result.ResponseData.Results.DistinctBy(p => p.IamId).ToArray();
                 }
             }
         }
