@@ -1,4 +1,4 @@
-import React from 'react';
+import { useMemo } from 'react';
 import { Row, HeaderGroup } from 'react-table';
 
 // Define a default UI for filtering
@@ -30,7 +30,7 @@ export const SelectColumnFilter = ({
 }: any) => {
   // Calculate the options for filtering
   // using the preFilteredRows
-  const options = React.useMemo(() => {
+  const options = useMemo(() => {
     const options = new Set<any>();
     preFilteredRows.forEach((row: Row<object>) => {
       options.add(row.values[id]);
@@ -58,11 +58,15 @@ export const SelectColumnFilter = ({
 
 export const ColumnFilterHeaders = ({ headerGroups }: any) => {
   return headerGroups.map(
-    (headerGroup: HeaderGroup) =>
-      !!headerGroup.headers.some((header: any) => !!header.Filter) && (
-        <tr {...headerGroup.getHeaderGroupProps()}>
-          {headerGroup.headers.map((column: any) => (
-            <th {...column.getHeaderProps()}>
+    (headerGroup: HeaderGroup) => {
+      if (!headerGroup.headers.some((header: any) => !!header.Filter)) return null;
+      const { key, ...headerGroupProps } = headerGroup.getHeaderGroupProps();
+      return (
+        <tr key={key} {...headerGroupProps}>
+          {headerGroup.headers.map((column: any) => {
+            const { key: colKey, ...columnProps } = column.getHeaderProps();
+            return (
+            <th key={colKey} {...columnProps}>
               {/* Render the columns filter UI */}
               <div>
                 {column.canFilter && !!column.Filter
@@ -70,8 +74,10 @@ export const ColumnFilterHeaders = ({ headerGroups }: any) => {
                   : null}
               </div>
             </th>
-          ))}
+            );
+          })}
         </tr>
-      )
+      );
+    }
   );
 };

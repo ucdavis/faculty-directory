@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 export const InputArray = (props: any) => {
   const [values, setValues] = useState<string[]>([]);
@@ -49,13 +50,13 @@ export const InputArray = (props: any) => {
           ></input>
           <div className='input-group-append'>
             <button type='button' className='btn' onClick={_ => onRemove(idx)}>
-              <FontAwesomeIcon icon='times' />
+              <FontAwesomeIcon icon={faTimes} />
             </button>
           </div>
         </div>
       ))}
       <button type='button' onClick={onAdd} className='btn addmore-btn'>
-        <FontAwesomeIcon icon='plus' size='sm' />
+        <FontAwesomeIcon icon={faPlus} size='sm' />
         Add Another Item
       </button>
     </div>

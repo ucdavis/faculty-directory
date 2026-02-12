@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useHistory, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ISource } from '../models/ISource';
 import { IBio } from '../models/IBio';
 import { ISitePerson } from '../models/ISitePerson';
@@ -11,7 +11,7 @@ import { Sources } from './Sources';
 
 export const Person = () => {
   let { id } = useParams();
-  let history = useHistory();
+  let navigate = useNavigate();
 
   const [sources, setSources] = useState<ISource[]>([]);
   const [bio, setBio] = useState<IBio>();
@@ -19,7 +19,7 @@ export const Person = () => {
 
   useEffect(() => {
     const fetchPerson = async () => {
-      const result = await fetch('api/sitepeople/' + id).then(r => r.json());
+      const result = await fetch('/api/sitepeople/' + id).then(r => r.json());
 
       setBio(result.bio);
       setSitePerson(result.sitePerson || {});
@@ -41,20 +41,20 @@ export const Person = () => {
     const body = JSON.stringify({ ...sitePerson, shouldSync });
 
     // TODO: check for success/OK result
-    await fetch('api/sitepeople/' + id, {
+    await fetch('/api/sitepeople/' + id, {
       method: 'POST',
       headers,
       body
     });
 
-    await fetch('api/peoplesources/' + id, {
+    await fetch('/api/peoplesources/' + id, {
       method: 'POST',
       headers,
       body: JSON.stringify([...sources])
     });
 
     // saved, redirect back to people home
-    history.push('/people');
+    navigate('/people');
   };
 
   const changeHandler = (event: any) => {

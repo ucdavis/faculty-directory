@@ -1,13 +1,37 @@
-import React, { useEffect, useMemo, useState } from 'react';
-
+import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import MicRecorder from 'mic-recorder-to-mp3';
+import micRecorderUrl from 'mic-recorder-to-mp3/dist/index.js?url';
 
 import { IBio } from '../models/IBio';
 import { ISitePerson } from '../models/ISitePerson';
 import { Loading } from './Loading';
 
-const Mp3Recorder = new MicRecorder({ bitRate: 128 });
+let mp3Recorder: any = null;
+let micRecorderLoader: Promise<any> | null = null;
+
+// Load mic-recorder-to-mp3 via a runtime script to avoid UMD/ESM issues.
+const loadMicRecorderGlobal = () => {
+  if (micRecorderLoader) {
+    return micRecorderLoader;
+  }
+
+  micRecorderLoader = new Promise((resolve, reject) => {
+    const existing = (window as any).MicRecorder;
+    if (existing) {
+      resolve(existing);
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = micRecorderUrl;
+    script.async = true;
+    script.onload = () => resolve((window as any).MicRecorder);
+    script.onerror = () => reject(new Error('Failed to load MicRecorder'));
+    document.head.appendChild(script);
+  });
+
+  return micRecorderLoader;
+};
 
 interface AudioFile {
   buffer: BlobPart[];
@@ -30,7 +54,7 @@ export const Pronunciation = () => {
 
   useEffect(() => {
     const fetchPerson = async () => {
-      const result = await fetch('api/sitepeople/' + id).then(r => r.json());
+      const result = await fetch('/api/sitepeople/' + id).then(r => r.json());
 
       if (result.sitePerson.pronunciationUid) {
         console.log('Fetching pronunciation');
@@ -72,14 +96,33 @@ export const Pronunciation = () => {
     setIsRecording(true);
     setAudioFile(undefined);
 
-    // TODO: handle error, probably because of permissions
-    Mp3Recorder.start();
+    // We can't use Mp3Recorder.start()
+    try {
+      const MicRecorderCtor = await loadMicRecorderGlobal();
+      if (!MicRecorderCtor) {
+        throw new Error('MicRecorder failed to load');
+      }
+
+      if (!mp3Recorder) {
+        mp3Recorder = new MicRecorderCtor({ bitRate: 128 });
+      }
+
+      mp3Recorder.start();
+    } catch (error) {
+      console.error('Error starting recording:', error);
+      setIsRecording(false);
+    }
   };
 
   const handleStop = async () => {
     setIsRecording(false);
 
-    Mp3Recorder.stop()
+    if (!mp3Recorder) {
+      return;
+    }
+
+    mp3Recorder
+      .stop()
       .getMp3()
       .then(([buffer, blob]: any) => {
         setAudioFile({ buffer, type: blob.type, lastModified: Date.now() });

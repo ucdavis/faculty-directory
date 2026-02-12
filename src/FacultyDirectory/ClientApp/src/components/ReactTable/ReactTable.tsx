@@ -1,4 +1,4 @@
-import React from 'react';
+
 import {
   useTable,
   useFilters,
@@ -7,7 +7,6 @@ import {
   usePagination
 } from 'react-table';
 import { ColumnFilterHeaders, GlobalFilter } from './Filtering';
-import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 
 export const ReactTable = ({ columns, data, initialState }: any) => {
   const {
@@ -64,10 +63,14 @@ export const ReactTable = ({ columns, data, initialState }: any) => {
               />
             </th>
           </tr>
-          {headerGroups.map(headerGroup => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
-                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+          {headerGroups.map(headerGroup => {
+            const { key, ...headerGroupProps } = headerGroup.getHeaderGroupProps();
+            return (
+            <tr key={key} {...headerGroupProps}>
+              {headerGroup.headers.map(column => {
+                const { key: colKey, ...columnProps } = column.getHeaderProps(column.getSortByToggleProps());
+                return (
+                <th key={colKey} {...columnProps}>
                   {column.render('Header')}
                   {/* Render the columns filter UI */}
                   <span>
@@ -78,19 +81,23 @@ export const ReactTable = ({ columns, data, initialState }: any) => {
                       : ''}
                   </span>
                 </th>
-              ))}
+                );
+              })}
             </tr>
-          ))}
+            );
+          })}
           <ColumnFilterHeaders headerGroups={headerGroups} />
         </thead>
         <tbody {...getTableBodyProps()}>
-          {page.map((row, i) => {
+          {page.map((row, _i) => {
             prepareRow(row);
+            const { key: rowKey, ...rowProps } = row.getRowProps();
             return (
-              <tr {...row.getRowProps()}>
+              <tr key={rowKey} {...rowProps}>
                 {row.cells.map(cell => {
+                  const { key: cellKey, ...cellProps } = cell.getCellProps();
                   return (
-                    <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                    <td key={cellKey} {...cellProps}>{cell.render('Cell')}</td>
                   );
                 })}
               </tr>
@@ -98,18 +105,16 @@ export const ReactTable = ({ columns, data, initialState }: any) => {
           })}
         </tbody>
       </table>
-      <Pagination className='pagination'>
-        <PaginationItem onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-          <PaginationLink first />
-        </PaginationItem>
-        <PaginationItem
-          onClick={() => previousPage()}
-          disabled={!canPreviousPage}
-        >
-          <PaginationLink previous />
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationLink>
+      <nav>
+        <ul className='pagination'>
+          <li className={`page-item ${!canPreviousPage ? 'disabled' : ''}`}>
+            <a className='page-link' href='#' onClick={(e) => { e.preventDefault(); gotoPage(0); }}>First</a>
+          </li>
+          <li className={`page-item ${!canPreviousPage ? 'disabled' : ''}`}>
+            <a className='page-link' href='#' onClick={(e) => { e.preventDefault(); previousPage(); }}>Previous</a>
+          </li>
+          <li className='page-item'>
+            <span className='page-link'>
             <span>
               Page{' '}
               <strong>
@@ -140,18 +145,16 @@ export const ReactTable = ({ columns, data, initialState }: any) => {
                 </option>
               ))}
             </select>{' '}
-          </PaginationLink>
-        </PaginationItem>
-        <PaginationItem onClick={() => nextPage()} disabled={!canNextPage}>
-          <PaginationLink next />
-        </PaginationItem>
-        <PaginationItem
-          onClick={() => gotoPage(pageCount - 1)}
-          disabled={!canNextPage}
-        >
-          <PaginationLink last />
-        </PaginationItem>
-      </Pagination>
+            </span>
+          </li>
+          <li className={`page-item ${!canNextPage ? 'disabled' : ''}`}>
+            <a className='page-link' href='#' onClick={(e) => { e.preventDefault(); nextPage(); }}>Next</a>
+          </li>
+          <li className={`page-item ${!canNextPage ? 'disabled' : ''}`}>
+            <a className='page-link' href='#' onClick={(e) => { e.preventDefault(); gotoPage(pageCount - 1); }}>Last</a>
+          </li>
+        </ul>
+      </nav>
     </>
   );
 };
