@@ -1,3 +1,4 @@
+@use "sass:color";
 // fonts
 @font-face {
   font-family: 'proxima-nova-r';
@@ -32,7 +33,7 @@ $tertiary-font: rgba(28, 33, 38, 0.4); //
 $bg-color: rgba(221, 217, 168, 0.07); // background
 $bg-color-secondary: #fff;
 
-$placeholder-text: darken($secondary-font, 10%);
+$placeholder-text: color.adjust($secondary-font, $lightness: -10%);
 $default-form-text: $primary-font;
 
 $custom-data: $primary-color;
@@ -136,14 +137,14 @@ $shingle-brown: #4f2c1d;
   font-family: $sans-bold;
   &:active,
   &:focus {
-    background-color: darken($primary-color, 3);
+    background-color: color.adjust($primary-color, $lightness: -3%);
   }
   &:hover {
     color: #fff !important;
     // transform: translateY(-1px);
     box-shadow: 0 -3px 0 rgba(0, 0, 0, 0.15) inset,
       0 3px 6px rgba(0, 0, 0, 0.08);
-    background-color: lighten($primary-color, 3);
+    background-color: color.adjust($primary-color, $lightness: 3%);
   }
 }
 
