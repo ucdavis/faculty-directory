@@ -4,14 +4,7 @@ namespace FacultyDirectory.Core.Models
     {
         public string AppName { get; set; }
         public string Environment { get; set; }
-        public OtelSettings OTEL { get; set; }
-    }
-
-    public class OtelSettings
-    {
-        public string Endpoint { get; set; }
-        public string AuthHeader { get; set; }
-        public string ServiceName { get; set; }
-        public string DeploymentEnvironment { get; set; }
+        public string OtelEndpoint { get; set; }
+        public string OtelAuthHeader { get; set; }
     }
 }

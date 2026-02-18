@@ -9,28 +9,26 @@ namespace FacultyDirectory.Core.Extensions
     {
         public static LoggerConfiguration AddOpenTelemetrySinkIfConfigured(
             this LoggerConfiguration loggerConfiguration,
-            OtelSettings otelSettings)
+            SerilogSettings serilogSettings)
         {
-            if (otelSettings == null
-                || string.IsNullOrWhiteSpace(otelSettings.Endpoint)
-                || string.IsNullOrWhiteSpace(otelSettings.ServiceName)
-                || string.IsNullOrWhiteSpace(otelSettings.DeploymentEnvironment)
-                || string.IsNullOrWhiteSpace(otelSettings.AuthHeader))
+            if (serilogSettings == null
+                || string.IsNullOrWhiteSpace(serilogSettings.OtelEndpoint)
+                || string.IsNullOrWhiteSpace(serilogSettings.OtelAuthHeader))
             {
                 return loggerConfiguration;
             }
 
             return loggerConfiguration.WriteTo.OpenTelemetry(options =>
             {
-                options.Endpoint = otelSettings.Endpoint;
+                options.Endpoint = serilogSettings.OtelEndpoint;
                 
                 options.ResourceAttributes = new Dictionary<string, object>
                 {
-                    ["service.name"] = otelSettings.ServiceName,
-                    ["deployment.environment"] = otelSettings.DeploymentEnvironment
+                    ["service.name"] = serilogSettings.AppName,
+                    ["deployment.environment"] = serilogSettings.Environment
                 };
                 
-                var parts = otelSettings.AuthHeader.Split('=', 2);
+                var parts = serilogSettings.OtelAuthHeader.Split('=', 2);
                 options.Headers = new Dictionary<string, string>
                 {
                     [parts[0].Trim()] = parts[1].Trim()

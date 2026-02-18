@@ -40,7 +40,7 @@ namespace FacultyDirectory
                 .WriteTo.Console();
 
             // add OpenTelemetry sink if endpoint is configured
-            loggerConfig = loggerConfig.AddOpenTelemetrySinkIfConfigured(settings.OTEL);
+            loggerConfig = loggerConfig.AddOpenTelemetrySinkIfConfigured(settings);
 
             Log.Logger = loggerConfig.CreateLogger();
 

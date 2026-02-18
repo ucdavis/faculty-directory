@@ -37,7 +37,7 @@ namespace FacultyDirectory.Jobs.Core
         }
 
         /// <summary>
-        /// Get a logger configuration that logs to stackify
+        /// Get a logger configuration that logs to various sinks based on configuration
         /// </summary>
         /// <returns></returns>
         public static LoggerConfiguration GetConfiguration()
@@ -46,7 +46,7 @@ namespace FacultyDirectory.Jobs.Core
 
             // Bind configuration to settings model
             var settings = new SerilogSettings();
-            _configuration.GetSection("Stackify").Bind(settings);
+            _configuration.GetSection("Serilog").Bind(settings);
 
             // standard logger
             var logConfig = new LoggerConfiguration()
@@ -55,12 +55,10 @@ namespace FacultyDirectory.Jobs.Core
                 .Enrich.WithProperty("Application", settings.AppName)
                 .Enrich.WithProperty("AppEnvironment", settings.Environment);
 
-            // various sinks
             logConfig = logConfig
                 .WriteTo.Console();
 
-            // add OpenTelemetry sink if endpoint is configured
-            logConfig = logConfig.AddOpenTelemetrySinkIfConfigured(settings.OTEL);
+            logConfig = logConfig.AddOpenTelemetrySinkIfConfigured(settings);
 
             return logConfig;
         }
