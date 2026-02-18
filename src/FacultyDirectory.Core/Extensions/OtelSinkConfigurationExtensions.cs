@@ -7,17 +7,15 @@ namespace FacultyDirectory.Core.Extensions
 {
     public static class OtelSinkConfigurationExtensions
     {
-        /// <summary>
-        /// Configures the OpenTelemetry sink for Serilog if OTEL settings are provided
-        /// </summary>
-        /// <param name="loggerConfiguration">The logger configuration to extend</param>
-        /// <param name="otelSettings">The OTEL settings from configuration</param>
-        /// <returns>The logger configuration for chaining</returns>
         public static LoggerConfiguration AddOpenTelemetrySinkIfConfigured(
-            this LoggerConfiguration loggerConfiguration, 
+            this LoggerConfiguration loggerConfiguration,
             OtelSettings otelSettings)
         {
-            if (otelSettings == null || string.IsNullOrWhiteSpace(otelSettings.Endpoint))
+            if (otelSettings == null
+                || string.IsNullOrWhiteSpace(otelSettings.Endpoint)
+                || string.IsNullOrWhiteSpace(otelSettings.ServiceName)
+                || string.IsNullOrWhiteSpace(otelSettings.DeploymentEnvironment)
+                || string.IsNullOrWhiteSpace(otelSettings.AuthHeader))
             {
                 return loggerConfiguration;
             }
@@ -26,53 +24,17 @@ namespace FacultyDirectory.Core.Extensions
             {
                 options.Endpoint = otelSettings.Endpoint;
                 
-                // Build resource attributes from flattened properties
-                // This allows service.name to come from appsettings.json
-                // while deployment.environment can be overridden via Azure env vars
-                var resourceAttributes = new Dictionary<string, object>();
-                
-                if (!string.IsNullOrWhiteSpace(otelSettings.ServiceName))
+                options.ResourceAttributes = new Dictionary<string, object>
                 {
-                    resourceAttributes["service.name"] = otelSettings.ServiceName;
-                }
+                    ["service.name"] = otelSettings.ServiceName,
+                    ["deployment.environment"] = otelSettings.DeploymentEnvironment
+                };
                 
-                if (!string.IsNullOrWhiteSpace(otelSettings.DeploymentEnvironment))
+                var parts = otelSettings.AuthHeader.Split('=', 2);
+                options.Headers = new Dictionary<string, string>
                 {
-                    resourceAttributes["deployment.environment"] = otelSettings.DeploymentEnvironment;
-                }
-                
-                if (resourceAttributes.Count > 0)
-                {
-                    options.ResourceAttributes = resourceAttributes;
-                }
-                
-                // Configure headers if provided
-                if (!string.IsNullOrWhiteSpace(otelSettings.Headers))
-                {
-                    try
-                    {
-                        // Try to parse as JSON dictionary
-                        options.Headers = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(otelSettings.Headers);
-                    }
-                    catch
-                    {
-                        // If not JSON, treat as comma-separated key=value pairs
-                        var headerDict = new Dictionary<string, string>();
-                        var pairs = otelSettings.Headers.Split(',');
-                        foreach (var pair in pairs)
-                        {
-                            var parts = pair.Split('=', 2);
-                            if (parts.Length == 2)
-                            {
-                                headerDict[parts[0].Trim()] = parts[1].Trim();
-                            }
-                        }
-                        if (headerDict.Count > 0)
-                        {
-                            options.Headers = headerDict;
-                        }
-                    }
-                }
+                    [parts[0].Trim()] = parts[1].Trim()
+                };
             });
         }
     }
