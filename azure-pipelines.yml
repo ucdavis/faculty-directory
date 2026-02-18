@@ -59,7 +59,7 @@ stages:
         path: $(npm_config_cache)
       displayName: Cache npm packages
 
-    - script: npm ci
+    - script: npm ci --legacy-peer-deps
       displayName: 'Run npm ci (install)'
       workingDirectory: './src/FacultyDirectory/ClientApp'
 
