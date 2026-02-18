@@ -30,7 +30,7 @@ stages:
 
     - task: NodeTool@0
       inputs:
-        versionSpec: '18.16.x'
+        versionSpec: '22.20.x'
 
     - task: NuGetToolInstaller@1
 
@@ -89,7 +89,7 @@ stages:
 
         - task: NodeTool@0
           inputs:
-            versionSpec: '18.16.x'
+            versionSpec: '22.20.x'
 
         - task: CmdLine@2
           inputs:
