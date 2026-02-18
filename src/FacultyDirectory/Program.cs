@@ -4,8 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
-using Serilog.Sinks.Elasticsearch;
-
+using FacultyDirectory.Core.Models;
+using FacultyDirectory.Core.Extensions;
 namespace FacultyDirectory
 {
     public class Program
@@ -24,27 +24,23 @@ namespace FacultyDirectory
                 builder.AddUserSecrets<Program>();
             }
             var configuration = builder.Build();
-            var loggingSection = configuration.GetSection("Serilog");
+            
+            // Bind Serilog settings to model
+            var settings = new SerilogSettings();
+            configuration.GetSection("Serilog").Bind(settings);
 
             var loggerConfig = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                 .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
                 .Enrich.FromLogContext()
-                .Enrich.WithProperty("Application", loggingSection.GetValue<string>("AppName"))
-                .Enrich.WithProperty("AppEnvironment", loggingSection.GetValue<string>("Environment"))
+                .Enrich.WithProperty("Application", settings.AppName)
+                .Enrich.WithProperty("AppEnvironment", settings.Environment)
                 // .Enrich.WithExceptionDetails()
                 .WriteTo.Console();
 
-                        // add in elastic search sink if the uri is valid
-            if (Uri.TryCreate(loggingSection.GetValue<string>("ElasticUrl"), UriKind.Absolute, out var elasticUri))
-            {
-                loggerConfig.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(elasticUri)
-                {
-                    IndexFormat = "aspnet-facultydirectory-{0:yyyy.MM}",
-                    TypeName = null
-                });
-            }
+            // add OpenTelemetry sink if endpoint is configured
+            loggerConfig = loggerConfig.AddOpenTelemetrySinkIfConfigured(settings.OTEL);
 
             Log.Logger = loggerConfig.CreateLogger();
 

@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 using Serilog.Exceptions;
-using Serilog.Sinks.Elasticsearch;
-
+using FacultyDirectory.Core.Models;
+using FacultyDirectory.Core.Extensions;
 namespace FacultyDirectory.Jobs.Core
 {
     public static class LogConfiguration
@@ -42,28 +44,23 @@ namespace FacultyDirectory.Jobs.Core
         {
             if (_configuration == null) throw new InvalidOperationException("Call Setup() before requesting a Logger Configuration"); ;
 
-            var loggingSection = _configuration.GetSection("Stackify");
+            // Bind configuration to settings model
+            var settings = new SerilogSettings();
+            _configuration.GetSection("Stackify").Bind(settings);
 
             // standard logger
             var logConfig = new LoggerConfiguration()
                 .Enrich.FromLogContext()
                 .Enrich.WithExceptionDetails()
-                .Enrich.WithProperty("Application", loggingSection.GetValue<string>("AppName"))
-                .Enrich.WithProperty("AppEnvironment", loggingSection.GetValue<string>("Environment"));
+                .Enrich.WithProperty("Application", settings.AppName)
+                .Enrich.WithProperty("AppEnvironment", settings.Environment);
 
             // various sinks
             logConfig = logConfig
                 .WriteTo.Console();
 
-            // add in elastic search sink if the uri is valid
-            if (Uri.TryCreate(loggingSection.GetValue<string>("ElasticUrl"), UriKind.Absolute, out var elasticUri))
-            {
-                logConfig = logConfig.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(elasticUri)
-                {
-                    IndexFormat = "aspnet-facultydirectory-{0:yyyy.MM}",
-                    TypeName = null
-                });
-            }
+            // add OpenTelemetry sink if endpoint is configured
+            logConfig = logConfig.AddOpenTelemetrySinkIfConfigured(settings.OTEL);
 
             return logConfig;
         }

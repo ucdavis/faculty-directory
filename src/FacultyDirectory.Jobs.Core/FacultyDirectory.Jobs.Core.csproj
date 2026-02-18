@@ -14,7 +14,12 @@
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
     <PackageReference Include="Serilog.Exceptions" Version="8.0.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
-		<PackageReference Include="Serilog.Sinks.Elasticsearch" Version="8.4.1" />
+		<PackageReference Include="Serilog.Sinks.OpenTelemetry" Version="4.2.0" />
     
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FacultyDirectory.Core\FacultyDirectory.Core.csproj" />
+  </ItemGroup>
+
 </Project>
