@@ -33,19 +33,6 @@ const httpsConfig = { cert: fs.readFileSync(certFilePath), key: fs.readFileSync(
 export default defineConfig({
   plugins: [react()],
   base: '/',
-  resolve: {
-    alias: {
-      // Force reactstrap to use the ESM build
-      'reactstrap': 'reactstrap/es',
-    },
-  },
-  optimizeDeps: {
-    include: ['reactstrap', 'opus-recorder'],
-    esbuildOptions: {
-      // Needed for proper handling of reactstrap's dependencies
-      mainFields: ['module', 'main'],
-    },
-  },
   server: {
     port: 54921,
     host: true,
