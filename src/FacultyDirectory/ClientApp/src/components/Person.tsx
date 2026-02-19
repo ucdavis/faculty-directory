@@ -10,7 +10,7 @@ import { Loading } from './Loading';
 import { Sources } from './Sources';
 
 export const Person = () => {
-  let { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   let navigate = useNavigate();
 
   const [sources, setSources] = useState<ISource[]>([]);
@@ -18,6 +18,8 @@ export const Person = () => {
   const [sitePerson, setSitePerson] = useState<ISitePerson>({} as ISitePerson);
 
   useEffect(() => {
+    if (!id) return;
+
     const fetchPerson = async () => {
       const result = await fetch('/api/sitepeople/' + id).then(r => r.json());
 
@@ -31,6 +33,7 @@ export const Person = () => {
 
   const onSubmit = async (e: any, shouldSync: boolean) => {
     e.preventDefault();
+    if (!id) return;
     console.log('submitting', sitePerson);
 
     const headers = {
