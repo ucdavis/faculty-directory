@@ -18,6 +18,13 @@ namespace FacultyDirectory.Core.Extensions
                 return loggerConfiguration;
             }
 
+            var parts = serilogSettings.OtelAuthHeader.Split('=', 2);
+            if (parts.Length != 2)
+            {
+                Log.Error("Invalid OpenTelemetry auth header format. Expected 'Authorization=Bearer <token>'.", serilogSettings.OtelAuthHeader);
+                return loggerConfiguration;
+            }
+
             return loggerConfiguration.WriteTo.OpenTelemetry(options =>
             {
                 options.Endpoint = serilogSettings.OtelEndpoint;
@@ -28,7 +35,6 @@ namespace FacultyDirectory.Core.Extensions
                     ["deployment.environment"] = serilogSettings.Environment
                 };
                 
-                var parts = serilogSettings.OtelAuthHeader.Split('=', 2);
                 options.Headers = new Dictionary<string, string>
                 {
                     [parts[0].Trim()] = parts[1].Trim()
