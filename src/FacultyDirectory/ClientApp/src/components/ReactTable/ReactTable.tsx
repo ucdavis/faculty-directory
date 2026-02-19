@@ -108,10 +108,10 @@ export const ReactTable = ({ columns, data, initialState }: any) => {
       <nav>
         <ul className='pagination'>
           <li className={`page-item ${!canPreviousPage ? 'disabled' : ''}`}>
-            <a className='page-link' href='#' onClick={(e) => { e.preventDefault(); gotoPage(0); }}>First</a>
+            <a className='page-link' href='#' role='button' onClick={(e) => { e.preventDefault(); gotoPage(0); }}>First</a>
           </li>
           <li className={`page-item ${!canPreviousPage ? 'disabled' : ''}`}>
-            <a className='page-link' href='#' onClick={(e) => { e.preventDefault(); previousPage(); }}>Previous</a>
+            <a className='page-link' href='#' role='button' onClick={(e) => { e.preventDefault(); previousPage(); }}>Previous</a>
           </li>
           <li className='page-item'>
             <span className='page-link'>
@@ -148,10 +148,10 @@ export const ReactTable = ({ columns, data, initialState }: any) => {
             </span>
           </li>
           <li className={`page-item ${!canNextPage ? 'disabled' : ''}`}>
-            <a className='page-link' href='#' onClick={(e) => { e.preventDefault(); nextPage(); }}>Next</a>
+            <a className='page-link' href='#' role='button' onClick={(e) => { e.preventDefault(); nextPage(); }}>Next</a>
           </li>
           <li className={`page-item ${!canNextPage ? 'disabled' : ''}`}>
-            <a className='page-link' href='#' onClick={(e) => { e.preventDefault(); gotoPage(pageCount - 1); }}>Last</a>
+            <a className='page-link' href='#' role='button' onClick={(e) => { e.preventDefault(); gotoPage(pageCount - 1); }}>Last</a>
           </li>
         </ul>
       </nav>
