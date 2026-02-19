@@ -7,7 +7,7 @@
 
 .NET Core 6 SDK
 
-NodeJS
+NodeJS >= 22
 
 ## Install (First Run)
 
