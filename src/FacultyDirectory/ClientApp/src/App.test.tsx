@@ -21,7 +21,7 @@ vi.mock('./util/useEnsureAuthenticated', () => ({
 beforeEach(() => {
   // Mock fetch to return appropriate responses
   (window as any).fetch = vi.fn().mockImplementation((url: string) => {
-    if (url === 'api/faculty/name') {
+    if (url === '/api/faculty/name') {
       return Promise.resolve({
         ok: true,
         status: 200,
