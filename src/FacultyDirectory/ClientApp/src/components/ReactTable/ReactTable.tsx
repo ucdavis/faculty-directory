@@ -89,7 +89,7 @@ export const ReactTable = ({ columns, data, initialState }: any) => {
           <ColumnFilterHeaders headerGroups={headerGroups} />
         </thead>
         <tbody {...getTableBodyProps()}>
-          {page.map((row, _i) => {
+          {page.map((row) => {
             prepareRow(row);
             const { key: rowKey, ...rowProps } = row.getRowProps();
             return (
