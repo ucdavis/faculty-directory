@@ -1,39 +1,35 @@
-import React, { Component, useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import { Link, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-interface State {
-  collapsed: boolean;
-}
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 function NavBar() {
-  let location = useLocation();
-  let history = useHistory();
-  let [name, setName] = useState('');
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [name, setName] = useState('');
 
   useEffect(() => {
     const getName = async () => {
-      const results = await fetch('api/faculty/name');
+      const results = await fetch('/api/faculty/name');
       const response = await results;
 
       if (response.status === 403) {
-        history.push('/error403');
+        navigate('/error403');
       } else {
         const userData = await results.json();
         setName(userData.name);
       }
     };
     getName();
-  }, []);
+  }, [navigate]);
 
   return (
     <div className='header'>
       <div className='text-center'>
-        {location.pathname != '/' && (
+        {location.pathname !== '/' && (
           <p className='mb-2'>
             <Link className='back-link' to='/'>
-              <FontAwesomeIcon icon='arrow-left' size='xs' /> Back to Faculty
+              <FontAwesomeIcon icon={faArrowLeft} size='xs' /> Back to Faculty
               List
             </Link>
           </p>
@@ -46,25 +42,7 @@ function NavBar() {
   );
 }
 
-export class NavMenu extends Component<any, State> {
-  static displayName = NavMenu.name;
-
-  constructor(props: any) {
-    super(props);
-
-    this.toggleNavbar = this.toggleNavbar.bind(this);
-    this.state = {
-      collapsed: true
-    };
-  }
-
-  toggleNavbar() {
-    this.setState({
-      collapsed: !this.state.collapsed
-    });
-  }
-
-  render() {
+export const NavMenu = () => {
     return (
       <header>
         <div className='logo-container text-center'>
@@ -151,5 +129,4 @@ export class NavMenu extends Component<any, State> {
         <NavBar />
       </header>
     );
-  }
-}
+};

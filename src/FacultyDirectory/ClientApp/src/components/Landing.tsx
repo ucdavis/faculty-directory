@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Redirect } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
 
 import { ISitePerson } from '../models/ISitePerson';
 import { Loading } from './Loading';
@@ -11,12 +11,12 @@ interface IPersonRecord {
 
 // reads user info and redirects to the appropriate page
 export const Landing = () => {
-  const [redirect, setRedirect] = React.useState<string>();
+  const [redirect, setRedirect] = useState<string>();
 
   useEffect(() => {
     const getSelf = async () => {
       const results: IPersonRecord = await fetch(
-        'api/faculty/userinfo'
+        '/api/faculty/userinfo'
       ).then(r => r.json());
 
       if (results.isAdmin) {
@@ -35,8 +35,8 @@ export const Landing = () => {
   }, []);
 
   if (redirect) {
-    return <Redirect to={redirect} />;
+    return <Navigate to={redirect} />;
   }
 
-  return <Loading text='LOADING...'></Loading>;
+  return <Loading text='LOADING...' />;
 };

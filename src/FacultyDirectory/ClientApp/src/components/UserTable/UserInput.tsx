@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Button, Input, InputGroup, InputGroupAddon } from 'reactstrap';
+import { useState } from 'react';
 import { IUser } from '../../models/IUsers';
 
 interface IProps {
@@ -24,7 +23,7 @@ export const UserInput = (props: IProps) => {
 
     const userData = JSON.stringify({ username: username });
 
-    const response = await fetch('api/users', {
+    const response = await fetch('/api/users', {
       method: 'POST',
       headers,
       body: userData
@@ -41,17 +40,16 @@ export const UserInput = (props: IProps) => {
   };
 
   return (
-    <InputGroup>
-      <Input
+    <div className='input-group'>
+      <input
+        className='form-control'
         placeholder='Add a user'
         value={username}
         onChange={handleUsername}
       />
-      <InputGroupAddon addonType='append'>
-        <Button color='primary' onClick={onSubmit}>
-          Submit
-        </Button>
-      </InputGroupAddon>
-    </InputGroup>
+      <button className='btn btn-primary' onClick={onSubmit}>
+        Submit
+      </button>
+    </div>
   );
 };

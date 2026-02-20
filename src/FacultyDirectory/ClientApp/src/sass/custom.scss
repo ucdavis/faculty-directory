@@ -2,9 +2,7 @@
 @charset "utf-8";
 
 
-@import
-       "dependencies",
-       "typography",
-       "layout",
-       "options"
-;
+@use "dependencies";
+@use "typography";
+@use "layout";
+@use "options";

@@ -30,7 +30,7 @@ stages:
 
     - task: NodeTool@0
       inputs:
-        versionSpec: '18.16.x'
+        versionSpec: '22.20.x'
 
     - task: NuGetToolInstaller@1
 
@@ -59,7 +59,7 @@ stages:
         path: $(npm_config_cache)
       displayName: Cache npm packages
 
-    - script: npm ci
+    - script: npm ci --legacy-peer-deps
       displayName: 'Run npm ci (install)'
       workingDirectory: './src/FacultyDirectory/ClientApp'
 
@@ -89,7 +89,7 @@ stages:
 
         - task: NodeTool@0
           inputs:
-            versionSpec: '18.16.x'
+            versionSpec: '22.20.x'
 
         - task: CmdLine@2
           inputs:

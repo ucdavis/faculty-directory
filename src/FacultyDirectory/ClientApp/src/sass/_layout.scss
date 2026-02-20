@@ -1,3 +1,6 @@
+@use "sass:color";
+@use "dependencies";
+
 body {
   background: rgb(248, 249, 251);
 }
@@ -13,7 +16,7 @@ header {
   margin-bottom: 40px;
   margin-top: 20px;
   padding-top: 20px;
-  border-top: 1px solid $borders;
+  border-top: 1px solid dependencies.$borders;
   max-width: 700px;
 }
 .caes-wrapper {
@@ -36,13 +39,13 @@ footer {
   align-items: center;
 }
 p.legend {
-  color: $secondary-font;
+  color: dependencies.$secondary-font;
   &:before {
     content: '\A';
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: $custom-data;
+    background: dependencies.$custom-data;
     display: inline-block;
     margin: 0 10px;
   }
@@ -194,7 +197,7 @@ p.legend {
     z-index: -1;
     .sheep-leg {
       display: inline-block;
-      background: darken($skin, 5%);
+      background: color.adjust($skin, $lightness: -5%);
       width: 0.5em;
       height: 2.5em;
       margin: 0.2em;

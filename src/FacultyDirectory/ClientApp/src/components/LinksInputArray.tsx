@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 interface IProps {
     data: string;
@@ -90,13 +91,13 @@ export const LinksInputArray = (props: any) => {
               className='btn'
               onClick={_ => onRemove(i)}
             >
-              <FontAwesomeIcon icon='times' />
+              <FontAwesomeIcon icon={faTimes} />
             </button>
           </div>
         </div>
       ))}
       <button type='button' onClick={onAdd} className='btn addmore-btn'>
-        <FontAwesomeIcon icon='plus' size='sm' />
+        <FontAwesomeIcon icon={faPlus} size='sm' />
         Add Another Website
       </button>
     </div>

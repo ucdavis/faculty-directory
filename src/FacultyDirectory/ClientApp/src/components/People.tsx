@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ReactTable } from './ReactTable/ReactTable';
 import { IPerson } from '../models/IPerson';
@@ -18,7 +18,7 @@ export const People = () => {
 
   useEffect(() => {
     const getPeople = async () => {
-      const results = await fetch('api/sitepeople').then(r => r.json());
+      const results = await fetch('/api/sitepeople').then(r => r.json());
       setPeople(results);
       setLoading(false);
     };

@@ -1,21 +1,24 @@
+@use "sass:color";
+@use "dependencies";
+
 // baseline typography
 html {
   -webkit-font-smoothing: antialiased;
   font-size: 10px;
-  @include breakpoint(sm) {
+  @include dependencies.breakpoint(sm) {
     font-size: 8px;
   }
 }
 body {
-  font-family: $sans-reg;
+  font-family: dependencies.$sans-reg;
   font-size: 1.6rem;
-  color: $primary-font;
+  color: dependencies.$primary-font;
 }
 a {
-  color: $primary-color;
+  color: dependencies.$primary-color;
   &:hover {
     text-decoration: none;
-    color: darken($secondary-color, 10);
+    color: color.adjust(dependencies.$secondary-color, $lightness: -10%);
   }
   p & {
     text-decoration: none;
@@ -28,8 +31,8 @@ ol {
     padding-left: 0px;
     li {
       margin: 4px 0px;
-      font-family: $sans-reg;
-      color: $primary-font;
+      font-family: dependencies.$sans-reg;
+      color: dependencies.$primary-font;
     }
   }
   &.two-col {
@@ -37,7 +40,7 @@ ol {
     -webkit-columns: 2;
     -moz-columns: 2;
   }
-  font-family: $sans-reg;
+  font-family: dependencies.$sans-reg;
   li {
     font-size: 1.6rem;
   }
@@ -46,8 +49,8 @@ ol {
 p,
 span,
 div {
-  font-family: $sans-reg;
-  color: $primary-font;
+  font-family: dependencies.$sans-reg;
+  color: dependencies.$primary-font;
 }
 h1,
 h2,
@@ -55,8 +58,8 @@ h3,
 h4,
 h5,
 h6 {
-  color: $primary-font;
-  font-family: $sans-bold;
+  color: dependencies.$primary-font;
+  font-family: dependencies.$sans-bold;
   // margin: 1.6rem 0rem 1rem 0rem;
 }
 h1 {
@@ -66,7 +69,7 @@ h2 {
   font-size: 2.4rem;
 }
 label {
-  font-family: $sans-bold;
+  font-family: dependencies.$sans-bold;
   font-size: 1.8rem;
 }
 select {
@@ -92,5 +95,5 @@ p.lede {
   text-transform: uppercase;
   font-size: 1.4rem;
   margin: 0;
-  color: $secondary-font;
+  color: dependencies.$secondary-font;
 }
