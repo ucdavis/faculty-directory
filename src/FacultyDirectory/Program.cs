@@ -29,6 +29,18 @@ namespace FacultyDirectory
             var settings = new SerilogSettings();
             configuration.GetSection("Serilog").Bind(settings);
 
+            // Enable Serilog internal logging to diagnose sink failures
+            var homeDir = Environment.GetEnvironmentVariable("HOME");
+            if (!string.IsNullOrEmpty(homeDir) && settings.SelfLog)
+            {
+                var selfLogPath = System.IO.Path.Combine(homeDir, "LogFiles", "serilog-selflog.txt");
+                System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(selfLogPath));
+                var selfLogWriter = System.IO.File.AppendText(selfLogPath);
+                selfLogWriter.AutoFlush = true;
+                Serilog.Debugging.SelfLog.Enable(msg => selfLogWriter.WriteLine($"{DateTime.UtcNow:o} {msg}"));
+            }
+
+
             var loggerConfig = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
