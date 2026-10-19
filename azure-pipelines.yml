@@ -1,7 +1,4 @@
-# ASP.NET Core (.NET Framework)
-# Build and test ASP.NET Core projects targeting the full .NET Framework.
-# Add steps that publish symbols, save build artifacts, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+# Build and package the .NET 10 web app and its three WebJobs.
 
 trigger:
 - master
@@ -25,30 +22,32 @@ stages:
     - task: UseDotNet@2
       inputs:
         packageType: 'sdk'
-        version: '6.x'
+        version: '10.0.x'
         installationPath: $(Agent.ToolsDirectory)/dotnet
 
     - task: NodeTool@0
       inputs:
         versionSpec: '22.20.x'
 
-    - task: NuGetToolInstaller@1
-
-    - task: NuGetCommand@2
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore solution'
       inputs:
-        restoreSolution: '$(solution)'
+        command: 'restore'
+        projects: '$(solution)'
 
     - task: DotNetCoreCLI@2
-      displayName: 'Build FacultyDirectory MVC project'
+      displayName: 'Build solution'
       inputs:
         command: 'build'
-        projects: './src/FacultyDirectory/FacultyDirectory.csproj'
+        projects: '$(solution)'
         arguments: '--configuration $(BuildConfiguration) /property:Version=$(build.buildNumber)'
 
     - task: DotNetCoreCLI@2
       displayName: 'Run Server Tests'
       inputs:
         command: 'test'
+        projects: '$(solution)'
+        arguments: '--configuration $(BuildConfiguration) --no-build'
 
     - task: Cache@2
       inputs:
@@ -84,7 +83,7 @@ stages:
         - task: UseDotNet@2
           inputs:
             packageType: 'sdk'
-            version: '6.x'
+            version: '10.0.x'
             installationPath: $(Agent.ToolsDirectory)/dotnet
 
         - task: NodeTool@0

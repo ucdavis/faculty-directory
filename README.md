@@ -5,9 +5,9 @@
 
 ## Requirements
 
-.NET Core 6 SDK
+.NET 10 SDK. The SDK selection policy is in [global.json](global.json).
 
-NodeJS >= 22
+Node.js and npm versions matching `engines` in the [frontend package](src/FacultyDirectory/ClientApp/package.json).
 
 ## Install (First Run)
 
@@ -25,11 +25,47 @@ In the root
 
 Currently the only tool is dotnet-ef.
 
+## Validate locally
+
+`dotnet test facultydirectory.sln --configuration Release`
+
+The backend tests exercise the application's authentication middleware, API user
+management, faculty merge, and SQL Server model compatibility. They use local
+fixtures and an in-memory SQLite database by default, without user secrets or
+campus services.
+
+To also exercise the existing migrations and a 2,500-person import against SQL
+Server, set `FACULTY_DIRECTORY_TEST_SQL` to a connection string for a disposable
+local SQL Server instance, then run the same command. Only `localhost` and
+`127.0.0.1` are accepted. These tests create and delete their own uniquely named
+databases and need permission to do both. Without that variable, the SQL Server
+tests are reported as skipped.
+
+Run the frontend checks from `src/FacultyDirectory/ClientApp`:
+
+```sh
+npm ci --legacy-peer-deps
+npm run test:ci
+npm run build
+```
+
+Azure Pipelines builds the full solution on .NET 10 and runs the backend and
+frontend tests. The existing master-only packaging stage and WebJob schedules
+are retained. Deploying the framework-dependent web and job packages requires
+the runtimes listed in each published `*.runtimeconfig.json`. The web app's
+patched runtime minimum is set by `RuntimeFrameworkVersion` in
+[its project file](src/FacultyDirectory/FacultyDirectory.csproj). Upgrading this
+repository does not change the Azure runtime settings or deploy the application.
+
 ## Run
 
 Go into the web project /src/FacultyDirectory and type `dotnet watch run`.  If you are using VSCode you can just click run or debug.
 
 All changes to client code (styles and react) will automatically hot reload without any refresh needed.  Server side changes will automatically reload as well but take a few seconds to rebuild.
+
+API requests from signed-in users without the required permissions return HTTP
+403. Unauthenticated requests to protected API endpoints redirect to the
+configured OpenID Connect provider for sign-in.
 
 If you get an SSL error you can ignore it or add your local cert by doing `dotnet dev-certs https --trust`.  This just has to be done once per machine, and isn't a per-project thing.
 
