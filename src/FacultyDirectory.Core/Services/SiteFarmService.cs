@@ -49,13 +49,17 @@ namespace FacultyDirectory.Core.Services
             // for each tag where we don't have an existing UID, we need to create and save it
             foreach (var tag in tags)
             {
-                // TODO: make actual object so we don't have to deserialize anon
-                // query for tag 
-                dynamic existingTagResponse = Newtonsoft.Json.JsonConvert.DeserializeObject(await this.httpClient.GetStringAsync(baseUrl + "?filter[name]=" + tag));
-
-                if (existingTagResponse.data.Count > 0)
+                using var lookupResponse = await this.httpClient.GetAsync(baseUrl + "?filter[name]=" + Uri.EscapeDataString(tag));
+                var lookupContent = await ReadResponse(lookupResponse, "find tag");
+                using var existingTags = ParseResponse(lookupContent, "find tag", lookupResponse.StatusCode);
+                if (!existingTags.RootElement.TryGetProperty("data", out var data) || data.ValueKind != JsonValueKind.Array)
                 {
-                    yield return existingTagResponse.data[0].id;
+                    throw InvalidResponse("find tag", lookupResponse.StatusCode);
+                }
+
+                if (data.GetArrayLength() > 0)
+                {
+                    yield return ReadId(data[0], "find tag", lookupResponse.StatusCode).ToString();
                 }
                 else
                 {
@@ -75,15 +79,9 @@ namespace FacultyDirectory.Core.Services
 
                     var serialized = JsonSerializer.Serialize(tagData);
 
-                    var createResponse = await this.httpClient.PostAsync(baseUrl, new StringContent(serialized, Encoding.UTF8, "application/vnd.api+json"));
-                    var content = await createResponse.Content.ReadAsStringAsync();
-
-                    // TODO: make models and deserialze properly
-                    dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
-
-                    var id = json.data.id;
-
-                    yield return id;
+                    using var createResponse = await this.httpClient.PostAsync(baseUrl, new StringContent(serialized, Encoding.UTF8, "application/vnd.api+json"));
+                    var content = await ReadResponse(createResponse, "create tag");
+                    yield return ReadResourceId(content, "create tag", createResponse.StatusCode).ToString();
                 }
             }
         }
@@ -101,7 +99,7 @@ namespace FacultyDirectory.Core.Services
             fileUri.Path = fileRelativeUrl;
 
             var fileResponse = await this.httpClient.GetStreamAsync(fileUri.Uri);
-            
+
             return fileResponse;
         }
 
@@ -109,7 +107,8 @@ namespace FacultyDirectory.Core.Services
         /// Publishes the audio file to site farm.
         /// First, the blob is uploaded to the file section, a new audio media item is created and associated
         /// </summary>
-        public async Task<string> PublishAudio(Stream audioContent, string fileName) {
+        public async Task<string> PublishAudio(Stream audioContent, string fileName)
+        {
             var mediaUrl = $"{this.config.ApiBase}/media/sf_audio_media_type/field_media_audio_file";
 
             var request = new HttpRequestMessage(HttpMethod.Post, mediaUrl);
@@ -178,7 +177,7 @@ namespace FacultyDirectory.Core.Services
             var personTypes = new Dictionary<string, string> {
                 { "faculty", "8338d79c-1105-4845-ae56-1919c8738249" },
                 { "emeriti", "14f01b6f-09af-422a-9b57-739a4b306d17" },
-                { "leadership", "eca6b30c-6c72-442b-af9a-dce57a0c8358" } 
+                { "leadership", "eca6b30c-6c72-442b-af9a-dce57a0c8358" }
             };
 
             // TODO: determine which site values to use for each property
@@ -217,24 +216,29 @@ namespace FacultyDirectory.Core.Services
             // relationships are different if the person is newly created or existing
             dynamic relationships;
 
-            if (sitePerson.PageUid.HasValue) {
+            if (sitePerson.PageUid.HasValue)
+            {
                 // existing users get to keep their images
                 relationships = new
                 {
                     field_sf_person_type,
                     field_sf_tags
                 };
-            } else {
+            }
+            else
+            {
                 // set to default image for people without an existing page
                 relationships = new
                 {
                     field_sf_person_type,
-                    field_sf_primary_image = new {
+                    field_sf_primary_image = new
+                    {
                         data = new
                         {
                             type = "file--file",
                             id = "b1327c77-a018-4ede-b322-0bfd9f4ee79e", // TODO: get from site settings
-                            meta = new {
+                            meta = new
+                            {
                                 title = "Profile Image"
                             }
                         }
@@ -242,7 +246,7 @@ namespace FacultyDirectory.Core.Services
                     field_sf_tags
                 };
             }
-    
+
             // Step 2: Compile and generate user page info
             var personData = new
             {
@@ -289,19 +293,17 @@ namespace FacultyDirectory.Core.Services
                 method = System.Net.Http.HttpMethod.Patch;
             }
 
-            var request = new HttpRequestMessage(method, resourceUrl);
+            using var request = new HttpRequestMessage(method, resourceUrl);
 
             request.Content = new StringContent(serialized, Encoding.UTF8, "application/vnd.api+json");
 
-            var response = await this.httpClient.SendAsync(request);
-            var content = await response.Content.ReadAsStringAsync();
-
-            // Console.WriteLine(content);
-
-            // TODO: make models and deserialze properly
-            dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
-
-            var id = json.data.id;
+            using var response = await this.httpClient.SendAsync(request);
+            var content = await ReadResponse(response, "publish person");
+            var id = ReadResourceId(content, "publish person", response.StatusCode);
+            if (sitePerson.PageUid.HasValue && sitePerson.PageUid.Value != id)
+            {
+                throw InvalidResponse("publish person", response.StatusCode);
+            }
 
             if (sitePerson.PageUid.HasValue == false)
             {
@@ -315,5 +317,58 @@ namespace FacultyDirectory.Core.Services
 
             return content;
         }
+
+        private static async Task<string> ReadResponse(HttpResponseMessage response, string operation)
+        {
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new SiteFarmRequestException(operation, response.StatusCode, "request rejected");
+            }
+
+            return await response.Content.ReadAsStringAsync();
+        }
+
+        private static JsonDocument ParseResponse(string content, string operation, System.Net.HttpStatusCode statusCode)
+        {
+            try
+            {
+                var document = JsonDocument.Parse(content);
+                if (document.RootElement.ValueKind == JsonValueKind.Object)
+                {
+                    return document;
+                }
+                document.Dispose();
+            }
+            catch (JsonException)
+            {
+                // JSON parser messages can contain values from the response.
+            }
+
+            throw InvalidResponse(operation, statusCode);
+        }
+
+        private static Guid ReadResourceId(string content, string operation, System.Net.HttpStatusCode statusCode)
+        {
+            using var document = ParseResponse(content, operation, statusCode);
+            if (!document.RootElement.TryGetProperty("data", out var data))
+            {
+                throw InvalidResponse(operation, statusCode);
+            }
+            return ReadId(data, operation, statusCode);
+        }
+
+        private static Guid ReadId(JsonElement data, string operation, System.Net.HttpStatusCode statusCode)
+        {
+            if (data.ValueKind == JsonValueKind.Object && data.TryGetProperty("id", out var id)
+                && id.ValueKind == JsonValueKind.String && Guid.TryParse(id.GetString(), out var value)
+                && value != Guid.Empty)
+            {
+                return value;
+            }
+            throw InvalidResponse(operation, statusCode);
+        }
+
+        private static SiteFarmRequestException InvalidResponse(string operation, System.Net.HttpStatusCode statusCode)
+            => new SiteFarmRequestException(operation, statusCode, "invalid response");
     }
 }

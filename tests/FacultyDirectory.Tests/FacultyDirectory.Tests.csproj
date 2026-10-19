@@ -17,5 +17,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/FacultyDirectory/FacultyDirectory.csproj" />
+    <ProjectReference Include="../../src/FacultyDirectory.Jobs.SyncSites/FacultyDirectory.Jobs.SyncSites.csproj" />
   </ItemGroup>
 </Project>

@@ -57,6 +57,19 @@ patched runtime minimum is set by `RuntimeFrameworkVersion` in
 [its project file](src/FacultyDirectory/FacultyDirectory.csproj). Upgrading this
 repository does not change the Azure runtime settings or deploy the application.
 
+## SyncSites failures
+
+SyncSites processes up to 50 enabled records ordered by their last successful
+sync. Each batch reports attempted, succeeded, and failed counts. Any failed
+record produces exit code 1 after the remaining records have been attempted.
+Rejected or malformed SiteFarm responses include the operation and HTTP status
+plus the local site-person record key in failure logs. Other failures log only
+the exception type and local record key. Logs exclude names, request URLs,
+credentials, upstream response bodies, and exception messages.
+A successful HTTP response must contain a nonempty resource UUID before the job
+updates `PageUid` or `LastSync`. For an existing page, the returned UUID must also
+match `PageUid`. Tag lookup or creation failures prevent person publication.
+
 ## Run
 
 Go into the web project /src/FacultyDirectory and type `dotnet watch run`.  If you are using VSCode you can just click run or debug.
