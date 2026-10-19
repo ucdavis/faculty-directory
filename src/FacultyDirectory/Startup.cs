@@ -49,7 +49,7 @@ namespace FacultyDirectory
                 options.LoginPath = new PathString("/Account/Login/");
                 options.Events.OnRedirectToLogin = (ctx) =>
                 {
-                    // API requests shouldn't redirect to login
+                    // Explicit cookie challenges return 401 to API clients.
                     if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
                         ctx.Response.StatusCode = 401;
                     else

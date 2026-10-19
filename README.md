@@ -5,9 +5,9 @@
 
 ## Requirements
 
-.NET 10 SDK. The SDK selection policy is in `global.json`.
+.NET 10 SDK. The SDK selection policy is in [global.json](global.json).
 
-NodeJS >= 22
+Node.js and npm versions matching `engines` in the [frontend package](src/FacultyDirectory/ClientApp/package.json).
 
 ## Install (First Run)
 
@@ -52,14 +52,20 @@ npm run build
 Azure Pipelines builds the full solution on .NET 10 and runs the backend and
 frontend tests. The existing master-only packaging stage and WebJob schedules
 are retained. Deploying the framework-dependent web and job packages requires
-.NET 10.0.13 or later in the .NET 10 hosting runtime family. Upgrading this repository does not change
-the Azure runtime settings or deploy the application.
+the runtimes listed in each published `*.runtimeconfig.json`. The web app's
+patched runtime minimum is set by `RuntimeFrameworkVersion` in
+[its project file](src/FacultyDirectory/FacultyDirectory.csproj). Upgrading this
+repository does not change the Azure runtime settings or deploy the application.
 
 ## Run
 
 Go into the web project /src/FacultyDirectory and type `dotnet watch run`.  If you are using VSCode you can just click run or debug.
 
 All changes to client code (styles and react) will automatically hot reload without any refresh needed.  Server side changes will automatically reload as well but take a few seconds to rebuild.
+
+API requests from signed-in users without the required permissions return HTTP
+403. Unauthenticated requests to protected API endpoints redirect to the
+configured OpenID Connect provider for sign-in.
 
 If you get an SSL error you can ignore it or add your local cert by doing `dotnet dev-certs https --trust`.  This just has to be done once per machine, and isn't a per-project thing.
 
