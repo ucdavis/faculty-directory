@@ -5,7 +5,7 @@
 
 ## Requirements
 
-.NET Core 6 SDK
+.NET 10 SDK. The SDK selection policy is in `global.json`.
 
 NodeJS >= 22
 
@@ -24,6 +24,36 @@ In the root
 `dotnet tool restore`
 
 Currently the only tool is dotnet-ef.
+
+## Validate locally
+
+`dotnet test facultydirectory.sln --configuration Release`
+
+The backend tests exercise the application's authentication middleware, API user
+management, faculty merge, and SQL Server model compatibility. They use local
+fixtures and an in-memory SQLite database by default, without user secrets or
+campus services.
+
+To also exercise the existing migrations and a 2,500-person import against SQL
+Server, set `FACULTY_DIRECTORY_TEST_SQL` to a connection string for a disposable
+local SQL Server instance, then run the same command. Only `localhost` and
+`127.0.0.1` are accepted. These tests create and delete their own uniquely named
+databases and need permission to do both. Without that variable, the SQL Server
+tests are reported as skipped.
+
+Run the frontend checks from `src/FacultyDirectory/ClientApp`:
+
+```sh
+npm ci --legacy-peer-deps
+npm run test:ci
+npm run build
+```
+
+Azure Pipelines builds the full solution on .NET 10 and runs the backend and
+frontend tests. The existing master-only packaging stage and WebJob schedules
+are retained. Deploying the framework-dependent web and job packages requires
+.NET 10.0.13 or later in the .NET 10 hosting runtime family. Upgrading this repository does not change
+the Azure runtime settings or deploy the application.
 
 ## Run
 

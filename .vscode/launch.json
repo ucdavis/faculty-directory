@@ -10,7 +10,7 @@
       "request": "launch",
       "preLaunchTask": "build",
       // If you have changed target frameworks, make sure to update the program path.
-      "program": "${workspaceFolder}/src/FacultyDirectory/bin/Debug/net6.0/FacultyDirectory.dll",
+      "program": "${workspaceFolder}/src/FacultyDirectory/bin/Debug/net10.0/FacultyDirectory.dll",
       "args": [],
       "cwd": "${workspaceFolder}/src/FacultyDirectory",
       "stopAtEntry": false,
@@ -36,7 +36,7 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build-import-faculty",
-      "program": "${workspaceFolder}/src/FacultyDirectory.Jobs.ImportFaculty/bin/Debug/net6.0/FacultyDirectory.Jobs.ImportFaculty.dll",
+      "program": "${workspaceFolder}/src/FacultyDirectory.Jobs.ImportFaculty/bin/Debug/net10.0/FacultyDirectory.Jobs.ImportFaculty.dll",
       "args": [],
       "cwd": "${workspaceFolder}/src/FacultyDirectory.Jobs.ImportFaculty",
       "stopAtEntry": false,
