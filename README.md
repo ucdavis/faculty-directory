@@ -62,10 +62,13 @@ repository does not change the Azure runtime settings or deploy the application.
 SyncSites processes up to 50 enabled records ordered by their last successful
 sync. Each batch reports attempted, succeeded, and failed counts. Any failed
 record produces exit code 1 after the remaining records have been attempted.
-SiteFarm failures include the operation and HTTP status plus the local site-person
-record key. Logs exclude names, upstream response bodies, and exception messages.
-A successful HTTP response must contain a valid resource UUID before the job
-updates `PageUid` or `LastSync`.
+Rejected or malformed SiteFarm responses include the operation and HTTP status
+plus the local site-person record key in failure logs. Other failures log only
+the exception type and local record key. Logs exclude names, request URLs,
+credentials, upstream response bodies, and exception messages.
+A successful HTTP response must contain a nonempty resource UUID before the job
+updates `PageUid` or `LastSync`. For an existing page, the returned UUID must also
+match `PageUid`. Tag lookup or creation failures prevent person publication.
 
 The October 19, 2026 investigation found 50 failed records in each of nine
 sampled scheduled runs dating back to October 17, before the .NET upgrade.

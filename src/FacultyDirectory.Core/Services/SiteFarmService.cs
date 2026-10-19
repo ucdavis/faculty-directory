@@ -99,7 +99,7 @@ namespace FacultyDirectory.Core.Services
             fileUri.Path = fileRelativeUrl;
 
             var fileResponse = await this.httpClient.GetStreamAsync(fileUri.Uri);
-            
+
             return fileResponse;
         }
 
@@ -107,7 +107,8 @@ namespace FacultyDirectory.Core.Services
         /// Publishes the audio file to site farm.
         /// First, the blob is uploaded to the file section, a new audio media item is created and associated
         /// </summary>
-        public async Task<string> PublishAudio(Stream audioContent, string fileName) {
+        public async Task<string> PublishAudio(Stream audioContent, string fileName)
+        {
             var mediaUrl = $"{this.config.ApiBase}/media/sf_audio_media_type/field_media_audio_file";
 
             var request = new HttpRequestMessage(HttpMethod.Post, mediaUrl);
@@ -176,7 +177,7 @@ namespace FacultyDirectory.Core.Services
             var personTypes = new Dictionary<string, string> {
                 { "faculty", "8338d79c-1105-4845-ae56-1919c8738249" },
                 { "emeriti", "14f01b6f-09af-422a-9b57-739a4b306d17" },
-                { "leadership", "eca6b30c-6c72-442b-af9a-dce57a0c8358" } 
+                { "leadership", "eca6b30c-6c72-442b-af9a-dce57a0c8358" }
             };
 
             // TODO: determine which site values to use for each property
@@ -215,24 +216,29 @@ namespace FacultyDirectory.Core.Services
             // relationships are different if the person is newly created or existing
             dynamic relationships;
 
-            if (sitePerson.PageUid.HasValue) {
+            if (sitePerson.PageUid.HasValue)
+            {
                 // existing users get to keep their images
                 relationships = new
                 {
                     field_sf_person_type,
                     field_sf_tags
                 };
-            } else {
+            }
+            else
+            {
                 // set to default image for people without an existing page
                 relationships = new
                 {
                     field_sf_person_type,
-                    field_sf_primary_image = new {
+                    field_sf_primary_image = new
+                    {
                         data = new
                         {
                             type = "file--file",
                             id = "b1327c77-a018-4ede-b322-0bfd9f4ee79e", // TODO: get from site settings
-                            meta = new {
+                            meta = new
+                            {
                                 title = "Profile Image"
                             }
                         }
@@ -240,7 +246,7 @@ namespace FacultyDirectory.Core.Services
                     field_sf_tags
                 };
             }
-    
+
             // Step 2: Compile and generate user page info
             var personData = new
             {
