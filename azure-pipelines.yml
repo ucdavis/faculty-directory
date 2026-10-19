@@ -76,7 +76,7 @@ stages:
       condition: succeededOrFailed()
 
 - stage: Publish
-  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   jobs:
     - job:
       steps:
@@ -93,6 +93,12 @@ stages:
         - task: CmdLine@2
           inputs:
             script: 'dotnet tool restore'
+
+        - task: DotNetCoreCLI@2
+          displayName: 'Restore solution for publishing'
+          inputs:
+            command: 'restore'
+            projects: '$(solution)'
 
         - task: CmdLine@2
           displayName: 'Generate EF Migration Script'
