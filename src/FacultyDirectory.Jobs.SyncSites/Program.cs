@@ -16,7 +16,7 @@ namespace FacultyDirectory.Jobs.SyncSites
     {
         private static ILogger _log;
 
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
             // base config
             Configure();
@@ -30,37 +30,52 @@ namespace FacultyDirectory.Jobs.SyncSites
             _log.Information("Running {job} build {build}", assembyName.Name, assembyName.Version);
 
             // setup di
-            var provider = ConfigureServices();
+            using var provider = ConfigureServices();
             var dbContext = provider.GetService<ApplicationDbContext>();
             var siteFarmService = provider.GetService<ISiteFarmService>();
 
             // Process the sync
-            ProcessSitePeople(dbContext, siteFarmService).GetAwaiter().GetResult();
-
-            _log.Information("Sync Sites Job Finished");
+            return RunAsync(dbContext, siteFarmService, _log).GetAwaiter().GetResult();
         }
 
-        private static async Task ProcessSitePeople(ApplicationDbContext dbContext, ISiteFarmService siteFarmService)
+        public static async Task<int> RunAsync(ApplicationDbContext dbContext, ISiteFarmService siteFarmService, ILogger log)
         {
             // grab N people who haven't been sync'd in a while
             var sitePeople = await dbContext.SitePeople.Where(sp => sp.ShouldSync)
                 .OrderBy(sp => sp.LastSync).Include(sp => sp.Person).Take(50).ToArrayAsync();
 
-            _log.Information("Syncing {num} people to SiteFarm", sitePeople.Length);
+            log.Information("Syncing {num} people to SiteFarm", sitePeople.Length);
 
+            var succeeded = 0;
+            var failed = 0;
             foreach (var sitePerson in sitePeople)
             {
                 try
                 {
-                    _log.Information("Processing {name} ({id})", sitePerson.Person.FullName, sitePerson.Person.Id);
-
                     await siteFarmService.PublishPerson(sitePerson);
+                    succeeded++;
                 }
-                catch
+                catch (Exception exception)
                 {
-                    _log.Warning("Could not process user {id}", sitePerson.Person.Id);
+                    failed++;
+                    // Upstream error bodies and exception messages may contain personal
+                    // data or credentials. Log only controlled diagnostics and the local record key.
+                    if (exception is SiteFarmRequestException siteFarmError)
+                    {
+                        log.Error("Site person {SitePersonId} failed during {Operation}: {Failure}; HTTP {StatusCode}",
+                            sitePerson.Id, siteFarmError.Operation, siteFarmError.Failure, (int?)siteFarmError.StatusCode);
+                    }
+                    else
+                    {
+                        log.Error("Site person {SitePersonId} failed with {ExceptionType}",
+                            sitePerson.Id, exception.GetType().Name);
+                    }
                 }
             }
+
+            log.Information("Sync Sites batch finished: {Attempted} attempted, {Succeeded} succeeded, {Failed} failed",
+                sitePeople.Length, succeeded, failed);
+            return failed == 0 ? 0 : 1;
         }
 
         private static ServiceProvider ConfigureServices()

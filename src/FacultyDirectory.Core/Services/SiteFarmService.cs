@@ -49,13 +49,17 @@ namespace FacultyDirectory.Core.Services
             // for each tag where we don't have an existing UID, we need to create and save it
             foreach (var tag in tags)
             {
-                // TODO: make actual object so we don't have to deserialize anon
-                // query for tag 
-                dynamic existingTagResponse = Newtonsoft.Json.JsonConvert.DeserializeObject(await this.httpClient.GetStringAsync(baseUrl + "?filter[name]=" + tag));
-
-                if (existingTagResponse.data.Count > 0)
+                using var lookupResponse = await this.httpClient.GetAsync(baseUrl + "?filter[name]=" + Uri.EscapeDataString(tag));
+                var lookupContent = await ReadResponse(lookupResponse, "find tag");
+                using var existingTags = ParseResponse(lookupContent, "find tag", lookupResponse.StatusCode);
+                if (!existingTags.RootElement.TryGetProperty("data", out var data) || data.ValueKind != JsonValueKind.Array)
                 {
-                    yield return existingTagResponse.data[0].id;
+                    throw InvalidResponse("find tag", lookupResponse.StatusCode);
+                }
+
+                if (data.GetArrayLength() > 0)
+                {
+                    yield return ReadId(data[0], "find tag", lookupResponse.StatusCode).ToString();
                 }
                 else
                 {
@@ -75,15 +79,9 @@ namespace FacultyDirectory.Core.Services
 
                     var serialized = JsonSerializer.Serialize(tagData);
 
-                    var createResponse = await this.httpClient.PostAsync(baseUrl, new StringContent(serialized, Encoding.UTF8, "application/vnd.api+json"));
-                    var content = await createResponse.Content.ReadAsStringAsync();
-
-                    // TODO: make models and deserialze properly
-                    dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
-
-                    var id = json.data.id;
-
-                    yield return id;
+                    using var createResponse = await this.httpClient.PostAsync(baseUrl, new StringContent(serialized, Encoding.UTF8, "application/vnd.api+json"));
+                    var content = await ReadResponse(createResponse, "create tag");
+                    yield return ReadResourceId(content, "create tag", createResponse.StatusCode).ToString();
                 }
             }
         }
@@ -289,19 +287,17 @@ namespace FacultyDirectory.Core.Services
                 method = System.Net.Http.HttpMethod.Patch;
             }
 
-            var request = new HttpRequestMessage(method, resourceUrl);
+            using var request = new HttpRequestMessage(method, resourceUrl);
 
             request.Content = new StringContent(serialized, Encoding.UTF8, "application/vnd.api+json");
 
-            var response = await this.httpClient.SendAsync(request);
-            var content = await response.Content.ReadAsStringAsync();
-
-            // Console.WriteLine(content);
-
-            // TODO: make models and deserialze properly
-            dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
-
-            var id = json.data.id;
+            using var response = await this.httpClient.SendAsync(request);
+            var content = await ReadResponse(response, "publish person");
+            var id = ReadResourceId(content, "publish person", response.StatusCode);
+            if (sitePerson.PageUid.HasValue && sitePerson.PageUid.Value != id)
+            {
+                throw InvalidResponse("publish person", response.StatusCode);
+            }
 
             if (sitePerson.PageUid.HasValue == false)
             {
@@ -315,5 +311,58 @@ namespace FacultyDirectory.Core.Services
 
             return content;
         }
+
+        private static async Task<string> ReadResponse(HttpResponseMessage response, string operation)
+        {
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new SiteFarmRequestException(operation, response.StatusCode, "request rejected");
+            }
+
+            return await response.Content.ReadAsStringAsync();
+        }
+
+        private static JsonDocument ParseResponse(string content, string operation, System.Net.HttpStatusCode statusCode)
+        {
+            try
+            {
+                var document = JsonDocument.Parse(content);
+                if (document.RootElement.ValueKind == JsonValueKind.Object)
+                {
+                    return document;
+                }
+                document.Dispose();
+            }
+            catch (JsonException)
+            {
+                // JSON parser messages can contain values from the response.
+            }
+
+            throw InvalidResponse(operation, statusCode);
+        }
+
+        private static Guid ReadResourceId(string content, string operation, System.Net.HttpStatusCode statusCode)
+        {
+            using var document = ParseResponse(content, operation, statusCode);
+            if (!document.RootElement.TryGetProperty("data", out var data))
+            {
+                throw InvalidResponse(operation, statusCode);
+            }
+            return ReadId(data, operation, statusCode);
+        }
+
+        private static Guid ReadId(JsonElement data, string operation, System.Net.HttpStatusCode statusCode)
+        {
+            if (data.ValueKind == JsonValueKind.Object && data.TryGetProperty("id", out var id)
+                && id.ValueKind == JsonValueKind.String && Guid.TryParse(id.GetString(), out var value)
+                && value != Guid.Empty)
+            {
+                return value;
+            }
+            throw InvalidResponse(operation, statusCode);
+        }
+
+        private static SiteFarmRequestException InvalidResponse(string operation, System.Net.HttpStatusCode statusCode)
+            => new SiteFarmRequestException(operation, statusCode, "invalid response");
     }
 }
