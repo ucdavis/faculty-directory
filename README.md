@@ -70,24 +70,6 @@ A successful HTTP response must contain a nonempty resource UUID before the job
 updates `PageUid` or `LastSync`. For an existing page, the returned UUID must also
 match `PageUid`. Tag lookup or creation failures prevent person publication.
 
-The October 19, 2026 investigation found 50 failed records in each of nine
-sampled scheduled runs dating back to October 17, before the .NET upgrade.
-An approved diagnostic PATCH that sent an existing position title unchanged
-returned HTTP 403 requiring `edit any sf_person content`. This establishes a
-SiteFarm publishing permission failure. The API account could not inspect role
-assignments, so a SiteFarm administrator must verify its identity and effective
-permissions before any production permission change. Read access alone does not
-prove that publishing is authorized.
-
-Read-only checks of the selected profiles returned 45 HTTP 200 responses, four
-403 responses, and one 404 response. These records need separate access or
-reference review; the job does not recreate missing pages automatically. The
-code change does not grant SiteFarm permissions or establish successful delivery.
-After an approved deployment and permission repair, validate a natural scheduled
-run using its per-record results and persisted sync timestamps. A Kudu success
-status alone is insufficient. Do not manually invoke the production job for a
-smoke test, because it writes public content.
-
 ## Run
 
 Go into the web project /src/FacultyDirectory and type `dotnet watch run`.  If you are using VSCode you can just click run or debug.
